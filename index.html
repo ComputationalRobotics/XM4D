@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XM4D: Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction</title>
+  <meta name="description" content="XM4D recovers camera motion and non-rigid deformation from monocular videos with certifiably globally optimal geometric optimization, and uses them to initialize dynamic Gaussian splatting.">
+
+  <meta property="og:title" content="XM4D: Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction">
+  <meta property="og:description" content="Certifiably optimal cameras and non-rigid motion from casual videos, solved on the GPU and scaling to thousands of frames.">
+  <meta property="og:image" content="assets/img/teaser.jpg">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#method">Skip to content</a>
+
+<nav class="topbar" aria-label="Page">
+  <a class="topbar-brand" href="#top">XM4D</a>
+  <div class="topbar-links">
+    <a href="#method">How it works</a>
+    <a href="#results">Results</a>
+    <a href="#citation">Cite</a>
+  </div>
+  <div class="topbar-actions">
+    <!-- TODO: paper and code links -->
+    <a class="btn btn-small" href="#" target="_blank" rel="noopener">Paper</a>
+    <a class="btn btn-small btn-primary" href="#" target="_blank" rel="noopener">Code</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ───────────────────────── HERO ───────────────────────── -->
+  <header class="hero">
+    <a class="hero-lab" href="https://computationalrobotics.seas.harvard.edu/" target="_blank" rel="noopener">
+      <img src="assets/group-logo.png" alt="Computational Robotics Group, Harvard" width="240">
+    </a>
+    <h1 class="hero-title">
+      <span class="hero-acronym">XM<span class="acronym-4d">4D</span></span>
+      Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction
+    </h1>
+
+    <div class="hero-meta">
+      <p class="authors">
+        <span class="author">Haoyu Han</span>
+        <span class="author">Jiahui Lei</span>
+        <span class="author">Jack Benarroch Jedlicki</span>
+        <span class="author">Heng Yang</span>
+      </p>
+      <!-- TODO: affiliations, e.g.
+      <p class="affiliations">
+        <span><sup>1</sup>…</span>
+      </p>
+      -->
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>
+        Paper
+      </a>
+      <a class="btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+        Code
+      </a>
+      <a class="btn" href="#citation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10M7 12h10M7 16h6"/><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        BibTeX
+      </a>
+    </div>
+
+    <!-- TODO: swap for a promo video, e.g.
+    <figure class="hero-video" id="video">
+      <video id="promo" autoplay muted loop controls playsinline preload="auto" poster="assets/video/promo-poster.jpg">
+        <source src="assets/video/promo.mp4" type="video/mp4">
+      </video>
+    </figure>
+    -->
+    <figure class="figure hero-figure">
+      <img src="assets/img/teaser.jpg" alt="XM4D overview: 2D tracks and monocular depth, the certified solver's cameras, static geometry and dynamic motion, and the 4D Gaussian splatting rendering" width="1800" height="602">
+      <figcaption>
+        From (a) 2D tracks and monocular depth, a solver with certified global optimality recovers
+        (b) the cameras, static geometry, and dynamic motion, which initialize (c) 4D Gaussian
+        splatting for rendering.
+      </figcaption>
+    </figure>
+
+    <p class="hero-lede">
+      XM4D splits 4D reconstruction into a static and a dynamic stage, and solves each one with a
+      <em>certifiably globally optimal</em> GPU solver before any photometric training.
+    </p>
+  </header>
+
+  <!-- ───────────────────────── METHOD / SCROLLYTELLING ───────────────────────── -->
+  <section class="method" id="method" aria-labelledby="method-title">
+    <div class="method-head">
+      <h2 id="method-title">How it works</h2>
+    </div>
+
+    <div class="method-body">
+      <div class="method-steps">
+
+        <!-- data-img: figure shown in the sticky stage while this step is active -->
+        <article class="step" data-img="assets/img/teaser.jpg" data-title="Inputs">
+          <h3>Lift tracks with predicted depth</h3>
+          <p>
+            Point trackers and a monocular depth model give 2D tracks and per-frame depth. Every
+            tracked point is lifted to 3D, and the tracks are split into static and dynamic ones.
+          </p>
+        </article>
+
+        <article class="step" data-img="assets/img/view-graph.jpg" data-title="Static stage">
+          <h3>Certified cameras</h3>
+          <p>
+            A scaled bundle adjustment over camera poses, per-frame depth scales, and static
+            landmarks reduces to a QCQP over scaled rotations. Its SDP relaxation is solved by a
+            GPU Riemannian staircase that returns a certificate of global optimality.
+          </p>
+        </article>
+
+        <article class="step" data-img="assets/img/view-graph.jpg" data-title="Dynamic stage">
+          <h3>Certified non-rigid motion</h3>
+          <p>
+            Dynamic motion is an embedded deformation graph whose node transformations are
+            expressed relative to one rest frame. Tracking, rigidity, and smoothness then reduce to
+            a rotation-only QCQP that the same certified solver handles.
+          </p>
+        </article>
+
+        <article class="step step-last" data-img="assets/img/teaser.jpg" data-title="Rendering">
+          <h3>4D Gaussian splatting</h3>
+          <p>
+            The certified cameras and graph motion initialize dynamic Gaussian splatting, which
+            refines appearance and geometry for novel-view rendering.
+          </p>
+        </article>
+
+      </div>
+
+      <div class="method-stage">
+        <div class="stage-sticky">
+          <img id="stage-img" src="assets/img/teaser.jpg" alt="">
+          <div class="stage-hud" aria-hidden="true">
+            <span class="hud-task" id="hud-task">Inputs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── ABSTRACT ───────────────────────── -->
+  <section class="abstract" id="abstract" aria-labelledby="abstract-title">
+    <h2 id="abstract-title">Abstract</h2>
+    <p>
+      Accurate 4D reconstruction remains challenging: jointly estimating camera motion, scene
+      geometry, and non-rigid deformation entails highly nonconvex optimization, making global
+      optimality difficult to guarantee. We present <strong>XM4D</strong>, a framework for accurate
+      and efficient 4D reconstruction built upon <em>certifiably globally optimal</em> geometric
+      optimization. By separating camera motion estimation from non-rigid deformation, we
+      formulate both stages as structured quadratically constrained quadratic programs (QCQP) that
+      admit semidefinite programming (SDP) relaxations and verifiable global optimality
+      certificates of the resulting SDPs. For camera motion estimation, we lift static point tracks
+      into 3D using foundational depth prediction models and formulate a scaled bundle adjustment
+      problem that jointly estimates camera poses, depth scales, and static landmarks. By
+      analytically eliminating translations and landmarks, we reduce the problem to a QCQP over
+      scaled rotations. For non-rigid reconstruction, we represent dynamic motion using an embedded
+      deformation graph (EDG) and show that its tracking, rigidity, and temporal regularization
+      objectives similarly reduce to a rotation-only QCQP. Both problems admit SDP relaxations that
+      we solve efficiently with a GPU-accelerated Burer–Monteiro solver based on Riemannian
+      optimization. The recovered geometry further initializes dynamic Gaussian splatting for
+      photometric refinement. Extensive experiments across seven benchmarks demonstrate accurate
+      camera motion estimation on both static and dynamic scenes, efficient optimization that
+      scales to thousands of frames, and state-of-the-art novel-view rendering quality.
+    </p>
+  </section>
+
+  <!-- ───────────────────────── RESULTS ───────────────────────── -->
+  <!-- To add a video, replace a .tile-ph div with
+       <video muted loop playsinline preload="none" poster="…jpg" data-src="…mp4"></video>
+       main.js loads it lazily and plays it while it is on screen. -->
+  <section class="results" id="results" aria-labelledby="results-title">
+    <div class="section-head">
+      <h2 id="results-title">Results</h2>
+      <p>
+        Novel views rendered from cameras and motion that XM4D estimates itself, on DyCheck,
+        NVIDIA, and Syn4D, and reconstructions of casual videos beyond the benchmarks.
+      </p>
+    </div>
+
+    <!-- Novel-view rendering -->
+    <div class="gallery" id="gallery-render">
+      <div class="gallery-head">
+        <h3>Novel-view rendering</h3>
+        <div class="segmented" role="tablist" aria-label="Benchmark">
+          <button role="tab" aria-selected="true" data-group="dycheck">DyCheck</button>
+          <button role="tab" aria-selected="false" data-group="nvidia">NVIDIA</button>
+          <button role="tab" aria-selected="false" data-group="syn4d">Syn4D</button>
+        </div>
+      </div>
+
+      <div class="gallery-group is-active" data-group="dycheck" role="tabpanel">
+        <div class="tiles tiles-4">
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>block</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>paper-windmill</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>spin</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>wheel</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="gallery-group" data-group="nvidia" role="tabpanel" hidden>
+        <div class="tiles tiles-4">
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Jumping</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Playground</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Skating</figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Truck</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="gallery-group" data-group="syn4d" role="tabpanel" hidden>
+        <div class="tiles tiles-4">
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Bear <span>bear1</span></figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Bear <span>bear3</span></figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>RoboCasa <span>casa1</span></figcaption></figure>
+          <figure class="tile"><div class="tile-ph">Video</div><figcaption>RoboCasa <span>casa2</span></figcaption></figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- In the wild -->
+    <div class="gallery" id="gallery-wild">
+      <div class="gallery-head">
+        <h3>In the wild</h3>
+        <p class="gallery-note">Casual videos of animals, people, hands, a robot, and articulated objects.</p>
+      </div>
+      <div class="tiles tiles-3">
+        <figure class="tile"><div class="tile-ph">Video</div><figcaption>DAVIS</figcaption></figure>
+        <figure class="tile"><div class="tile-ph">Video</div><figcaption>EgoDexter <span>Hand–object interaction</span></figcaption></figure>
+        <figure class="tile"><div class="tile-ph">Video</div><figcaption>Refrigerator <span>Articulated doors</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── CITATION ───────────────────────── -->
+  <section class="citation" id="citation" aria-labelledby="citation-title">
+    <h2 id="citation-title">Citation</h2>
+    <!-- TODO: venue line, e.g. <p class="citation-venue">…</p> -->
+    <div class="bibtex-wrap">
+      <button type="button" class="bibtex-copy" data-copy-target="#bibtex">Copy BibTeX</button>
+<pre id="bibtex"><code>@article{han2026xm4d,
+  title   = {{XM4D}: Non-Rigid Convex Structure from Motion with Embedded
+             Deformation Graphs for {4D} Reconstruction},
+  author  = {Han, Haoyu and Lei, Jiahui and Benarroch Jedlicki, Jack and Yang, Heng},
+  year    = {2026}
+}</code></pre>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>
+      Layout adapted from the
+      <a href="https://github.com/ComputationalRobotics/BEACON" target="_blank" rel="noopener">BEACON</a>
+      page, itself based on
+      <a href="https://github.com/gated-memory-policy/gated-memory-policy.github.io" target="_blank" rel="noopener">this template</a>
+      (CC BY-SA 4.0).
+    </p>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="main.js" defer></script>
+</body>
+</html>
