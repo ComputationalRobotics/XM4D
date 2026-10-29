@@ -27,7 +27,7 @@ assets/
 
 ## Filling in the skeleton
 
-- **Links:** the Paper and Code buttons (top bar and hero) point to `#`.
+- **Links:** the Paper buttons (top bar and hero) point to `#`; Code points to XM4D-release.
 - **Affiliations, venue, BibTeX:** see the `TODO` comments in `index.html`.
 - **Hero video:** uncomment the `hero-video` block and drop the files under `assets/video/`.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
