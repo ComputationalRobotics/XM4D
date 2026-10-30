@@ -95,14 +95,17 @@
     <!-- Pipeline walkthrough. The figure is cut into pieces (data-crop: x y w h in the 2400x808 figure).
          Each .pipe-panel is one stop of the slider: data-camera = "scale dx dy" maps the figure into the
          window, data-show lists the pieces shown ("name" sits where the camera puts it, "name@x,y[,scale]"
-         is placed explicitly); the other pieces fade out. main.js interpolates between stops. -->
+         is placed explicitly); the other pieces fade out. main.js interpolates between stops.
+         At the Render stop, .teaser-clip plays over panel (c): the trained model rendered at every frame from the
+         panel's camera and crop (its rect is in % of the c piece), with the same tracked keypoints. -->
     <figure class="figure hero-figure pipeline" id="pipeline">
-      <div class="teaser" role="img" aria-label="XM4D pipeline: 2D tracks and monocular depth are lifted to 3D, a certified solver recovers the cameras, static geometry and dynamic motion, and these initialize 4D Gaussian splatting">
+      <div class="teaser" role="img" aria-label="XM4D pipeline: 2D tracks and monocular depth are lifted to 3D, a certified solver recovers the cameras, static geometry and dynamic motion, and these initialize 4D Gaussian splatting, rendered here as the horse's jump">
         <div class="teaser-piece" data-piece="alabel" data-crop="0 0 522 52" style="left: 0%; top: 0%; width: 21.75%; height: 6.436%"><img src="assets/img/teaser/alabel.jpg" alt=""></div>
         <div class="teaser-piece" data-piece="tracks" data-crop="0 52 522 373" style="left: 0%; top: 6.436%; width: 21.75%; height: 46.163%"><img src="assets/img/teaser/tracks.jpg" alt=""></div>
         <div class="teaser-piece" data-piece="depth" data-crop="0 425 522 383" style="left: 0%; top: 52.599%; width: 21.75%; height: 47.401%"><img src="assets/img/teaser/depth.jpg" alt=""></div>
         <div class="teaser-piece" data-piece="b" data-crop="522 0 846 609" style="left: 21.75%; top: 0%; width: 35.25%; height: 75.371%"><img src="assets/img/teaser/b.jpg" alt=""></div>
-        <div class="teaser-piece" data-piece="c" data-crop="1368 0 1032 609" style="left: 57%; top: 0%; width: 43%; height: 75.371%"><img src="assets/img/teaser/c.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="c" data-crop="1368 0 1032 609" style="left: 57%; top: 0%; width: 43%; height: 75.371%"><img src="assets/img/teaser/c.jpg" alt="">
+          <video class="teaser-clip" src="assets/video/teaser-render.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 0.963%; top: 8.624%; width: 98.549%; height: 89.402%"></video></div>
         <div class="teaser-piece" data-piece="pre" data-crop="548 634 647 174" style="left: 22.833%; top: 78.465%; width: 26.958%; height: 21.535%"><img src="assets/img/teaser/pre.jpg" alt=""></div>
         <div class="teaser-piece" data-piece="solve" data-crop="1215 609 575 199" style="left: 50.625%; top: 75.371%; width: 23.958%; height: 24.629%"><img src="assets/img/teaser/solve.jpg" alt=""></div>
         <div class="teaser-piece" data-piece="render" data-crop="1818 622 517 186" style="left: 75.75%; top: 76.98%; width: 21.542%; height: 23.02%"><img src="assets/img/teaser/render.jpg" alt=""></div>
@@ -156,7 +159,7 @@
         <div class="pipe-panel" data-camera="1.29 -1717.7 11" data-show="c render@1448,241,1.75">
           <p class="pipe-kicker">Step 5 of 5 &middot; Render</p>
           <h3>4D Gaussian splatting</h3>
-          <p>The certified cameras and graph motion initialize dynamic Gaussian splatting, which refines appearance and geometry for novel-view rendering.</p>
+          <p>The certified cameras and graph motion initialize dynamic Gaussian splatting, which refines appearance and geometry for novel-view rendering. The clip is that model rendered from the panel's viewpoint, with the same tracked points.</p>
         </div>
       </div>
     </figure>

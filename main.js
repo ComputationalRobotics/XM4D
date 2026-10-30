@@ -156,6 +156,30 @@
     });
     var ease = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(2 - 2 * x, 3) / 2; };
 
+    // at the Render stop the rendered clip plays over panel (c), then fades back to the still with the same poses;
+    // it repeats while the user stays there (when the walkthrough plays on, its end hold waits for the clip)
+    var clip = pipe.querySelector('.teaser-clip');
+    var clipOn = false, clipTimer = null;
+    var playClip = function () {
+      clip.currentTime = 0;
+      var p = clip.play();
+      if (p && p.catch) p.catch(function () { /* autoplay blocked: the still stays */ });
+    };
+    var setClip = function (on) {
+      if (!clip || on === clipOn) return;
+      clipOn = on;
+      clearTimeout(clipTimer);
+      if (on) clipTimer = setTimeout(playClip, 500);
+      else { clip.pause(); clip.classList.remove('is-playing'); }
+    };
+    if (clip) {
+      clip.addEventListener('playing', function () { clip.classList.add('is-playing'); });
+      clip.addEventListener('ended', function () {
+        clip.classList.remove('is-playing');
+        if (clipOn && !playing) clipTimer = setTimeout(playClip, 1800);
+      });
+    }
+
     var t = 0, shown = -1;
     var render = function (v) {
       t = Math.max(0, Math.min(LAST, v));
@@ -174,6 +198,7 @@
       });
       slider.value = t;
       pipe.style.setProperty('--fill', (t / LAST * 100) + '%');
+      setClip(inView && t > LAST - REST);
 
       var step = g < 0.5 ? k : k + 1;
       if (step === shown) return;
@@ -203,7 +228,7 @@
       if (last !== null) {
         var dt = Math.min(0.1, (now - last) / 1000);
         if (t < LAST) render(t + dt / SECONDS_PER_STEP);
-        else if ((held += dt) > END_HOLD) { held = 0; jumpTo(0); }
+        else if ((!clip || clip.paused) && (held += dt) > END_HOLD) { held = 0; jumpTo(0); }
       }
       last = now;
       raf = requestAnimationFrame(frame);
@@ -242,6 +267,7 @@
         entries.forEach(function (e) {
           inView = e.isIntersecting;
           last = null;
+          setClip(inView && t > LAST - REST);
           if (inView && playing && raf === null) raf = requestAnimationFrame(frame);
         });
       }).observe(pipe);

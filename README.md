@@ -24,6 +24,9 @@ assets/
   group-logo.png  Computational Robotics Group logo
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
     teaser/       crops of the teaser (from the paper's teaser.pdf) for the hero walkthrough
+  video/
+    teaser-render.mp4  the walkthrough's Render clip: the trained horsejump-high model rendered at every frame
+                       from panel (c)'s camera and crop, with its tracked keypoints; it plays over panel (c)
 ```
 
 ## Filling in the skeleton
