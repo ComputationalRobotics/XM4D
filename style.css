@@ -282,6 +282,22 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 }
 .hero-lede em { color: var(--accent); font-style: italic; }
 
+/* example runs below the teaser: a picker grouped by dataset; the run's three columns are labelled above its clip */
+.runs { margin-top: 44px; }
+.runs .segmented { border-radius: 18px; align-items: center; }
+.seg-label {
+  padding: 0 4px 0 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--mist);
+}
+.run-cols {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 6px;
+  font-size: 13.5px; font-weight: 500; color: var(--graphite);
+}
+.run { margin: 0; }
+.run video { width: 100%; border-radius: 6px; background: var(--paper-deep); }
+.run figcaption { margin-top: 8px; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.35; }
+.run figcaption span { display: block; color: var(--mist); font-weight: 400; }
+
 /* ───────── Method: scrollytelling ───────── */
 .method-head { max-width: var(--col); margin-bottom: 16px; }
 .method-body {

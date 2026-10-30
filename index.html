@@ -98,9 +98,10 @@
          is placed explicitly); the other pieces fade out. main.js interpolates between stops.
          At each stop its .teaser-clip videos (data-stop) play over their panels; a clip's rect is in % of its piece.
          Input: the front frames of the stacks play every input frame with its tracks / its depth. Lift: frame 33
-         is lifted along its camera rays (over the schematic, which it covers). Cameras and Motion: panel (b) plays
-         through time and ends on the panel. Render: the trained model rendered at every frame from panel (c)'s
-         camera and crop, with the same tracked keypoints. -->
+         is lifted along its camera rays (over the schematic, which it covers). Solve: over panel (b), the XM
+         solver's iterates (cameras and the landmarks recovered from them, replayed from this video's solve), then
+         the dynamic tracks through time, ending on the panel. Render: the trained model rendered at every frame
+         from panel (c)'s camera and crop, with the same tracked keypoints. -->
     <figure class="figure hero-figure pipeline" id="pipeline">
       <div class="teaser" role="img" aria-label="XM4D pipeline: 2D tracks and monocular depth are lifted to 3D, a certified solver recovers the cameras, static geometry and dynamic motion, and these initialize 4D Gaussian splatting, rendered here as the horse's jump">
         <div class="teaser-piece" data-piece="alabel" data-crop="0 0 522 52" style="left: 0%; top: 0%; width: 21.75%; height: 6.436%"><img src="assets/img/teaser/alabel.jpg" alt=""></div>
@@ -109,9 +110,9 @@
         <div class="teaser-piece" data-piece="depth" data-crop="0 425 522 383" style="left: 0%; top: 52.599%; width: 21.75%; height: 47.401%"><img src="assets/img/teaser/depth.jpg" alt="">
           <video class="teaser-clip" data-stop="1" src="assets/video/teaser-depth.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 10.447%; top: 15.501%; width: 85.838%; height: 65.505%"></video></div>
         <div class="teaser-piece" data-piece="b" data-crop="522 0 846 609" style="left: 21.75%; top: 0%; width: 35.25%; height: 75.371%"><img src="assets/img/teaser/b.jpg" alt="">
-          <video class="teaser-clip" data-stop="3 4" src="assets/video/teaser-solve.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 1.696%; top: 8.316%; width: 98.205%; height: 89.974%"></video></div>
+          <video class="teaser-clip" data-stop="3" src="assets/video/teaser-solve.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 1.696%; top: 8.316%; width: 98.205%; height: 89.974%"></video></div>
         <div class="teaser-piece" data-piece="c" data-crop="1368 0 1032 609" style="left: 57%; top: 0%; width: 43%; height: 75.371%"><img src="assets/img/teaser/c.jpg" alt="">
-          <video class="teaser-clip" data-stop="5" src="assets/video/teaser-render.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 0.963%; top: 8.624%; width: 98.549%; height: 89.402%"></video></div>
+          <video class="teaser-clip" data-stop="4" src="assets/video/teaser-render.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 0.963%; top: 8.624%; width: 98.549%; height: 89.402%"></video></div>
         <div class="teaser-piece" data-piece="pre" data-crop="548 634 647 174" style="left: 22.833%; top: 78.465%; width: 26.958%; height: 21.535%"><img src="assets/img/teaser/pre.jpg" alt="">
           <video class="teaser-clip" data-stop="2" src="assets/video/teaser-lift.mp4" muted playsinline preload="auto" aria-hidden="true" style="left: 41.731%; top: -21.659%; width: 68.521%; height: 143.319%"></video></div>
         <div class="teaser-piece" data-piece="solve" data-crop="1215 609 575 199" style="left: 50.625%; top: 75.371%; width: 23.958%; height: 24.629%"><img src="assets/img/teaser/solve.jpg" alt=""></div>
@@ -124,15 +125,14 @@
           <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
         </button>
         <div class="pipe-track">
-          <div class="pipe-rail" aria-hidden="true"><span class="pipe-fill"></span><i style="--p: 0"></i><i style="--p: 0.2"></i><i style="--p: 0.4"></i><i style="--p: 0.6"></i><i style="--p: 0.8"></i><i style="--p: 1"></i></div>
-          <input type="range" class="pipe-slider" min="0" max="5" step="0.01" value="0" aria-label="Pipeline step">
+          <div class="pipe-rail" aria-hidden="true"><span class="pipe-fill"></span><i style="--p: 0"></i><i style="--p: 0.25"></i><i style="--p: 0.5"></i><i style="--p: 0.75"></i><i style="--p: 1"></i></div>
+          <input type="range" class="pipe-slider" min="0" max="4" step="0.01" value="0" aria-label="Pipeline step">
           <div class="pipe-ticks">
             <button type="button" data-step="0" style="--p: 0">Overview</button>
-            <button type="button" data-step="1" style="--p: 0.2">Input</button>
-            <button type="button" data-step="2" style="--p: 0.4">Lift to 3D</button>
-            <button type="button" data-step="3" style="--p: 0.6">Cameras</button>
-            <button type="button" data-step="4" style="--p: 0.8">Motion</button>
-            <button type="button" data-step="5" style="--p: 1">Render</button>
+            <button type="button" data-step="1" style="--p: 0.25">Input</button>
+            <button type="button" data-step="2" style="--p: 0.5">Lift to 3D</button>
+            <button type="button" data-step="3" style="--p: 0.75">Solve</button>
+            <button type="button" data-step="4" style="--p: 1">Render</button>
           </div>
         </div>
       </div>
@@ -144,27 +144,22 @@
           <p>From (a) 2D tracks and monocular depth, a solver with certified global optimality recovers (b) the cameras, static geometry, and dynamic motion, which initialize (c) 4D Gaussian splatting for rendering.</p>
         </div>
         <div class="pipe-panel" data-camera="1.8 230 12.4" data-show="alabel tracks depth@1230,106">
-          <p class="pipe-kicker">Step 1 of 5 &middot; Input</p>
+          <p class="pipe-kicker">Step 1 of 4 &middot; Input</p>
           <h3>A casual monocular video</h3>
           <p>An off-the-shelf point tracker gives 2D tracks, and a monocular depth model gives per-frame depth. Masks split the tracks into static and dynamic ones.</p>
         </div>
         <div class="pipe-panel" data-camera="3 -1414 -1759" data-show="pre">
-          <p class="pipe-kicker">Step 2 of 5 &middot; Preprocess</p>
+          <p class="pipe-kicker">Step 2 of 4 &middot; Preprocess</p>
           <h3>Lift every track to 3D</h3>
           <p>Each 2D observation is lifted to a 3D point with its predicted depth. The depth of each frame is only known up to scale, so the solver also estimates one scale per frame. The clip lifts one frame this way: every pixel slides along its camera ray to its depth.</p>
         </div>
         <div class="pipe-panel" data-camera="1.29 -623.4 11" data-show="b solve@1201,205,2">
-          <p class="pipe-kicker">Step 3 of 5 &middot; Solve, static stage</p>
-          <h3>Certified cameras</h3>
-          <p>Static tracks give a scaled bundle adjustment over camera poses, depth scales, and 3D landmarks. It reduces to a QCQP over scaled rotations, whose SDP relaxation our GPU solver solves with a certificate of global optimality. The clip plays the solved cameras and tracks through time.</p>
-        </div>
-        <div class="pipe-panel" data-camera="2.9 -1534 -328" data-show="b">
-          <p class="pipe-kicker">Step 4 of 5 &middot; Solve, dynamic stage</p>
-          <h3>Certified non-rigid motion</h3>
-          <p>With the cameras fixed, an embedded deformation graph moves the dynamic points along these trajectories. Its tracking, rigidity, and smoothness terms reduce to a rotation-only QCQP that the same solver certifies.</p>
+          <p class="pipe-kicker">Step 3 of 4 &middot; Solve</p>
+          <h3>Certified cameras, then certified motion</h3>
+          <p>Static tracks give a scaled bundle adjustment whose SDP relaxation our GPU solver solves with a certificate of global optimality; the deformation graph's motion is then certified the same way. The clip replays the solver: cameras and landmarks settle in eight iterations, then the dynamic tracks play.</p>
         </div>
         <div class="pipe-panel" data-camera="1.29 -1717.7 11" data-show="c render@1448,241,1.75">
-          <p class="pipe-kicker">Step 5 of 5 &middot; Render</p>
+          <p class="pipe-kicker">Step 4 of 4 &middot; Render</p>
           <h3>4D Gaussian splatting</h3>
           <p>The certified cameras and graph motion initialize dynamic Gaussian splatting, which refines appearance and geometry for novel-view rendering. The clip is that model rendered from the panel's viewpoint, with the same tracked points.</p>
         </div>
@@ -175,6 +170,73 @@
       XM4D splits 4D reconstruction into a static and a dynamic stage, and solves each one with a
       <em>certifiably globally optimal</em> GPU solver before any photometric training.
     </p>
+
+    <!-- Example runs: each tab plays one run's showcase video (visualize_showcase_grid.py in the research code), cut
+         to the row of one input camera held fixed while time plays, and its render, 3D tracks, and graph cells. A
+         clip loads only when its tab is shown (data-src). -->
+    <div class="gallery runs" id="runs">
+      <div class="gallery-head">
+        <h3>Example runs</h3>
+        <div class="segmented" role="tablist" aria-label="Example run">
+          <span class="seg-label">DAVIS</span>
+          <button role="tab" aria-selected="true" data-group="bear">bear</button>
+          <button role="tab" aria-selected="false" data-group="camel">camel</button>
+          <button role="tab" aria-selected="false" data-group="train">train</button>
+          <button role="tab" aria-selected="false" data-group="blackswan">blackswan</button>
+          <button role="tab" aria-selected="false" data-group="breakdance-flare">breakdance-flare</button>
+          <span class="seg-label">NVIDIA</span>
+          <button role="tab" aria-selected="false" data-group="truck">Truck</button>
+          <button role="tab" aria-selected="false" data-group="umbrella">Umbrella</button>
+          <button role="tab" aria-selected="false" data-group="skating">Skating</button>
+          <span class="seg-label">DyCheck</span>
+          <button role="tab" aria-selected="false" data-group="paper-windmill">paper-windmill</button>
+          <span class="seg-label">EgoDexter</span>
+          <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
+        </div>
+      </div>
+      <p class="gallery-note">Each run is seen from one of its input cameras, held fixed while time plays: the trained 4D Gaussians rendered from it, the 3D tracks, and the embedded deformation graph that moves the dynamic points.</p>
+      <div class="run-cols" aria-hidden="true"><span>Render</span><span>3D tracks</span><span>Deformation graph</span></div>
+      <div class="gallery-group is-active" data-group="bear" role="tabpanel">
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bear.jpg" data-src="assets/video/runs/bear.mp4"></video>
+          <figcaption>DAVIS &middot; bear</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="camel" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/camel.jpg" data-src="assets/video/runs/camel.mp4"></video>
+          <figcaption>DAVIS &middot; camel</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="train" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/train.jpg" data-src="assets/video/runs/train.mp4"></video>
+          <figcaption>DAVIS &middot; train</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="blackswan" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
+          <figcaption>DAVIS &middot; blackswan</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
+          <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 33 body landmarks of a MediaPipe pose.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
+          <figcaption>NVIDIA Dynamic Scenes &middot; Truck <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="umbrella" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/umbrella.jpg" data-src="assets/video/runs/umbrella.mp4"></video>
+          <figcaption>NVIDIA Dynamic Scenes &middot; Umbrella <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="skating" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
+          <figcaption>NVIDIA Dynamic Scenes &middot; Skating <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="paper-windmill" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
+          <figcaption>DyCheck &middot; paper-windmill</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
+          <figcaption>EgoDexter &middot; desk <span>For hands, the graph is the 21 keypoints of a WiLoR hand pose.</span></figcaption></figure>
+      </div>
+    </div>
   </header>
 
   <!-- ───────────────────────── METHOD / SCROLLYTELLING ───────────────────────── -->
