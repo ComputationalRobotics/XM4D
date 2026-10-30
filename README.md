@@ -24,9 +24,13 @@ assets/
   group-logo.png  Computational Robotics Group logo
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
     teaser/       crops of the teaser (from the paper's teaser.pdf) for the hero walkthrough
-  video/
-    teaser-render.mp4  the walkthrough's Render clip: the trained horsejump-high model rendered at every frame
-                       from panel (c)'s camera and crop, with its tracked keypoints; it plays over panel (c)
+  video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
+    teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
+    teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
+    teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
+    teaser-solve.mp4   Cameras and Motion: panel (b) through time (cameras along the path, tracks growing)
+    teaser-render.mp4  Render: the trained model rendered at every frame from panel (c)'s camera and crop,
+                       with its tracked keypoints
 ```
 
 ## Filling in the skeleton

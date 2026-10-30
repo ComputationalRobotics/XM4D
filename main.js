@@ -156,29 +156,46 @@
     });
     var ease = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(2 - 2 * x, 3) / 2; };
 
-    // at the Render stop the rendered clip plays over panel (c), then fades back to the still with the same poses;
-    // it repeats while the user stays there (when the walkthrough plays on, its end hold waits for the clip)
-    var clip = pipe.querySelector('.teaser-clip');
-    var clipOn = false, clipTimer = null;
-    var playClip = function () {
-      clip.currentTime = 0;
-      var p = clip.play();
-      if (p && p.catch) p.catch(function () { /* autoplay blocked: the still stays */ });
+    // at each stop its clips (data-stop) play over their panels, then fade back to the stills; they repeat while the
+    // user stays there (when the walkthrough plays on, it leaves a stop only once its clips have ended)
+    var clips = Array.prototype.slice.call(pipe.querySelectorAll('.teaser-clip')).map(function (el) {
+      return { el: el, stops: el.dataset.stop.split(' ').map(Number) };
+    });
+    var clipStop = -1, clipTimer = null;
+    var stopClips = function () {
+      return clips.filter(function (c) { return c.stops.indexOf(clipStop) >= 0; });
     };
-    var setClip = function (on) {
-      if (!clip || on === clipOn) return;
-      clipOn = on;
-      clearTimeout(clipTimer);
-      if (on) clipTimer = setTimeout(playClip, 500);
-      else { clip.pause(); clip.classList.remove('is-playing'); }
+    var clipsBusy = function () {
+      return stopClips().some(function (c) { return !c.el.paused && !c.el.ended; });
     };
-    if (clip) {
-      clip.addEventListener('playing', function () { clip.classList.add('is-playing'); });
-      clip.addEventListener('ended', function () {
-        clip.classList.remove('is-playing');
-        if (clipOn && !playing) clipTimer = setTimeout(playClip, 1800);
+    var playClips = function () {
+      stopClips().forEach(function (c) {
+        c.el.currentTime = 0;
+        var p = c.el.play();
+        if (p && p.catch) p.catch(function () { /* autoplay blocked: the still stays */ });
       });
-    }
+    };
+    var setClips = function (stop) {  // stop: the stop the view rests at, or -1 while it moves
+      if (stop === clipStop) return;
+      clearTimeout(clipTimer);
+      stopClips().forEach(function (c) { c.el.pause(); c.el.classList.remove('is-playing'); });
+      clipStop = stop;
+      if (stopClips().length) clipTimer = setTimeout(playClips, 500);
+    };
+    clips.forEach(function (c) {
+      c.el.addEventListener('playing', function () { c.el.classList.add('is-playing'); });
+      c.el.addEventListener('ended', function () {
+        c.el.classList.remove('is-playing');
+        if (!playing && c.stops.indexOf(clipStop) >= 0 && !clipsBusy()) {  // the last of the stop's clips
+          clearTimeout(clipTimer);
+          clipTimer = setTimeout(playClips, 1800);
+        }
+      });
+    });
+    var restStop = function () {
+      var k = Math.round(t);
+      return inView && Math.abs(t - k) <= REST ? k : -1;
+    };
 
     var t = 0, shown = -1;
     var render = function (v) {
@@ -198,7 +215,7 @@
       });
       slider.value = t;
       pipe.style.setProperty('--fill', (t / LAST * 100) + '%');
-      setClip(inView && t > LAST - REST);
+      setClips(restStop());
 
       var step = g < 0.5 ? k : k + 1;
       if (step === shown) return;
@@ -227,8 +244,10 @@
       if (!playing || !inView) return;
       if (last !== null) {
         var dt = Math.min(0.1, (now - last) / 1000);
-        if (t < LAST) render(t + dt / SECONDS_PER_STEP);
-        else if ((!clip || clip.paused) && (held += dt) > END_HOLD) { held = 0; jumpTo(0); }
+        if (t < LAST) {
+          var next = t + dt / SECONDS_PER_STEP;
+          if (!clipsBusy() || next <= clipStop + REST) render(next);
+        } else if (!clipsBusy() && (held += dt) > END_HOLD) { held = 0; jumpTo(0); }
       }
       last = now;
       raf = requestAnimationFrame(frame);
@@ -267,7 +286,7 @@
         entries.forEach(function (e) {
           inView = e.isIntersecting;
           last = null;
-          setClip(inView && t > LAST - REST);
+          setClips(restStop());
           if (inView && playing && raf === null) raf = requestAnimationFrame(frame);
         });
       }).observe(pipe);
