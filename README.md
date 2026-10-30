@@ -23,12 +23,13 @@ assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
+    teaser/       crops of the teaser (from the paper's teaser.pdf) for the hero walkthrough
 ```
 
 ## Filling in the skeleton
 
 - **Links:** the Paper buttons (top bar and hero) point to `#`; Code points to XM4D-release.
-- **Affiliations, venue, BibTeX:** see the `TODO` comments in `index.html`.
+- **Venue, BibTeX:** see the `TODO` comments in `index.html`.
 - **Hero video:** uncomment the `hero-video` block and drop the files under `assets/video/`.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
 - **Result videos:** replace a `<div class="tile-ph">` with

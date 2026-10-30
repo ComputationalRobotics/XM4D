@@ -43,6 +43,15 @@
     <a class="hero-lab" href="https://computationalrobotics.seas.harvard.edu/" target="_blank" rel="noopener">
       <img src="assets/group-logo.png" alt="Computational Robotics Group, Harvard" width="240">
     </a>
+
+    <a class="award-banner" href="https://computationalrobotics.seas.harvard.edu/XM/" target="_blank" rel="noopener">
+      <span class="award-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 16v5M7 3h10v6a5 5 0 0 1-10 0V3z"/><path d="M17 5h3v1.5a3.5 3.5 0 0 1-3.5 3.5M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10"/></svg></span>
+      <span class="award-text">
+        <strong>RSS 2025 Best Systems Paper Award</strong>
+        <span>Awarded to our conference version, <b>XM</b>: Building Rome with Convex Optimization &rarr;</span>
+      </span>
+    </a>
+
     <h1 class="hero-title">
       <span class="hero-acronym">XM<span class="acronym-4d">4D</span></span>
       Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction
@@ -50,16 +59,15 @@
 
     <div class="hero-meta">
       <p class="authors">
-        <span class="author">Haoyu Han</span>
-        <span class="author">Jiahui Lei</span>
-        <span class="author">Jack Benarroch Jedlicki</span>
-        <span class="author">Heng Yang</span>
+        <span class="author"><a href="https://hyhan0118.github.io" target="_blank" rel="noopener">Haoyu Han</a><sup>1</sup></span>
+        <span class="author">Jiahui Lei<sup>2</sup></span>
+        <span class="author">Jack Benarroch Jedlicki<sup>1</sup></span>
+        <span class="author"><a href="https://hankyang.seas.harvard.edu" target="_blank" rel="noopener">Heng Yang</a><sup>1</sup></span>
       </p>
-      <!-- TODO: affiliations, e.g.
       <p class="affiliations">
-        <span><sup>1</sup>…</span>
+        <span><sup>1</sup>Harvard University</span>
+        <span><sup>2</sup>UC Berkeley</span>
       </p>
-      -->
     </div>
 
     <div class="hero-actions">
@@ -84,13 +92,73 @@
       </video>
     </figure>
     -->
-    <figure class="figure hero-figure">
-      <img src="assets/img/teaser.jpg" alt="XM4D overview: 2D tracks and monocular depth, the certified solver's cameras, static geometry and dynamic motion, and the 4D Gaussian splatting rendering" width="1800" height="602">
-      <figcaption>
-        From (a) 2D tracks and monocular depth, a solver with certified global optimality recovers
-        (b) the cameras, static geometry, and dynamic motion, which initialize (c) 4D Gaussian
-        splatting for rendering.
-      </figcaption>
+    <!-- Pipeline walkthrough. The figure is cut into pieces (data-crop: x y w h in the 2400x808 figure).
+         Each .pipe-panel is one stop of the slider: data-camera = "scale dx dy" maps the figure into the
+         window, data-show lists the pieces shown ("name" sits where the camera puts it, "name@x,y[,scale]"
+         is placed explicitly); the other pieces fade out. main.js interpolates between stops. -->
+    <figure class="figure hero-figure pipeline" id="pipeline">
+      <div class="teaser" role="img" aria-label="XM4D pipeline: 2D tracks and monocular depth are lifted to 3D, a certified solver recovers the cameras, static geometry and dynamic motion, and these initialize 4D Gaussian splatting">
+        <div class="teaser-piece" data-piece="alabel" data-crop="0 0 522 52" style="left: 0%; top: 0%; width: 21.75%; height: 6.436%"><img src="assets/img/teaser/alabel.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="tracks" data-crop="0 52 522 373" style="left: 0%; top: 6.436%; width: 21.75%; height: 46.163%"><img src="assets/img/teaser/tracks.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="depth" data-crop="0 425 522 383" style="left: 0%; top: 52.599%; width: 21.75%; height: 47.401%"><img src="assets/img/teaser/depth.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="b" data-crop="522 0 846 609" style="left: 21.75%; top: 0%; width: 35.25%; height: 75.371%"><img src="assets/img/teaser/b.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="c" data-crop="1368 0 1032 609" style="left: 57%; top: 0%; width: 43%; height: 75.371%"><img src="assets/img/teaser/c.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="pre" data-crop="548 634 647 174" style="left: 22.833%; top: 78.465%; width: 26.958%; height: 21.535%"><img src="assets/img/teaser/pre.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="solve" data-crop="1215 609 575 199" style="left: 50.625%; top: 75.371%; width: 23.958%; height: 24.629%"><img src="assets/img/teaser/solve.jpg" alt=""></div>
+        <div class="teaser-piece" data-piece="render" data-crop="1818 622 517 186" style="left: 75.75%; top: 76.98%; width: 21.542%; height: 23.02%"><img src="assets/img/teaser/render.jpg" alt=""></div>
+      </div>
+
+      <div class="pipe-scrub">
+        <button type="button" class="pipe-toggle" aria-label="Pause the walkthrough">
+          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+        </button>
+        <div class="pipe-track">
+          <div class="pipe-rail" aria-hidden="true"><span class="pipe-fill"></span><i style="--p: 0"></i><i style="--p: 0.2"></i><i style="--p: 0.4"></i><i style="--p: 0.6"></i><i style="--p: 0.8"></i><i style="--p: 1"></i></div>
+          <input type="range" class="pipe-slider" min="0" max="5" step="0.01" value="0" aria-label="Pipeline step">
+          <div class="pipe-ticks">
+            <button type="button" data-step="0" style="--p: 0">Overview</button>
+            <button type="button" data-step="1" style="--p: 0.2">Input</button>
+            <button type="button" data-step="2" style="--p: 0.4">Lift to 3D</button>
+            <button type="button" data-step="3" style="--p: 0.6">Cameras</button>
+            <button type="button" data-step="4" style="--p: 0.8">Motion</button>
+            <button type="button" data-step="5" style="--p: 1">Render</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-text" aria-live="polite">
+        <div class="pipe-panel" data-camera="1 0 0" data-show="all">
+          <p class="pipe-kicker">Overview &middot; drag the slider or let it play</p>
+          <h3>Certified geometry first, rendering second</h3>
+          <p>From (a) 2D tracks and monocular depth, a solver with certified global optimality recovers (b) the cameras, static geometry, and dynamic motion, which initialize (c) 4D Gaussian splatting for rendering.</p>
+        </div>
+        <div class="pipe-panel" data-camera="1.8 230 12.4" data-show="alabel tracks depth@1230,106">
+          <p class="pipe-kicker">Step 1 of 5 &middot; Input</p>
+          <h3>A casual monocular video</h3>
+          <p>An off-the-shelf point tracker gives 2D tracks, and a monocular depth model gives per-frame depth. Masks split the tracks into static and dynamic ones.</p>
+        </div>
+        <div class="pipe-panel" data-camera="3 -1414 -1759" data-show="pre">
+          <p class="pipe-kicker">Step 2 of 5 &middot; Preprocess</p>
+          <h3>Lift every track to 3D</h3>
+          <p>Each 2D observation is lifted to a 3D point with its predicted depth. The depth of each frame is only known up to scale, so the solver also estimates one scale per frame.</p>
+        </div>
+        <div class="pipe-panel" data-camera="1.29 -623.4 11" data-show="b solve@1201,205,2">
+          <p class="pipe-kicker">Step 3 of 5 &middot; Solve, static stage</p>
+          <h3>Certified cameras</h3>
+          <p>Static tracks give a scaled bundle adjustment over camera poses, depth scales, and 3D landmarks. It reduces to a QCQP over scaled rotations, whose SDP relaxation our GPU solver solves with a certificate of global optimality.</p>
+        </div>
+        <div class="pipe-panel" data-camera="2.9 -1534 -328" data-show="b">
+          <p class="pipe-kicker">Step 4 of 5 &middot; Solve, dynamic stage</p>
+          <h3>Certified non-rigid motion</h3>
+          <p>With the cameras fixed, an embedded deformation graph moves the dynamic points along these trajectories. Its tracking, rigidity, and smoothness terms reduce to a rotation-only QCQP that the same solver certifies.</p>
+        </div>
+        <div class="pipe-panel" data-camera="1.29 -1717.7 11" data-show="c render@1448,241,1.75">
+          <p class="pipe-kicker">Step 5 of 5 &middot; Render</p>
+          <h3>4D Gaussian splatting</h3>
+          <p>The certified cameras and graph motion initialize dynamic Gaussian splatting, which refines appearance and geometry for novel-view rendering.</p>
+        </div>
+      </div>
     </figure>
 
     <p class="hero-lede">
@@ -153,6 +221,44 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── FROM XM TO XM4D ───────────────────────── -->
+  <section class="lineage" id="lineage" aria-labelledby="lineage-title">
+    <div class="section-head">
+      <h2 id="lineage-title">From XM to XM4D</h2>
+      <p>
+        XM4D is the journal extension of XM, our RSS 2025 solver for static structure from motion.
+        It keeps XM's certifiable optimization and carries it over to dynamic scenes.
+      </p>
+    </div>
+
+    <div class="lineage-grid">
+      <article class="lineage-card">
+        <p class="lineage-venue">RSS 2025 <span class="award-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 16v5M7 3h10v6a5 5 0 0 1-10 0V3z"/><path d="M17 5h3v1.5a3.5 3.5 0 0 1-3.5 3.5M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10"/></svg>Best Systems Paper Award</span></p>
+        <h3>XM: Building Rome with Convex Optimization</h3>
+        <ul>
+          <li>Scaled bundle adjustment that lifts 2D keypoints to 3D with learned depth.</li>
+          <li>A tight SDP relaxation, solved by a CUDA Burer&ndash;Monteiro solver with a certificate of global optimality.</li>
+          <li>Static scenes, scaling to 10,155 frames solved in about one hour.</li>
+        </ul>
+        <div class="lineage-links">
+          <a class="btn btn-small" href="https://computationalrobotics.seas.harvard.edu/XM/" target="_blank" rel="noopener">Project page</a>
+          <a class="btn btn-small" href="https://arxiv.org/abs/2502.04640" target="_blank" rel="noopener">Paper</a>
+          <a class="btn btn-small" href="https://github.com/ComputationalRobotics/XM-code" target="_blank" rel="noopener">Code</a>
+        </div>
+      </article>
+
+      <article class="lineage-card lineage-card-new">
+        <p class="lineage-venue">This work &middot; journal extension</p>
+        <h3>XM4D: what is new</h3>
+        <ul>
+          <li>A uniform sphere constraint on the depth scales replaces XM's first-frame anchor.</li>
+          <li>A dynamic stage: an embedded deformation graph whose tracking, rigidity, and smoothness terms reduce to a rotation-only QCQP, handled by the same certified solver.</li>
+          <li>The certified cameras and motion initialize 4D Gaussian splatting for novel-view rendering.</li>
+        </ul>
+      </article>
     </div>
   </section>
 
@@ -254,11 +360,21 @@
     <!-- TODO: venue line, e.g. <p class="citation-venue">…</p> -->
     <div class="bibtex-wrap">
       <button type="button" class="bibtex-copy" data-copy-target="#bibtex">Copy BibTeX</button>
-<pre id="bibtex"><code>@article{han2026xm4d,
+<pre id="bibtex" class="bibtex"><code>@article{han2026xm4d,
   title   = {{XM4D}: Non-Rigid Convex Structure from Motion with Embedded
              Deformation Graphs for {4D} Reconstruction},
   author  = {Han, Haoyu and Lei, Jiahui and Benarroch Jedlicki, Jack and Yang, Heng},
   year    = {2026}
+}</code></pre>
+    </div>
+    <p class="citation-note">If you use the static solver, please also cite XM:</p>
+    <div class="bibtex-wrap">
+      <button type="button" class="bibtex-copy" data-copy-target="#bibtex-xm">Copy BibTeX</button>
+<pre id="bibtex-xm" class="bibtex"><code>@inproceedings{han2025xm,
+  title     = {Building Rome with Convex Optimization},
+  author    = {Han, Haoyu and Yang, Heng},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2025}
 }</code></pre>
     </div>
   </section>

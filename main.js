@@ -118,6 +118,136 @@
     setActive();
   }
 
+  /* ── Teaser: a slider walks through the pipeline, zooming the current step to fill the window.
+        It plays by itself; dragging it takes over. ── */
+  var pipe = document.getElementById('pipeline');
+  if (pipe) {
+    var FIG_W = 2400, FIG_H = 808;  // units of data-crop, data-camera, and data-show
+    var teaserFig = pipe.querySelector('.teaser');
+    var pieces = {};
+    pipe.querySelectorAll('.teaser-piece').forEach(function (el) {
+      pieces[el.dataset.piece] = { el: el, crop: el.dataset.crop.split(' ').map(Number) };
+    });
+    var panels = Array.prototype.slice.call(pipe.querySelectorAll('.pipe-panel'));
+    var slider = pipe.querySelector('.pipe-slider');
+    var dots = Array.prototype.slice.call(pipe.querySelectorAll('.pipe-rail i'));
+    var ticks = Array.prototype.slice.call(pipe.querySelectorAll('.pipe-ticks button'));
+    var toggle = pipe.querySelector('.pipe-toggle');
+    var LAST = panels.length - 1;
+    var SECONDS_PER_STEP = 7, END_HOLD = 4;
+    var REST = 0.35;  // around each stop the view rests; it moves only in between
+
+    // rect (x, y, w, h in figure units) and opacity of every piece at each stop
+    var states = panels.map(function (panel) {
+      var cam = panel.dataset.camera.split(' ').map(Number);  // scale, dx, dy
+      var show = {};
+      panel.dataset.show.split(' ').forEach(function (item) {
+        var at = item.split('@');
+        show[at[0]] = at[1] ? at[1].split(',').map(Number) : true;
+      });
+      var state = {};
+      Object.keys(pieces).forEach(function (k) {
+        var c = pieces[k].crop, s = cam[0], x = cam[1] + c[0] * s, y = cam[2] + c[1] * s;
+        var at = show[k];
+        if (Array.isArray(at)) { x = at[0]; y = at[1]; if (at.length > 2) s = at[2]; }
+        state[k] = { rect: [x, y, c[2] * s, c[3] * s], op: (show.all || at) ? 1 : 0 };
+      });
+      return state;
+    });
+    var ease = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(2 - 2 * x, 3) / 2; };
+
+    var t = 0, shown = -1;
+    var render = function (v) {
+      t = Math.max(0, Math.min(LAST, v));
+      var k = Math.min(Math.floor(t), LAST - 1);
+      var g = ease(Math.max(0, Math.min(1, (t - k - REST) / (1 - 2 * REST))));
+      Object.keys(pieces).forEach(function (key) {
+        var A = states[k][key], B = states[k + 1][key], st = pieces[key].el.style;
+        var r = A.rect.map(function (a, j) { return a + (B.rect[j] - a) * g; });
+        st.left = (r[0] / FIG_W * 100) + '%';
+        st.top = (r[1] / FIG_H * 100) + '%';
+        st.width = (r[2] / FIG_W * 100) + '%';
+        st.height = (r[3] / FIG_H * 100) + '%';
+        // outgoing pieces fade early in the move and incoming ones late, overlapping a little
+        var f = B.op > A.op ? (g - 0.4) / 0.6 : g / 0.6;
+        st.opacity = A.op + (B.op - A.op) * Math.max(0, Math.min(1, f));
+      });
+      slider.value = t;
+      pipe.style.setProperty('--fill', (t / LAST * 100) + '%');
+
+      var step = g < 0.5 ? k : k + 1;
+      if (step === shown) return;
+      shown = step;
+      panels.forEach(function (p, j) { p.hidden = j !== step; });
+      ticks.forEach(function (b, j) {
+        if (j === step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+        b.classList.toggle('is-done', j < step);
+      });
+      dots.forEach(function (d, j) { d.classList.toggle('is-done', j <= step); });
+      slider.setAttribute('aria-valuetext', panels[step].querySelector('.pipe-kicker').textContent);
+    };
+
+    // a jump (label click, keyboard, loop restart) eases with CSS transitions instead of snapping
+    var jumpTimer = null;
+    var jumpTo = function (v) {
+      teaserFig.classList.add('is-jump');
+      render(v);
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(function () { teaserFig.classList.remove('is-jump'); }, 550);
+    };
+
+    var playing = true, inView = true, raf = null, last = null, held = 0;
+    var frame = function (now) {
+      raf = null;
+      if (!playing || !inView) return;
+      if (last !== null) {
+        var dt = Math.min(0.1, (now - last) / 1000);
+        if (t < LAST) render(t + dt / SECONDS_PER_STEP);
+        else if ((held += dt) > END_HOLD) { held = 0; jumpTo(0); }
+      }
+      last = now;
+      raf = requestAnimationFrame(frame);
+    };
+    var setPlaying = function (on) {
+      playing = on;
+      pipe.classList.toggle('is-paused', !on);
+      toggle.setAttribute('aria-label', on ? 'Pause the walkthrough' : 'Play the walkthrough');
+      last = null;
+      if (on && raf === null) raf = requestAnimationFrame(frame);
+    };
+
+    slider.addEventListener('pointerdown', function () { setPlaying(false); });
+    slider.addEventListener('input', function () { setPlaying(false); render(+slider.value); });
+    slider.addEventListener('keydown', function (e) {
+      var step = Math.round(t);
+      var to = { ArrowRight: step + 1, ArrowUp: step + 1, ArrowLeft: step - 1, ArrowDown: step - 1, Home: 0, End: LAST }[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      setPlaying(false);
+      jumpTo(to);
+    });
+    ticks.forEach(function (b) {
+      b.addEventListener('click', function () { setPlaying(false); jumpTo(+b.dataset.step); });
+    });
+    toggle.addEventListener('click', function () {
+      if (!playing && t >= LAST) jumpTo(0);
+      setPlaying(!playing);
+    });
+
+    pipe.classList.add('is-live');
+    render(0);
+    setPlaying(true);
+    if ('IntersectionObserver' in window) {  // pause while off screen
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          inView = e.isIntersecting;
+          last = null;
+          if (inView && playing && raf === null) raf = requestAnimationFrame(frame);
+        });
+      }).observe(pipe);
+    }
+  }
+
   /* ── Hero video: autoplays muted; pause off-screen, resume when back ── */
   var promo = document.getElementById('promo');
   if (promo && io) {
