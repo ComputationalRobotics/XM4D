@@ -192,6 +192,8 @@
           <button role="tab" aria-selected="false" data-group="paper-windmill">paper-windmill</button>
           <span class="seg-label">EgoDexter</span>
           <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
+          <span class="seg-label">HOI</span>
+          <button role="tab" aria-selected="false" data-group="fridge">fridge</button>
         </div>
       </div>
       <p class="gallery-note">Each run is seen from one of its input cameras, held fixed while time plays: the trained 4D Gaussians rendered from it, the 3D tracks, and the embedded deformation graph that moves the dynamic points.</p>
@@ -234,7 +236,11 @@
       </div>
       <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
-          <figcaption>EgoDexter &middot; desk <span>For hands, the graph is the 21 keypoints of a WiLoR hand pose.</span></figcaption></figure>
+          <figcaption>EgoDexter &middot; desk <span>The hand's graph is the 21 keypoints of a WiLoR hand pose; the marker, orange, and block it picks up (segmented with SAM2) each move as one rigid part.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="fridge" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
+          <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own.</span></figcaption></figure>
       </div>
     </div>
   </header>
