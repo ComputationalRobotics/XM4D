@@ -99,8 +99,8 @@
          At each stop its .teaser-clip videos (data-stop) play over their panels; a clip's rect is in % of its piece.
          Input: the front frames of the stacks play every input frame with its tracks / its depth. Lift: frame 33
          is lifted along its camera rays (over the schematic, which it covers). Solve: over panel (b), the XM
-         solver's iterates (cameras and the landmarks recovered from them, replayed from this video's solve), then
-         the dynamic tracks through time, ending on the panel. Render: the trained model rendered at every frame
+         solver's iterates (replayed from this video's solve: the cameras, and every frame's lifted depth placed by
+         its camera and depth scale), then the dynamic tracks through time, ending on the panel. Render: the trained model rendered at every frame
          from panel (c)'s camera and crop, with the same tracked keypoints. -->
     <figure class="figure hero-figure pipeline" id="pipeline">
       <div class="teaser" role="img" aria-label="XM4D pipeline: 2D tracks and monocular depth are lifted to 3D, a certified solver recovers the cameras, static geometry and dynamic motion, and these initialize 4D Gaussian splatting, rendered here as the horse's jump">
@@ -156,7 +156,7 @@
         <div class="pipe-panel" data-camera="1.29 -623.4 11" data-show="b solve@1201,205,2">
           <p class="pipe-kicker">Step 3 of 4 &middot; Solve</p>
           <h3>Certified cameras, then certified motion</h3>
-          <p>Static tracks give a scaled bundle adjustment whose SDP relaxation our GPU solver solves with a certificate of global optimality; the deformation graph's motion is then certified the same way. The clip replays the solver: cameras and landmarks settle in eight iterations, then the dynamic tracks play.</p>
+          <p>Our GPU solver certifies a scaled bundle adjustment over the static tracks as globally optimal, then the deformation graph's motion. The clip replays it: each frame's lifted depth falls into place as the cameras settle over eight iterations, then the dynamic tracks play.</p>
         </div>
         <div class="pipe-panel" data-camera="1.29 -1717.7 11" data-show="c render@1448,241,1.75">
           <p class="pipe-kicker">Step 4 of 4 &middot; Render</p>

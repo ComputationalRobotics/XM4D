@@ -29,9 +29,9 @@ assets/
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
     teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
-    teaser-solve.mp4   Solve: over panel (b), the XM solver's iterates on this video (cameras and the landmarks
-                       recovered from them, from a replay of its solve that saved every iterate), then the
-                       dynamic tracks through time (cameras along the path, tracks growing)
+    teaser-solve.mp4   Solve: over panel (b), the XM solver's iterates on this video (from a replay of its solve
+                       that saved every iterate: the cameras, and every frame's lifted depth placed by its camera
+                       and depth scale), then the dynamic tracks through time (cameras along the path, tracks growing)
     teaser-render.mp4  Render: the trained model rendered at every frame from panel (c)'s camera and crop,
                        with its tracked keypoints
     runs/         the Example runs gallery below the teaser: per run, one input camera's render, 3D tracks, and
