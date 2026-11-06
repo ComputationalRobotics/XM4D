@@ -26,7 +26,7 @@
   <a class="topbar-brand" href="#top">XM4D</a>
   <div class="topbar-links">
     <a href="#method">How it works</a>
-    <a href="#results">Results</a>
+    <a href="#gallery">Gallery</a>
     <a href="#citation">Cite</a>
   </div>
   <div class="topbar-actions">
@@ -183,13 +183,23 @@
           <button role="tab" aria-selected="false" data-group="camel">camel</button>
           <button role="tab" aria-selected="false" data-group="train">train</button>
           <button role="tab" aria-selected="false" data-group="blackswan">blackswan</button>
+          <button role="tab" aria-selected="false" data-group="car-roundabout">car-roundabout</button>
           <button role="tab" aria-selected="false" data-group="breakdance-flare">breakdance-flare</button>
+          <button role="tab" aria-selected="false" data-group="dance-twirl">dance-twirl</button>
+          <button role="tab" aria-selected="false" data-group="hike">hike</button>
           <span class="seg-label">NVIDIA</span>
           <button role="tab" aria-selected="false" data-group="truck">Truck</button>
           <button role="tab" aria-selected="false" data-group="umbrella">Umbrella</button>
           <button role="tab" aria-selected="false" data-group="skating">Skating</button>
+          <button role="tab" aria-selected="false" data-group="balloon2">Balloon2</button>
           <span class="seg-label">DyCheck</span>
           <button role="tab" aria-selected="false" data-group="paper-windmill">paper-windmill</button>
+          <button role="tab" aria-selected="false" data-group="apple">apple</button>
+          <button role="tab" aria-selected="false" data-group="block">block</button>
+          <button role="tab" aria-selected="false" data-group="space-out">space-out</button>
+          <button role="tab" aria-selected="false" data-group="spin">spin</button>
+          <button role="tab" aria-selected="false" data-group="teddy">teddy</button>
+          <button role="tab" aria-selected="false" data-group="wheel">wheel</button>
           <span class="seg-label">EgoDexter</span>
           <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
           <span class="seg-label">HOI</span>
@@ -214,9 +224,21 @@
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
           <figcaption>DAVIS &middot; blackswan</figcaption></figure>
       </div>
+      <div class="gallery-group" data-group="car-roundabout" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-roundabout.jpg" data-src="assets/video/runs/car-roundabout.mp4"></video>
+          <figcaption>DAVIS &middot; car-roundabout <span>The camera is held where it is in the first frame, so the clip ends when the car leaves its view.</span></figcaption></figure>
+      </div>
       <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
           <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 33 body landmarks of a MediaPipe pose.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="dance-twirl" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
+          <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 33 body landmarks of a MediaPipe pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="hike" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
+          <figcaption>DAVIS &middot; hike <span>For people, the graph is the 33 body landmarks of a MediaPipe pose.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
@@ -230,9 +252,37 @@
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
           <figcaption>NVIDIA Dynamic Scenes &middot; Skating <span>12 time steps, played forward and back.</span></figcaption></figure>
       </div>
+      <div class="gallery-group" data-group="balloon2" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/balloon2.jpg" data-src="assets/video/runs/balloon2.mp4"></video>
+          <figcaption>NVIDIA Dynamic Scenes &middot; Balloon2 <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
       <div class="gallery-group" data-group="paper-windmill" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
-          <figcaption>DyCheck &middot; paper-windmill</figcaption></figure>
+          <figcaption>DyCheck &middot; paper-windmill <span>Frames 0&ndash;72, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="apple" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/apple.jpg" data-src="assets/video/runs/apple.mp4"></video>
+          <figcaption>DyCheck &middot; apple <span>Frames 0&ndash;59, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="block" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/block.jpg" data-src="assets/video/runs/block.mp4"></video>
+          <figcaption>DyCheck &middot; block <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="space-out" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/space-out.jpg" data-src="assets/video/runs/space-out.mp4"></video>
+          <figcaption>DyCheck &middot; space-out <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="spin" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/spin.jpg" data-src="assets/video/runs/spin.mp4"></video>
+          <figcaption>DyCheck &middot; spin <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="teddy" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/teddy.jpg" data-src="assets/video/runs/teddy.mp4"></video>
+          <figcaption>DyCheck &middot; teddy <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="wheel" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
+          <figcaption>DyCheck &middot; wheel <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
@@ -244,6 +294,120 @@
       </div>
     </div>
   </header>
+
+  <!-- ───────────────────────── GALLERY: 3D VIEWER ───────────────────────── -->
+  <!-- viewer.js draws the selected run (assets/3d/<key>.bin, from export_viewer.py in the research code) once the
+       section comes near the screen; picking an example run above picks the same run here. -->
+  <section class="gallery3d" id="gallery" aria-labelledby="gallery-title">
+    <div class="section-head">
+      <h2 id="gallery-title">Gallery</h2>
+      <p>
+        Turn each reconstruction around: its 4D Gaussians as trained, the deformation graph that moves the dynamic
+        ones, the input cameras XM4D estimated, and 3D tracks of a few dynamic Gaussians.
+      </p>
+    </div>
+    <div class="viewer" id="viewer">
+      <div class="viewer-stage">
+        <canvas class="viewer-canvas" aria-label="3D view of the selected reconstruction"></canvas>
+        <p class="viewer-status" role="status">Loading…</p>
+        <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
+      </div>
+      <div class="viewer-panel">
+        <label class="viewer-field"><span class="viewer-label">Run</span>
+          <select class="viewer-scene">
+            <optgroup label="DAVIS">
+              <option value="bear" data-src="assets/3d/bear.bin" selected>bear</option>
+              <option value="camel" data-src="assets/3d/camel.bin">camel</option>
+              <option value="train" data-src="assets/3d/train.bin">train</option>
+              <option value="blackswan" data-src="assets/3d/blackswan.bin">blackswan</option>
+              <option value="car-roundabout" data-src="assets/3d/car-roundabout.bin">car-roundabout</option>
+              <option value="breakdance-flare" data-src="assets/3d/breakdance-flare.bin">breakdance-flare</option>
+              <option value="dance-twirl" data-src="assets/3d/dance-twirl.bin">dance-twirl</option>
+              <option value="hike" data-src="assets/3d/hike.bin">hike</option>
+            </optgroup>
+            <optgroup label="NVIDIA">
+              <option value="balloon1" data-src="assets/3d/balloon1.bin">Balloon1</option>
+              <option value="balloon2" data-src="assets/3d/balloon2.bin">Balloon2</option>
+              <option value="jumping" data-src="assets/3d/jumping.bin">Jumping</option>
+              <option value="playground" data-src="assets/3d/playground.bin">Playground</option>
+              <option value="skating" data-src="assets/3d/skating.bin">Skating</option>
+              <option value="truck" data-src="assets/3d/truck.bin">Truck</option>
+              <option value="umbrella" data-src="assets/3d/umbrella.bin">Umbrella</option>
+            </optgroup>
+            <optgroup label="DyCheck">
+              <option value="apple" data-src="assets/3d/apple.bin">apple</option>
+              <option value="block" data-src="assets/3d/block.bin">block</option>
+              <option value="paper-windmill" data-src="assets/3d/paper-windmill.bin">paper-windmill</option>
+              <option value="space-out" data-src="assets/3d/space-out.bin">space-out</option>
+              <option value="spin" data-src="assets/3d/spin.bin">spin</option>
+              <option value="teddy" data-src="assets/3d/teddy.bin">teddy</option>
+              <option value="wheel" data-src="assets/3d/wheel.bin">wheel</option>
+            </optgroup>
+            <optgroup label="Syn4D">
+              <option value="bear1" data-src="assets/3d/bear1.bin">bear1</option>
+              <option value="bear2" data-src="assets/3d/bear2.bin">bear2</option>
+              <option value="bear3" data-src="assets/3d/bear3.bin">bear3</option>
+              <option value="bear4" data-src="assets/3d/bear4.bin">bear4</option>
+              <option value="casa1" data-src="assets/3d/casa1.bin">casa1</option>
+              <option value="casa2" data-src="assets/3d/casa2.bin">casa2</option>
+              <option value="casa3" data-src="assets/3d/casa3.bin">casa3</option>
+              <option value="casa4" data-src="assets/3d/casa4.bin">casa4</option>
+            </optgroup>
+            <optgroup label="EgoDexter">
+              <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
+            </optgroup>
+          </select>
+        </label>
+        <fieldset class="viewer-layers">
+          <legend class="viewer-label">Show</legend>
+          <label><input type="checkbox" data-layer="static" checked> Static scene</label>
+          <label><input type="checkbox" data-layer="dynamic" checked> Dynamic Gaussians</label>
+          <label><input type="checkbox" data-layer="graph" checked> Deformation graph <i class="key key-graph" aria-hidden="true"></i></label>
+          <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
+          <label><input type="checkbox" data-layer="tracks"> 3D tracks <i class="key key-tracks" aria-hidden="true"></i></label>
+        </fieldset>
+        <fieldset class="viewer-views">
+          <legend class="viewer-label">View</legend>
+          <div class="segmented">
+            <button type="button" data-view="input" aria-pressed="true">Input camera</button>
+            <button type="button" data-view="free" aria-pressed="false">Orbit</button>
+          </div>
+        </fieldset>
+        <div class="viewer-time">
+          <button type="button" class="viewer-play" aria-label="Pause">
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+          </button>
+          <input type="range" class="viewer-slider" min="0" max="1" step="any" value="0" aria-label="Time">
+          <span class="viewer-frame"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── SOLVER ITERATIONS ───────────────────────── -->
+  <!-- iterates of both solves on the walkthrough's horse, replayed by a copy of the solver that saved every one -->
+  <section class="solver" id="solver" aria-labelledby="solver-title">
+    <div class="section-head">
+      <h2 id="solver-title">Inside the solver</h2>
+      <p>
+        Both stages are solved by the same GPU Burer&ndash;Monteiro solver. These clips replay its iterates on the horse
+        from the walkthrough, from a copy of the solver that saved every one.
+      </p>
+    </div>
+    <div class="solver-grid">
+      <figure class="solver-fig">
+        <video muted loop playsinline preload="none" width="1188" height="772" poster="assets/img/solver-static.jpg" data-src="assets/video/solver-static.mp4"></video>
+        <figcaption>Static solve: cameras and landmarks
+          <span>Scaled bundle adjustment over the static tracks. Every frame&rsquo;s lifted depth is placed by that iterate&rsquo;s camera and depth scale, and comes into register as the cameras settle. Eight iterations, then the certificate.</span></figcaption>
+      </figure>
+      <figure class="solver-fig">
+        <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver-edg.jpg" data-src="assets/video/solver-edg.mp4"></video>
+        <figcaption>Dynamic solve: one segment of the deformation graph
+          <span>Frames 0&ndash;10 of the same video, 125 nodes. The problem is over the nodes&rsquo; rotations; their positions follow from the rotations in closed form. Each node&rsquo;s frame starts at the identity (faint) and turns with the horse as it takes off. The rank-3 solution fails the certificate, so the solver lifts to rank 4, where it certifies the optimum (inset: cost above the optimum).</span></figcaption>
+      </figure>
+    </div>
+  </section>
 
   <!-- ───────────────────────── METHOD / SCROLLYTELLING ───────────────────────── -->
   <section class="method" id="method" aria-labelledby="method-title">
@@ -366,72 +530,6 @@
     </p>
   </section>
 
-  <!-- ───────────────────────── RESULTS ───────────────────────── -->
-  <!-- To add a video, replace a .tile-ph div with
-       <video muted loop playsinline preload="none" poster="…jpg" data-src="…mp4"></video>
-       main.js loads it lazily and plays it while it is on screen. -->
-  <section class="results" id="results" aria-labelledby="results-title">
-    <div class="section-head">
-      <h2 id="results-title">Results</h2>
-      <p>
-        Novel views rendered from cameras and motion that XM4D estimates itself, on DyCheck,
-        NVIDIA, and Syn4D, and reconstructions of casual videos beyond the benchmarks.
-      </p>
-    </div>
-
-    <!-- Novel-view rendering -->
-    <div class="gallery" id="gallery-render">
-      <div class="gallery-head">
-        <h3>Novel-view rendering</h3>
-        <div class="segmented" role="tablist" aria-label="Benchmark">
-          <button role="tab" aria-selected="true" data-group="dycheck">DyCheck</button>
-          <button role="tab" aria-selected="false" data-group="nvidia">NVIDIA</button>
-          <button role="tab" aria-selected="false" data-group="syn4d">Syn4D</button>
-        </div>
-      </div>
-
-      <div class="gallery-group is-active" data-group="dycheck" role="tabpanel">
-        <div class="tiles tiles-4">
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>block</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>paper-windmill</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>spin</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>wheel</figcaption></figure>
-        </div>
-      </div>
-
-      <div class="gallery-group" data-group="nvidia" role="tabpanel" hidden>
-        <div class="tiles tiles-4">
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Jumping</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Playground</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Skating</figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Truck</figcaption></figure>
-        </div>
-      </div>
-
-      <div class="gallery-group" data-group="syn4d" role="tabpanel" hidden>
-        <div class="tiles tiles-4">
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Bear <span>bear1</span></figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>Bear <span>bear3</span></figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>RoboCasa <span>casa1</span></figcaption></figure>
-          <figure class="tile"><div class="tile-ph">Video</div><figcaption>RoboCasa <span>casa2</span></figcaption></figure>
-        </div>
-      </div>
-    </div>
-
-    <!-- In the wild -->
-    <div class="gallery" id="gallery-wild">
-      <div class="gallery-head">
-        <h3>In the wild</h3>
-        <p class="gallery-note">Casual videos of animals, people, hands, a robot, and articulated objects.</p>
-      </div>
-      <div class="tiles tiles-3">
-        <figure class="tile"><div class="tile-ph">Video</div><figcaption>DAVIS</figcaption></figure>
-        <figure class="tile"><div class="tile-ph">Video</div><figcaption>EgoDexter <span>Hand–object interaction</span></figcaption></figure>
-        <figure class="tile"><div class="tile-ph">Video</div><figcaption>Refrigerator <span>Articulated doors</span></figcaption></figure>
-      </div>
-    </div>
-  </section>
-
   <!-- ───────────────────────── CITATION ───────────────────────── -->
   <section class="citation" id="citation" aria-labelledby="citation-title">
     <h2 id="citation-title">Citation</h2>
@@ -474,5 +572,6 @@
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="main.js" defer></script>
+<script src="viewer.js" defer></script>
 </body>
 </html>
