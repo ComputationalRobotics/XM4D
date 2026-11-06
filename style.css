@@ -415,12 +415,12 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
   display: grid; grid-template-columns: minmax(0, 1fr) 256px;
   border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--paper-raise);
 }
-.viewer-stage { position: relative; min-width: 0; background: #fbfaf7; }
+.viewer-stage { position: relative; min-width: 0; background: #18181b; }   /* dark: unreconstructed edges read as dark, not fog */
 .viewer-canvas { display: block; width: 100%; aspect-ratio: 16 / 10; touch-action: none; cursor: grab; }
 .viewer-canvas:active { cursor: grabbing; }
 .viewer-status {
   position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; text-align: center;
-  font-family: var(--mono); font-size: 13px; color: var(--graphite); pointer-events: none;
+  font-family: var(--mono); font-size: 13px; color: #c9c9cf; pointer-events: none;
 }
 .viewer-status[hidden] { display: none; }
 .viewer-hint {
@@ -493,6 +493,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .app-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .app-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .app-clip { margin: 0; }
+.app-clip-single { max-width: 860px; }
 .app-clip video { width: 100%; border-radius: 6px; background: var(--paper-deep); }
 .app-clip figcaption { margin-top: 8px; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.35; }
 .app-clip figcaption span { display: block; color: var(--mist); font-weight: 400; }

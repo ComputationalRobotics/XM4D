@@ -224,7 +224,7 @@
 
   /* ── scene ── */
   var scene = null, worker = new Worker('viewer-worker.js'), sceneId = 0;
-  var order = null, nDraw = 0, texData = null, rowsDyn = 0, shownT = 0, dynCov0 = null;
+  var order = null, nDraw = 0, texData = null, rowsDyn = 0, shownT = 0;
 
   function uploadScene(sc) {
     var h = sc.hdr, A = sc.A, nD = h.n_dyn, nS = h.n_static, n = nD + nS, rows = Math.ceil(n / 512);
@@ -252,8 +252,6 @@
       f32[b + 9] = m[6] * m[6] + m[7] * m[7] + m[8] * m[8];
     }
     rowsDyn = Math.ceil(nD / 512);
-    dynCov0 = new Float32Array(nD * 6);
-    for (i = 0; i < nD; i++) for (var e = 0; e < 6; e++) dynCov0[i * 6 + e] = f32[i * 12 + 4 + e];
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -340,16 +338,15 @@
     dirty = true; requestSort();
   }
   function stopDemo() { if (demo) { demo = false; setPlaying(false); } }
-  function partNodes() {  // node positions and matrices from the sliders; Q: each part's turn from its frame-0 pose
-    var M = scene.M, P = new Float32Array(M * 3), R = new Float32Array(M * 9), Q = [];
+  function partNodes() {  // node positions and matrices from the sliders (a part's Gaussians keep their shapes, as in training)
+    var M = scene.M, P = new Float32Array(M * 3), R = new Float32Array(M * 9);
     scene.parts.forEach(function (pt, k) {
       var q = axisAngle(pt.axis, pt.sign * pt.deg * Math.PI / 180), d = [pt.P0[0] - pt.pivot[0], pt.P0[1] - pt.pivot[1], pt.P0[2] - pt.pivot[2]];
       var p = apply3(q, d), r = mul3(q, pt.R0);
       for (var c = 0; c < 3; c++) P[k * 3 + c] = pt.pivot[c] + p[c];
       for (c = 0; c < 9; c++) R[k * 9 + c] = r[c];
-      Q.push(q);
     });
-    return { P: P, R: R, Q: Q, key: scene.parts.map(function (pt) { return pt.deg.toFixed(2); }).join(',') };
+    return { P: P, R: R, key: scene.parts.map(function (pt) { return pt.deg.toFixed(2); }).join(',') };
   }
   function demoAngles(dt) {  // until a slider is touched: each part opens to 3/4 of its range and closes, in turn
     var per = 3.2, n = scene.parts.length;
@@ -444,11 +441,15 @@
     viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === mode ? 'true' : 'false'); });
     dirty = true; requestSort();
   }
-  viewBtns.forEach(function (b) { b.addEventListener('click', function () { if (scene) setView(b.dataset.view); }); });
+  viewBtns.forEach(function (b) {
+    b.addEventListener('click', function () { if (scene) { if (b.dataset.view === 'free') unfollow(); else setView('input'); } });
+  });
+  var limit = +root.dataset.orbitLimit || 0;  // degrees the view may turn from the input camera (0: free)
   function unfollow() {  // leave the input camera where it is now and orbit about the point it looks at
     if (!follow) return;
     var ic = inputCamera(shownT), f = col(ic.R, 2);
     cam.R = ic.R; cam.c = ic.c; cam.target = [0, 1, 2].map(function (i) { return ic.c[i] + f[i] * scene.depth; });
+    cam.yaw = 0; cam.pitch = 0; cam.dist0 = scene.depth;
     setView('free');
   }
   function current() { return follow ? inputCamera(shownT) : cam; }
@@ -490,7 +491,13 @@
   }, { passive: false });
 
   function orbit(dx, dy) {
-    var Q = mul3(axisAngle(scene.up, -dx * 0.005), axisAngle(normalize(col(cam.R, 0)), dy * 0.005));
+    var yaw = -dx * 0.005, pitch = dy * 0.005;
+    if (limit) {
+      var L = limit * Math.PI / 180;
+      yaw = Math.max(-L, Math.min(L, cam.yaw + yaw)) - cam.yaw; pitch = Math.max(-L, Math.min(L, cam.pitch + pitch)) - cam.pitch;
+      cam.yaw += yaw; cam.pitch += pitch;
+    }
+    var Q = mul3(axisAngle(scene.up, yaw), axisAngle(normalize(col(cam.R, 0)), pitch));
     var off = apply3(Q, [cam.c[0] - cam.target[0], cam.c[1] - cam.target[1], cam.c[2] - cam.target[2]]);
     cam.R = mul3(Q, cam.R); cam.c = [0, 1, 2].map(function (i) { return cam.target[i] + off[i]; });
     dirty = true; requestSort();
@@ -502,6 +509,10 @@
     dirty = true; requestSort();
   }
   function zoom(f) {
+    if (limit) {  // stay between 0.7 and 1.4 times the input camera's distance
+      var d = Math.hypot(cam.c[0] - cam.target[0], cam.c[1] - cam.target[1], cam.c[2] - cam.target[2]);
+      f = Math.max(0.7 * cam.dist0, Math.min(1.4 * cam.dist0, d * f)) / d;
+    }
     for (var i = 0; i < 3; i++) cam.c[i] = cam.target[i] + (cam.c[i] - cam.target[i]) * f;
     dirty = true; requestSort();
   }
@@ -519,14 +530,14 @@
   }
 
   /* ── sorting (in the worker) ── */
-  var busy = false, want = false, seq = 0, lastSent = null, sentQ = {};
+  var busy = false, want = false, seq = 0, lastSent = null;
   function requestSort() {
     if (!scene) return;
     if (busy) { want = true; return; }
     var v = current(), view = viewMatrix(v.R, v.c), nodes = scene.parts ? partNodes() : null;
     var key = (nodes ? nodes.key : t.toFixed(4)) + Array.prototype.join.call(view, ',') + layers.static + layers.dynamic;
     if (key === lastSent && order) return;
-    lastSent = key; busy = true; want = false; sentQ[++seq] = nodes && nodes.Q;
+    lastSent = key; busy = true; want = false; seq++;
     worker.postMessage({ type: 'sort', id: sceneId, t: t, view: view, seq: seq,
       nodes: nodes ? { P: nodes.P, R: nodes.R } : null, nodesKey: nodes ? nodes.key : null });
   }
@@ -536,8 +547,6 @@
     if (m.id !== sceneId) { requestSort(); return; }
     var f32 = new Float32Array(texData.buffer), nD = scene.hdr.n_dyn;
     for (var i = 0; i < nD; i++) { f32[i * 12] = m.dyn[i * 3]; f32[i * 12 + 1] = m.dyn[i * 3 + 1]; f32[i * 12 + 2] = m.dyn[i * 3 + 2]; }
-    var Qs = sentQ[m.seq]; sentQ = {};
-    if (Qs) rotateCovs(Qs);
     gl.bindTexture(gl.TEXTURE_2D, tex);
     if (rowsDyn) gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 512 * 3, rowsDyn, gl.RGBA_INTEGER, gl.UNSIGNED_INT, texData.subarray(0, rowsDyn * 512 * 12));
     gl.bindBuffer(gl.ARRAY_BUFFER, orderBuf);
@@ -546,16 +555,6 @@
     dirty = true;
     if (want || m.t !== t) requestSort();
   };
-
-  function rotateCovs(Qs) {  // an articulated part's Gaussians turn with it: covariance Q S Q^T (from the exported one)
-    var f32 = new Float32Array(texData.buffer), K = scene.hdr.k;
-    for (var i = 0; i < scene.hdr.n_dyn; i++) {
-      var q = Qs[scene.dNode[i * K]], c = dynCov0.subarray(i * 6, i * 6 + 6), b = i * 12 + 4;
-      var S = [c[0], c[1], c[2], c[1], c[3], c[4], c[2], c[4], c[5]], QS = mul3(q, S), o = new Array(9);
-      for (var r = 0; r < 3; r++) for (var cc = r; cc < 3; cc++) o[r * 3 + cc] = QS[r * 3] * q[cc * 3] + QS[r * 3 + 1] * q[cc * 3 + 1] + QS[r * 3 + 2] * q[cc * 3 + 2];
-      f32[b] = o[0]; f32[b + 1] = o[1]; f32[b + 2] = o[2]; f32[b + 3] = o[4]; f32[b + 4] = o[5]; f32[b + 5] = o[8];
-    }
-  }
 
   /* ── overlays ── */
   var INK = [0.11, 0.11, 0.13], BLUE = [0.12, 0.31, 0.55], ORANGE = [0.9, 0.47, 0.12];

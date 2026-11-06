@@ -467,15 +467,50 @@
   </section>
 
   <!-- ───────────────────────── APPLICATIONS ───────────────────────── -->
-  <!-- what the explicit motion makes possible; the fridge is a second viewer (viewer.js) in its articulated mode -->
+  <!-- what the explicit motion makes possible (clips: page_assets/apps/ in the research code); the fridge is a second
+       viewer (viewer.js) in its articulated mode -->
   <section class="apps" id="applications" aria-labelledby="apps-title">
     <div class="section-head">
       <h2 id="apps-title">Applications</h2>
       <p>
         XM4D&rsquo;s motion is explicit: a graph of nodes, each with a position and a rotation per frame, that carries
-        the dynamic Gaussians. The reconstruction can therefore be edited and re-animated. The nodes can be posed by hand,
-        moved by another motion, or the moving part left out.
+        the dynamic Gaussians. The reconstruction can therefore be edited and re-animated. A motion can drive a robot,
+        several moments can be shown at once, parts can be posed by hand, and the moving object can be left out.
       </p>
+    </div>
+
+    <div class="app gallery" id="app-robot">
+      <div class="gallery-head">
+        <div class="app-text">
+          <h3>Dance with a robot</h3>
+          <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
+            animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
+            limits and with its own link lengths. It can dance beside the dancer, or take her place.</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Robot">
+          <button role="tab" aria-selected="true" data-group="rb-duet">beside her</button>
+          <button role="tab" aria-selected="false" data-group="rb-place">in her place</button>
+        </div>
+      </div>
+      <div class="gallery-group is-active" data-group="rb-duet" role="tabpanel">
+        <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="960" height="540" poster="assets/img/apps/duet-dance-twirl.jpg" data-src="assets/video/apps/duet-dance-twirl.mp4"></video>
+          <figcaption>DAVIS dance-twirl <span>The reconstruction from one input camera, with the robot&rsquo;s render moved sideways in the image so it dances beside her.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="rb-place" role="tabpanel" hidden>
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="338" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
+          <figcaption>DAVIS dance-twirl</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="app" id="app-strobe">
+      <div class="app-text">
+        <h3>The whole jump in one shot</h3>
+        <p>The moving Gaussians can be drawn several times at once, each copy posed by the graph at a different moment.
+          Seen from one input camera, every fifth frame of the jump accumulates over the fence, like a chronophotograph.</p>
+      </div>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="854" height="480" poster="assets/img/apps/strobe-horse.jpg" data-src="assets/video/apps/strobe-horse.mp4"></video>
+        <figcaption>DAVIS horsejump-high, frames 8&ndash;33</figcaption></figure>
     </div>
 
     <div class="app" id="app-articulate">
@@ -483,9 +518,9 @@
         <h3>Open and close each door yourself</h3>
         <p>For the fridge, the graph is one rigid node per door. Each door&rsquo;s hinge, an axis and a point on it, is
           fitted to its solved poses (within a few millimetres), and the doors&rsquo; Gaussians are its part. Drag a slider
-          to turn that door about its hinge, past angles the video never showed together.</p>
+          to turn that door about its hinge, including combinations of door angles the video never showed.</p>
       </div>
-      <div class="viewer viewer-app" data-src="assets/3d/fridge.bin" data-label="fridge" data-part-name="Door">
+      <div class="viewer viewer-app" data-src="assets/3d/fridge.bin" data-label="fridge" data-part-name="Door" data-orbit-limit="10">
         <div class="viewer-stage">
           <canvas class="viewer-canvas" aria-label="3D view of the fridge with its doors posed by the sliders"></canvas>
           <p class="viewer-status" role="status">Loading…</p>
@@ -497,7 +532,7 @@
             <legend class="viewer-label">Show</legend>
             <label><input type="checkbox" data-layer="static" checked> Static scene</label>
             <label><input type="checkbox" data-layer="dynamic" checked> Doors</label>
-            <label><input type="checkbox" data-layer="graph" checked> Hinges <i class="key key-graph" aria-hidden="true"></i></label>
+            <label><input type="checkbox" data-layer="graph"> Hinges <i class="key key-graph" aria-hidden="true"></i></label>
             <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
           </fieldset>
           <fieldset class="viewer-views">
@@ -520,64 +555,25 @@
       </div>
     </div>
 
-    <div class="app gallery" id="app-remove">
-      <div class="gallery-head">
-        <div class="app-text">
-          <h3>Remove the moving object</h3>
-          <p>Leaving out the dynamic Gaussians and rendering every frame from its own camera removes the object from the
-            video. The background behind it comes from the frames where it was seen. Ground that the object covers in
-            every frame was never seen and stays empty.</p>
-        </div>
-        <div class="segmented" role="tablist" aria-label="Run">
-          <button role="tab" aria-selected="true" data-group="rm-car">car-roundabout</button>
-          <button role="tab" aria-selected="false" data-group="rm-train">train</button>
-          <button role="tab" aria-selected="false" data-group="rm-swan">blackswan</button>
-        </div>
+    <div class="app" id="app-clones">
+      <div class="app-text">
+        <h3>Follow the leader</h3>
+        <p>The same idea with every copy moving: copies of the camel, each 30 frames behind the one ahead, walk its path
+          in single file.</p>
       </div>
-      <div class="app-cols app-cols-2" aria-hidden="true"><span>Input video</span><span>Without the dynamic Gaussians</span></div>
-      <div class="gallery-group is-active" data-group="rm-car" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video></figure></div>
-      <div class="gallery-group" data-group="rm-train" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-train.jpg" data-src="assets/video/apps/remove-train.mp4"></video></figure></div>
-      <div class="gallery-group" data-group="rm-swan" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-blackswan.jpg" data-src="assets/video/apps/remove-blackswan.mp4"></video></figure></div>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="854" height="480" poster="assets/img/apps/clones-camel.jpg" data-src="assets/video/apps/clones-camel.mp4"></video>
+        <figcaption>DAVIS camel, frames 16&ndash;75</figcaption></figure>
     </div>
 
-    <div class="app gallery" id="app-robot">
-      <div class="gallery-head">
-        <div class="app-text">
-          <h3>From a person to a robot</h3>
-          <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
-            animation. A humanoid robot follows it through inverse kinematics on its own joints, within their limits and
-            with its own link lengths. It is rendered into the scene with the person left out.</p>
-        </div>
-        <div class="segmented" role="tablist" aria-label="Run">
-          <button role="tab" aria-selected="true" data-group="rb-twirl">dance-twirl</button>
-          <button role="tab" aria-selected="false" data-group="rb-break">breakdance-flare</button>
-        </div>
+    <div class="app" id="app-remove">
+      <div class="app-text">
+        <h3>Remove the moving object</h3>
+        <p>Leaving out the dynamic Gaussians and rendering every frame from its own camera removes the car from the
+          video. The road behind it comes from the frames where it was seen.</p>
       </div>
-      <div class="app-cols app-cols-3" aria-hidden="true"><span>Reconstruction</span><span>Unitree G1</span><span>Boston Dynamics Atlas</span></div>
-      <div class="gallery-group is-active" data-group="rb-twirl" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1452" height="254" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video></figure></div>
-      <div class="gallery-group" data-group="rb-break" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1452" height="254" poster="assets/img/apps/robot-breakdance-flare.jpg" data-src="assets/video/apps/robot-breakdance-flare.mp4"></video></figure></div>
-    </div>
-    <div class="app gallery" id="app-transfer">
-      <div class="gallery-head">
-        <div class="app-text">
-          <h3>Move one body with another&rsquo;s motion</h3>
-          <p>One subject&rsquo;s solved motion can pose another subject&rsquo;s Gaussians. Two people&rsquo;s graphs
-            are the same 17-joint skeleton: the target keeps its own bone lengths, and each joint takes the source&rsquo;s
-            bone direction. Animals&rsquo; graphs differ, so the two bodies are matched part by part (trunk, head and
-            neck, four legs), and each of the camel&rsquo;s legs copies the swing of the bear&rsquo;s matching leg. These
-            are first tries and still rough. The re-posed body is the target as seen in one frame, so sides that were
-            never seen are missing, and legs move as one piece.</p>
-        </div>
-        <div class="segmented" role="tablist" aria-label="Pair">
-          <button role="tab" aria-selected="true" data-group="tr-human">dancer &rarr; hiker</button>
-          <button role="tab" aria-selected="false" data-group="tr-animal">bear &rarr; camel</button>
-        </div>
-      </div>
-      <div class="app-cols app-cols-2" aria-hidden="true"><span>Source: the motion</span><span>Target, posed by it</span></div>
-      <div class="gallery-group is-active" data-group="tr-human" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/transfer-dance-twirl-to-hike.jpg" data-src="assets/video/apps/transfer-dance-twirl-to-hike.mp4"></video>
-        <figcaption>DAVIS dance-twirl (frames 41&ndash;79) &rarr; hike</figcaption></figure></div>
-      <div class="gallery-group" data-group="tr-animal" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1366" height="360" poster="assets/img/apps/transfer-bear-to-camel.jpg" data-src="assets/video/apps/transfer-bear-to-camel.mp4"></video>
-        <figcaption>DAVIS bear &rarr; camel <span>The camel walks with the bear&rsquo;s steps, then lowers its neck as the bear sniffs. A patch of fence behind its neck that the video never shows is filled from a nearby piece of fence.</span></figcaption></figure></div>
+      <div class="app-cols app-cols-2" aria-hidden="true"><span>Input video</span><span>Without the dynamic Gaussians</span></div>
+      <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video>
+        <figcaption>DAVIS car-roundabout, frames 36&ndash;74</figcaption></figure>
     </div>
   </section>
 

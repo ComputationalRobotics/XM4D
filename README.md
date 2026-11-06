@@ -46,10 +46,11 @@ assets/
                   static-<run>.mp4, the static solve's iterates (the horse's is the first part of teaser-solve.mp4),
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
                   saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
-    apps/         Applications clips: remove-<run>.mp4 (input video | rendered without the dynamic Gaussians,
-                  page_assets/apps/render_removal.py), robot-<run>.mp4 (render | Unitree G1 | Atlas, cut from the
-                  robot showcases of the research code's robot_retarget_render.py), and the motion-transfer clips;
-                  posters in img/apps/
+    apps/         Applications clips (scripts: 4DReconstruction/scratchpad/page_assets/apps/): duet-dance-twirl (the
+                  reconstruction from one camera with the Unitree G1 layer of the research code's robot_retarget_render.py
+                  moved beside the dancer, duet_z.py), robot-dance-twirl (render | G1 in her place, robot_clips.py),
+                  strobe-horse and clones-camel (render_effects.py), remove-car-roundabout (input | without the dynamic
+                  Gaussians, render_removal.py); all 12 fps; posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges
