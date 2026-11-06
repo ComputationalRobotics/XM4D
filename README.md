@@ -19,7 +19,7 @@ python3 -m http.server 8080   # then open http://localhost:8080
 index.html        all page content
 style.css         all styling; colors are tokens under :root (--accent = xmblue, --accent-2 = xmorange)
 main.js           BibTeX copy, gallery tabs, lazy video playback, method-step figure swap
-viewer.js         the Gallery's 3D viewer (WebGL 2): Gaussian splats, deformation graph, cameras, 3D tracks
+viewer.js         the 3D viewers (WebGL 2; Gallery, fridge): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
 assets/
   favicon.svg
@@ -27,7 +27,8 @@ assets/
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
     teaser/       crops of the teaser (from the paper's teaser.pdf) for the hero walkthrough
     runs/         posters of the Example runs clips
-    solver-static.jpg, solver-edg.jpg   posters of the solver clips
+    solver/       posters of the solver clips
+    apps/         posters of the Applications clips
   video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
@@ -41,10 +42,14 @@ assets/
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
                   4DReconstruction/scratchpad/page_assets/runs/build_runs.py;
                   posters in img/runs/
-    solver-static.mp4  Inside the solver: the static solve's iterates (the first part of teaser-solve.mp4)
-    solver-edg.mp4     Inside the solver: the iterates of one segment's EDG solve (horsejump-high, frames 0-10),
-                       from a copy of the solver that saved every iterate (scripts and the patched solver headers:
-                       4DReconstruction/scratchpad/page_assets/solver/)
+    solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
+                  static-<run>.mp4, the static solve's iterates (the horse's is the first part of teaser-solve.mp4),
+                  and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
+                  saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
+    apps/         Applications clips: remove-<run>.mp4 (input video | rendered without the dynamic Gaussians,
+                  page_assets/apps/render_removal.py), robot-<run>.mp4 (render | Unitree G1 | Atlas, cut from the
+                  robot showcases of the research code's robot_retarget_render.py), and the motion-transfer clips;
+                  posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges
@@ -56,5 +61,7 @@ assets/
 - **Venue, BibTeX:** see the `TODO` comments in `index.html`.
 - **Hero video:** uncomment the `hero-video` block and drop the files under `assets/video/`.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
+- **Articulated runs:** a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
+  `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge.
 - **Gallery runs:** add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's run picker; a
   value that matches an Example runs tab (`data-group`) is picked when that tab is.

@@ -16,8 +16,8 @@ function nodeFrames(t) {  // node positions and (trained, free 3x3, row-major) m
   return { P: P, R: R };
 }
 
-function pose(t) {
-  var F = nodeFrames(t), P = F.P, R = F.R, K = S.k, out = new Float32Array(S.nDyn * 3);
+function pose(t, nodes) {  // nodes: explicit node positions and matrices (an articulated object's sliders), else time t
+  var F = nodes || nodeFrames(t), P = F.P, R = F.R, K = S.k, out = new Float32Array(S.nDyn * 3);
   for (var i = 0; i < S.nDyn; i++) {
     var x = 0, y = 0, z = 0;
     for (var k = 0; k < K; k++) {
@@ -62,7 +62,8 @@ self.onmessage = function (e) {
   var m = e.data;
   if (m.type === 'scene') { S = m; cacheT = null; return; }
   if (m.type !== 'sort' || !S || m.id !== S.id) return;
-  if (cacheT !== m.t) { cacheDyn = pose(m.t); cacheT = m.t; }
+  var key = m.nodes ? m.nodesKey : m.t;
+  if (cacheT !== key) { cacheDyn = pose(m.t, m.nodes); cacheT = key; }
   var order = sort(m.view, cacheDyn), dyn = cacheDyn.slice();
   self.postMessage({ id: S.id, t: m.t, seq: m.seq, order: order, dyn: dyn }, [order.buffer, dyn.buffer]);
 };

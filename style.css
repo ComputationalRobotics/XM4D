@@ -473,12 +473,36 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 }
 
 /* ───────── Solver iterations ───────── */
+.solver-runs { margin-top: 8px; }
+.section-head p + p { margin-top: 10px; }
 .solver-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
 .solver-fig { margin: 0; }
 .solver-fig video { width: 100%; aspect-ratio: 16 / 10.4; object-fit: contain; border-radius: 8px; border: 1px solid var(--rule-soft); background: #fff; }
 .solver-fig figcaption { margin-top: 10px; font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.35; }
 .solver-fig figcaption span { display: block; margin-top: 3px; font-size: 14.5px; font-weight: 400; color: var(--graphite); line-height: 1.5; }
 @media (max-width: 860px) { .solver-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ───────── Applications ───────── */
+.app { margin-top: 48px; }
+.app-text { max-width: var(--col); }
+.app-text h3 { font-size: 20px; margin-bottom: 6px; }
+.app-text p { color: var(--graphite); font-size: 15.5px; }
+#app-articulate .app-text { margin-bottom: 16px; }
+.app.gallery .gallery-head { align-items: flex-end; }
+.app-cols { display: grid; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: var(--graphite); }
+.app-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.app-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.app-clip { margin: 0; }
+.app-clip video { width: 100%; border-radius: 6px; background: var(--paper-deep); }
+.app-clip figcaption { margin-top: 8px; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.35; }
+.app-clip figcaption span { display: block; color: var(--mist); font-weight: 400; }
+.viewer-parts { display: grid; gap: 6px; }
+.viewer-part { display: grid; grid-template-columns: 56px minmax(0, 1fr) 40px; align-items: center; gap: 8px; font-size: 14px; }
+.viewer-part input { width: 100%; accent-color: var(--ink); }
+.viewer-part output { font-family: var(--mono); font-size: 12px; color: var(--graphite); text-align: right; }
+.viewer-demo-label { display: none; font-size: 13.5px; color: var(--graphite); }
+.viewer.is-articulated .viewer-slider, .viewer.is-articulated .viewer-frame { display: none; }
+.viewer.is-articulated .viewer-demo-label { display: inline; }
 
 /* ───────── Citation ───────── */
 .citation-venue { color: var(--graphite); margin: -4px 0 18px; }

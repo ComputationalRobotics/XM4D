@@ -27,6 +27,7 @@
   <div class="topbar-links">
     <a href="#method">How it works</a>
     <a href="#gallery">Gallery</a>
+    <a href="#applications">Applications</a>
     <a href="#citation">Cite</a>
   </div>
   <div class="topbar-actions">
@@ -230,15 +231,15 @@
       </div>
       <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
-          <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 33 body landmarks of a MediaPipe pose.</span></figcaption></figure>
+          <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="dance-twirl" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
-          <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 33 body landmarks of a MediaPipe pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
+          <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 17 joints of a COCO body pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="hike" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
-          <figcaption>DAVIS &middot; hike <span>For people, the graph is the 33 body landmarks of a MediaPipe pose.</span></figcaption></figure>
+          <figcaption>DAVIS &middot; hike <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
@@ -386,26 +387,197 @@
   </section>
 
   <!-- ───────────────────────── SOLVER ITERATIONS ───────────────────────── -->
-  <!-- iterates of both solves on the walkthrough's horse, replayed by a copy of the solver that saved every one -->
+  <!-- iterates of both solves, replayed by a copy of the solver that saved every one (scripts:
+       4DReconstruction/scratchpad/page_assets/solver/) -->
   <section class="solver" id="solver" aria-labelledby="solver-title">
     <div class="section-head">
       <h2 id="solver-title">Inside the solver</h2>
       <p>
-        Both stages are solved by the same GPU Burer&ndash;Monteiro solver. These clips replay its iterates on the horse
-        from the walkthrough, from a copy of the solver that saved every one.
+        Both stages are solved by the same GPU Burer&ndash;Monteiro solver. These clips replay its iterates, from a copy
+        of the solver that saved every one.
+      </p>
+      <p>
+        <strong>Static solve:</strong> scaled bundle adjustment over the static tracks. Every frame&rsquo;s lifted depth is
+        placed by that iterate&rsquo;s camera and depth scale, and comes into register as the cameras settle.
+      </p>
+      <p>
+        <strong>Deformation graph:</strong> one segment&rsquo;s rotation-only problem. Each node&rsquo;s translations follow
+        from its rotations in closed form. The clip starts from zero translation, with every node at its rest position,
+        and from identity rotations, shown as the faint frames. The inset plots the cost above the optimum.
       </p>
     </div>
-    <div class="solver-grid">
-      <figure class="solver-fig">
-        <video muted loop playsinline preload="none" width="1188" height="772" poster="assets/img/solver-static.jpg" data-src="assets/video/solver-static.mp4"></video>
-        <figcaption>Static solve: cameras and landmarks
-          <span>Scaled bundle adjustment over the static tracks. Every frame&rsquo;s lifted depth is placed by that iterate&rsquo;s camera and depth scale, and comes into register as the cameras settle. Eight iterations, then the certificate.</span></figcaption>
-      </figure>
-      <figure class="solver-fig">
-        <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver-edg.jpg" data-src="assets/video/solver-edg.mp4"></video>
-        <figcaption>Dynamic solve: one segment of the deformation graph
-          <span>Frames 0&ndash;10 of the same video, 125 nodes. The problem is over the nodes&rsquo; rotations; their positions follow from the rotations in closed form. Each node&rsquo;s frame starts at the identity (faint) and turns with the horse as it takes off. The rank-3 solution fails the certificate, so the solver lifts to rank 4, where it certifies the optimum (inset: cost above the optimum).</span></figcaption>
-      </figure>
+    <div class="gallery solver-runs">
+      <div class="gallery-head">
+        <div class="segmented" role="tablist" aria-label="Run">
+          <button role="tab" aria-selected="true" data-group="sv-horsejump-high">horsejump-high</button>
+          <button role="tab" aria-selected="false" data-group="sv-bear">bear</button>
+          <button role="tab" aria-selected="false" data-group="sv-car-roundabout">car-roundabout</button>
+          <button role="tab" aria-selected="false" data-group="sv-paper-windmill">DyCheck paper-windmill</button>
+        </div>
+      </div>
+      <div class="gallery-group is-active" data-group="sv-horsejump-high" role="tabpanel">
+        <div class="solver-grid">
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1188" height="772" poster="assets/img/solver/static-horsejump-high.jpg" data-src="assets/video/solver/static-horsejump-high.mp4"></video>
+          <figcaption>Static solve <span>50 frames, 8 iterations; the walkthrough&rsquo;s horse.</span></figcaption>
+        </figure>
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-horsejump-high.jpg" data-src="assets/video/solver/edg-horsejump-high.mp4"></video>
+          <figcaption>Deformation graph, one segment <span>Frames 0&ndash;10, 125 nodes, 33 iterations. The rank-3 solution fails the certificate, so the solver lifts to rank 4, where it certifies the optimum.</span></figcaption>
+        </figure>
+        </div>
+      </div>
+      <div class="gallery-group" data-group="sv-bear" role="tabpanel" hidden>
+        <div class="solver-grid">
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-bear.jpg" data-src="assets/video/solver/static-bear.mp4"></video>
+          <figcaption>Static solve <span>82 frames, 6 iterations, certified at rank 3. The camera barely moves, so the change is small.</span></figcaption>
+        </figure>
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-bear.jpg" data-src="assets/video/solver/edg-bear.mp4"></video>
+          <figcaption>Deformation graph, one segment <span>Frames 29&ndash;39, 36 nodes, 4 iterations, certified at rank 3. The bear turns little; most of the change is the nodes leaving their rest positions.</span></figcaption>
+        </figure>
+        </div>
+      </div>
+      <div class="gallery-group" data-group="sv-car-roundabout" role="tabpanel" hidden>
+        <div class="solver-grid">
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-car-roundabout.jpg" data-src="assets/video/solver/static-car-roundabout.mp4"></video>
+          <figcaption>Static solve <span>75 frames, 9 iterations, certified at rank 3.</span></figcaption>
+        </figure>
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-car-roundabout.jpg" data-src="assets/video/solver/edg-car-roundabout.mp4"></video>
+          <figcaption>Deformation graph, one segment <span>Frames 60&ndash;70, 34 nodes, 5 iterations, certified at rank 3. The car&rsquo;s nodes yaw as it turns.</span></figcaption>
+        </figure>
+        </div>
+      </div>
+      <div class="gallery-group" data-group="sv-paper-windmill" role="tabpanel" hidden>
+        <div class="solver-grid">
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-paper-windmill.jpg" data-src="assets/video/solver/static-paper-windmill.mp4"></video>
+          <figcaption>Static solve <span>277 frames, 7 iterations, certified at rank 3.</span></figcaption>
+        </figure>
+        <figure class="solver-fig">
+          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-paper-windmill.jpg" data-src="assets/video/solver/edg-paper-windmill.mp4"></video>
+          <figcaption>Deformation graph, one segment <span>Frames 230&ndash;239, 63 nodes, 4 iterations, certified at rank 3. The pinwheel&rsquo;s nodes turn with it.</span></figcaption>
+        </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── APPLICATIONS ───────────────────────── -->
+  <!-- what the explicit motion makes possible; the fridge is a second viewer (viewer.js) in its articulated mode -->
+  <section class="apps" id="applications" aria-labelledby="apps-title">
+    <div class="section-head">
+      <h2 id="apps-title">Applications</h2>
+      <p>
+        XM4D&rsquo;s motion is explicit: a graph of nodes, each with a position and a rotation per frame, that carries
+        the dynamic Gaussians. The reconstruction can therefore be edited and re-animated. The nodes can be posed by hand,
+        moved by another motion, or the moving part left out.
+      </p>
+    </div>
+
+    <div class="app" id="app-articulate">
+      <div class="app-text">
+        <h3>Open and close each door yourself</h3>
+        <p>For the fridge, the graph is one rigid node per door. Each door&rsquo;s hinge, an axis and a point on it, is
+          fitted to its solved poses (within a few millimetres), and the doors&rsquo; Gaussians are its part. Drag a slider
+          to turn that door about its hinge, past angles the video never showed together.</p>
+      </div>
+      <div class="viewer viewer-app" data-src="assets/3d/fridge.bin" data-label="fridge" data-part-name="Door">
+        <div class="viewer-stage">
+          <canvas class="viewer-canvas" aria-label="3D view of the fridge with its doors posed by the sliders"></canvas>
+          <p class="viewer-status" role="status">Loading…</p>
+          <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
+        </div>
+        <div class="viewer-panel">
+          <div class="viewer-field"><span class="viewer-label">Doors</span><div class="viewer-parts"></div></div>
+          <fieldset class="viewer-layers">
+            <legend class="viewer-label">Show</legend>
+            <label><input type="checkbox" data-layer="static" checked> Static scene</label>
+            <label><input type="checkbox" data-layer="dynamic" checked> Doors</label>
+            <label><input type="checkbox" data-layer="graph" checked> Hinges <i class="key key-graph" aria-hidden="true"></i></label>
+            <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
+          </fieldset>
+          <fieldset class="viewer-views">
+            <legend class="viewer-label">View</legend>
+            <div class="segmented">
+              <button type="button" data-view="input" aria-pressed="true">Input camera</button>
+              <button type="button" data-view="free" aria-pressed="false">Orbit</button>
+            </div>
+          </fieldset>
+          <div class="viewer-time">
+            <button type="button" class="viewer-play" aria-label="Pause">
+              <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+            </button>
+            <span class="viewer-demo-label">Demo: each door in turn</span>
+            <input type="range" class="viewer-slider" min="0" max="1" step="any" value="0" aria-label="Time">
+            <span class="viewer-frame"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app gallery" id="app-remove">
+      <div class="gallery-head">
+        <div class="app-text">
+          <h3>Remove the moving object</h3>
+          <p>Leaving out the dynamic Gaussians and rendering every frame from its own camera removes the object from the
+            video. The background behind it comes from the frames where it was seen. Ground that the object covers in
+            every frame was never seen and stays empty.</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Run">
+          <button role="tab" aria-selected="true" data-group="rm-car">car-roundabout</button>
+          <button role="tab" aria-selected="false" data-group="rm-train">train</button>
+          <button role="tab" aria-selected="false" data-group="rm-swan">blackswan</button>
+        </div>
+      </div>
+      <div class="app-cols app-cols-2" aria-hidden="true"><span>Input video</span><span>Without the dynamic Gaussians</span></div>
+      <div class="gallery-group is-active" data-group="rm-car" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video></figure></div>
+      <div class="gallery-group" data-group="rm-train" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-train.jpg" data-src="assets/video/apps/remove-train.mp4"></video></figure></div>
+      <div class="gallery-group" data-group="rm-swan" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-blackswan.jpg" data-src="assets/video/apps/remove-blackswan.mp4"></video></figure></div>
+    </div>
+
+    <div class="app gallery" id="app-robot">
+      <div class="gallery-head">
+        <div class="app-text">
+          <h3>From a person to a robot</h3>
+          <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
+            animation. A humanoid robot follows it through inverse kinematics on its own joints, within their limits and
+            with its own link lengths. It is rendered into the scene with the person left out.</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Run">
+          <button role="tab" aria-selected="true" data-group="rb-twirl">dance-twirl</button>
+          <button role="tab" aria-selected="false" data-group="rb-break">breakdance-flare</button>
+        </div>
+      </div>
+      <div class="app-cols app-cols-3" aria-hidden="true"><span>Reconstruction</span><span>Unitree G1</span><span>Boston Dynamics Atlas</span></div>
+      <div class="gallery-group is-active" data-group="rb-twirl" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1452" height="254" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video></figure></div>
+      <div class="gallery-group" data-group="rb-break" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1452" height="254" poster="assets/img/apps/robot-breakdance-flare.jpg" data-src="assets/video/apps/robot-breakdance-flare.mp4"></video></figure></div>
+    </div>
+    <div class="app gallery" id="app-transfer">
+      <div class="gallery-head">
+        <div class="app-text">
+          <h3>Move one body with another&rsquo;s motion</h3>
+          <p>One subject&rsquo;s solved motion can pose another subject&rsquo;s Gaussians. Two people&rsquo;s graphs
+            are the same 17-joint skeleton: the target keeps its own bone lengths, and each joint takes the source&rsquo;s
+            bone direction. Animals&rsquo; graphs differ, so the two bodies are matched part by part (trunk, head and
+            neck, four legs), and each of the camel&rsquo;s legs copies the swing of the bear&rsquo;s matching leg. These
+            are first tries and still rough. The re-posed body is the target as seen in one frame, so sides that were
+            never seen are missing, and legs move as one piece.</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Pair">
+          <button role="tab" aria-selected="true" data-group="tr-human">dancer &rarr; hiker</button>
+          <button role="tab" aria-selected="false" data-group="tr-animal">bear &rarr; camel</button>
+        </div>
+      </div>
+      <div class="app-cols app-cols-2" aria-hidden="true"><span>Source: the motion</span><span>Target, posed by it</span></div>
+      <div class="gallery-group is-active" data-group="tr-human" role="tabpanel"><figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/transfer-dance-twirl-to-hike.jpg" data-src="assets/video/apps/transfer-dance-twirl-to-hike.mp4"></video>
+        <figcaption>DAVIS dance-twirl (frames 41&ndash;79) &rarr; hike</figcaption></figure></div>
+      <div class="gallery-group" data-group="tr-animal" role="tabpanel" hidden><figure class="app-clip"><video muted loop playsinline preload="none" width="1366" height="360" poster="assets/img/apps/transfer-bear-to-camel.jpg" data-src="assets/video/apps/transfer-bear-to-camel.mp4"></video>
+        <figcaption>DAVIS bear &rarr; camel <span>The camel walks with the bear&rsquo;s steps, then lowers its neck as the bear sniffs. A patch of fence behind its neck that the video never shows is filled from a nearby piece of fence.</span></figcaption></figure></div>
     </div>
   </section>
 

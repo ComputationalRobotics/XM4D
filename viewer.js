@@ -1,19 +1,22 @@
-/* XM4D project page: the gallery's 3D viewer. Draws one trained run (assets/3d/<key>.bin, written by
-   export_viewer.py in the research code) with WebGL 2: its Gaussians as depth-sorted splats, the dynamic ones re-posed
+/* XM4D project page: the 3D viewers (every .viewer element). Each draws one trained run (assets/3d/<key>.bin, written
+   by export_viewer.py in the research code) with WebGL 2: its Gaussians as depth-sorted splats, the dynamic ones re-posed
    every frame by the deformation graph (viewer-worker.js poses and sorts them), and over them the graph, the input
    cameras, and 3D tracks of a few dynamic Gaussians. The panel picks the run and what is shown; the view follows the
-   input camera until it is dragged. */
+   input camera until it is dragged. A run with hinged parts (an articulated object: header "parts") is posed by one
+   slider per part instead of time. */
 (function () {
   'use strict';
 
-  var root = document.getElementById('viewer');
-  if (!root) return;
+  document.querySelectorAll('.viewer').forEach(Viewer);
+
+  function Viewer(root) {
   var canvas = root.querySelector('.viewer-canvas');
   var status = root.querySelector('.viewer-status');
   var select = root.querySelector('.viewer-scene');
   var playBtn = root.querySelector('.viewer-play');
   var slider = root.querySelector('.viewer-slider');
   var frameLabel = root.querySelector('.viewer-frame');
+  var partsBox = root.querySelector('.viewer-parts');
   var viewBtns = Array.prototype.slice.call(root.querySelectorAll('[data-view]'));
   var layers = {};
   root.querySelectorAll('[data-layer]').forEach(function (box) {
@@ -221,7 +224,7 @@
 
   /* ── scene ── */
   var scene = null, worker = new Worker('viewer-worker.js'), sceneId = 0;
-  var order = null, nDraw = 0, texData = null, rowsDyn = 0, shownT = 0;
+  var order = null, nDraw = 0, texData = null, rowsDyn = 0, shownT = 0, dynCov0 = null;
 
   function uploadScene(sc) {
     var h = sc.hdr, A = sc.A, nD = h.n_dyn, nS = h.n_static, n = nD + nS, rows = Math.ceil(n / 512);
@@ -249,6 +252,8 @@
       f32[b + 9] = m[6] * m[6] + m[7] * m[7] + m[8] * m[8];
     }
     rowsDyn = Math.ceil(nD / 512);
+    dynCov0 = new Float32Array(nD * 6);
+    for (i = 0; i < nD; i++) for (var e = 0; e < 6; e++) dynCov0[i * 6 + e] = f32[i * 12 + 4 + e];
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -289,7 +294,9 @@
     for (i = 0; i < E.length; i += 2) L0.push(Math.hypot(P0[E[i] * 3] - P0[E[i + 1] * 3], P0[E[i] * 3 + 1] - P0[E[i + 1] * 3 + 1], P0[E[i] * 3 + 2] - P0[E[i + 1] * 3 + 2]));
     L0 = L0.filter(isFinite).sort(function (x, y) { return x - y; });
     scene.edgeMax = L0.length ? 6 * L0[L0.length >> 1] : Infinity;
-    buildTracks();
+    scene.parts = h.parts ? setupParts(h.parts, P0) : null;
+    root.classList.toggle('is-articulated', !!scene.parts);
+    if (!scene.parts) buildTracks();
     t = 0; dir = 1; follow = true; setView('input');
     slider.max = T - 1; slider.value = 0;
     dirty = true; requestSort();
@@ -305,6 +312,52 @@
       for (c = 0; c < 9; c++) R[m * 9 + c] = sc.A.n_rot[i + c] * (1 - a) + sc.A.n_rot[j + c] * a;
     }
     return { P: P, R: R };
+  }
+
+  /* ── articulated parts: one slider per part turns it about its hinge (axis through pivot), from its frame-0 pose ── */
+  var demo = true, demoT = 0;
+  function setupParts(parts, P0) {
+    var R0 = nodesAt(0).R;
+    partsBox.innerHTML = '';
+    return parts.map(function (pt, k) {
+      var part = { axis: normalize(pt.axis), pivot: pt.pivot, sign: pt.sign, max: Math.ceil(pt.max_deg), h: pt.h, deg: 0,
+                   P0: [P0[k * 3], P0[k * 3 + 1], P0[k * 3 + 2]], R0: Array.prototype.slice.call(R0, k * 9, k * 9 + 9) };
+      var lab = document.createElement('label'), name = document.createElement('span'), val = document.createElement('output');
+      var input = document.createElement('input');
+      lab.className = 'viewer-part'; name.textContent = (root.dataset.partName || 'Part') + ' ' + (k + 1);
+      input.type = 'range'; input.min = 0; input.max = part.max; input.step = 1; input.value = 0;
+      input.setAttribute('aria-label', name.textContent + ' opening angle');
+      val.textContent = '0°';
+      input.addEventListener('input', function () { stopDemo(); setPart(k, +input.value); });
+      lab.appendChild(name); lab.appendChild(input); lab.appendChild(val); partsBox.appendChild(lab);
+      part.input = input; part.out = val;
+      return part;
+    });
+  }
+  function setPart(k, deg) {
+    var part = scene.parts[k];
+    part.deg = deg; part.input.value = deg; part.out.textContent = Math.round(deg) + '°';
+    dirty = true; requestSort();
+  }
+  function stopDemo() { if (demo) { demo = false; setPlaying(false); } }
+  function partNodes() {  // node positions and matrices from the sliders; Q: each part's turn from its frame-0 pose
+    var M = scene.M, P = new Float32Array(M * 3), R = new Float32Array(M * 9), Q = [];
+    scene.parts.forEach(function (pt, k) {
+      var q = axisAngle(pt.axis, pt.sign * pt.deg * Math.PI / 180), d = [pt.P0[0] - pt.pivot[0], pt.P0[1] - pt.pivot[1], pt.P0[2] - pt.pivot[2]];
+      var p = apply3(q, d), r = mul3(q, pt.R0);
+      for (var c = 0; c < 3; c++) P[k * 3 + c] = pt.pivot[c] + p[c];
+      for (c = 0; c < 9; c++) R[k * 9 + c] = r[c];
+      Q.push(q);
+    });
+    return { P: P, R: R, Q: Q, key: scene.parts.map(function (pt) { return pt.deg.toFixed(2); }).join(',') };
+  }
+  function demoAngles(dt) {  // until a slider is touched: each part opens to 3/4 of its range and closes, in turn
+    var per = 3.2, n = scene.parts.length;
+    demoT = (demoT + dt) % (per * n);
+    scene.parts.forEach(function (pt, k) {
+      var u = demoT - k * per, a = u > 0 && u < per ? Math.sin(Math.PI * u / per) : 0;
+      setPart(k, Math.round(0.75 * pt.max * a * a * 10) / 10);
+    });
   }
 
   var TRAIL = 12;  // frames of track behind the current one
@@ -466,14 +519,16 @@
   }
 
   /* ── sorting (in the worker) ── */
-  var busy = false, want = false, seq = 0, lastSent = null;
+  var busy = false, want = false, seq = 0, lastSent = null, sentQ = {};
   function requestSort() {
     if (!scene) return;
     if (busy) { want = true; return; }
-    var v = current(), view = viewMatrix(v.R, v.c), key = t.toFixed(4) + Array.prototype.join.call(view, ',') + layers.static + layers.dynamic;
+    var v = current(), view = viewMatrix(v.R, v.c), nodes = scene.parts ? partNodes() : null;
+    var key = (nodes ? nodes.key : t.toFixed(4)) + Array.prototype.join.call(view, ',') + layers.static + layers.dynamic;
     if (key === lastSent && order) return;
-    lastSent = key; busy = true; want = false;
-    worker.postMessage({ type: 'sort', id: sceneId, t: t, view: view, seq: ++seq });
+    lastSent = key; busy = true; want = false; sentQ[++seq] = nodes && nodes.Q;
+    worker.postMessage({ type: 'sort', id: sceneId, t: t, view: view, seq: seq,
+      nodes: nodes ? { P: nodes.P, R: nodes.R } : null, nodesKey: nodes ? nodes.key : null });
   }
   worker.onmessage = function (e) {
     var m = e.data;
@@ -481,6 +536,8 @@
     if (m.id !== sceneId) { requestSort(); return; }
     var f32 = new Float32Array(texData.buffer), nD = scene.hdr.n_dyn;
     for (var i = 0; i < nD; i++) { f32[i * 12] = m.dyn[i * 3]; f32[i * 12 + 1] = m.dyn[i * 3 + 1]; f32[i * 12 + 2] = m.dyn[i * 3 + 2]; }
+    var Qs = sentQ[m.seq]; sentQ = {};
+    if (Qs) rotateCovs(Qs);
     gl.bindTexture(gl.TEXTURE_2D, tex);
     if (rowsDyn) gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 512 * 3, rowsDyn, gl.RGBA_INTEGER, gl.UNSIGNED_INT, texData.subarray(0, rowsDyn * 512 * 12));
     gl.bindBuffer(gl.ARRAY_BUFFER, orderBuf);
@@ -489,6 +546,16 @@
     dirty = true;
     if (want || m.t !== t) requestSort();
   };
+
+  function rotateCovs(Qs) {  // an articulated part's Gaussians turn with it: covariance Q S Q^T (from the exported one)
+    var f32 = new Float32Array(texData.buffer), K = scene.hdr.k;
+    for (var i = 0; i < scene.hdr.n_dyn; i++) {
+      var q = Qs[scene.dNode[i * K]], c = dynCov0.subarray(i * 6, i * 6 + 6), b = i * 12 + 4;
+      var S = [c[0], c[1], c[2], c[1], c[3], c[4], c[2], c[4], c[5]], QS = mul3(q, S), o = new Array(9);
+      for (var r = 0; r < 3; r++) for (var cc = r; cc < 3; cc++) o[r * 3 + cc] = QS[r * 3] * q[cc * 3] + QS[r * 3 + 1] * q[cc * 3 + 1] + QS[r * 3 + 2] * q[cc * 3 + 2];
+      f32[b] = o[0]; f32[b + 1] = o[1]; f32[b + 2] = o[2]; f32[b + 3] = o[4]; f32[b + 4] = o[5]; f32[b + 5] = o[8];
+    }
+  }
 
   /* ── overlays ── */
   var INK = [0.11, 0.11, 0.13], BLUE = [0.12, 0.31, 0.55], ORANGE = [0.9, 0.47, 0.12];
@@ -514,7 +581,7 @@
       }
       if (!follow) { var ic = inputCamera(tt); frust(ic.R, ic.c, ORANGE, 1, 2.4); }
     }
-    if (layers.tracks) {
+    if (layers.tracks && sc.tracks) {
       var f1 = Math.floor(tt), f0 = Math.max(0, f1 - Math.min(TRAIL, Math.max(2, Math.round(T / 4))));  // short runs: shorter trails
       sc.tracks.forEach(function (tr) {
         var P = tr.pts, prev = null;
@@ -529,7 +596,14 @@
         dot(head, tr.color, 1, 6);
       });
     }
-    if (layers.graph) {
+    if (layers.graph && sc.parts) {  // hinge axes, and each part's node
+      var PN = partNodes();
+      sc.parts.forEach(function (pt, k) {
+        var a = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * (pt.h[0] - 0.04); }), b = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * (pt.h[1] + 0.04); });
+        seg(a, b, INK, 0.55, 6.5); seg(a, b, EDGE, 1, 4.4);
+        dot([PN.P[k * 3], PN.P[k * 3 + 1], PN.P[k * 3 + 2]], NODE, 1, 12);
+      });
+    } else if (layers.graph) {
       var N = nodesAt(tt), E = sc.A.edges;
       var P3 = function (m) { return [N.P[m * 3], N.P[m * 3 + 1], N.P[m * 3 + 2]]; };
       for (var e = 0; e < E.length; e += 2) {
@@ -575,12 +649,13 @@
       gl.drawArraysInstanced(gl.TRIANGLE_FAN, 0, 4, o.D.length / dotV.stride);
     }
     gl.bindVertexArray(null);
-    frameLabel.textContent = 'frame ' + (Math.floor(shownT) + scene.hdr.frame0) + ' / ' + (scene.T - 1 + scene.hdr.frame0);
+    if (!scene.parts) frameLabel.textContent = 'frame ' + (Math.floor(shownT) + scene.hdr.frame0) + ' / ' + (scene.T - 1 + scene.hdr.frame0);
   }
   function tick(now) {
     raf = null;
     if (!inView) return;
-    if (playing && scene && last !== null) {
+    if (playing && scene && scene.parts && last !== null) demoAngles(Math.min(0.1, (now - last) / 1000));
+    else if (playing && scene && last !== null) {
       var dt = Math.min(0.1, (now - last) / 1000), T = scene.T;
       t += dir * dt * scene.hdr.fps;
       if (scene.pingpong) {
@@ -600,13 +675,14 @@
     playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play');
     root.classList.toggle('is-paused', !on);
   }
-  playBtn.addEventListener('click', function () { setPlaying(!playing); });
+  playBtn.addEventListener('click', function () { if (scene && scene.parts) demo = !playing; setPlaying(!playing); });
   slider.addEventListener('input', function () { setPlaying(false); t = +slider.value; requestSort(); });
 
   /* ── scene picking; the example runs above pick the same run here ── */
   var started = false;
-  select.addEventListener('change', function () { if (started) load(select.selectedOptions[0]); });
-  document.querySelectorAll('#runs [role="tab"]').forEach(function (tab) {
+  function source() { return select ? select.selectedOptions[0] : { dataset: { src: root.dataset.src }, textContent: root.dataset.label || '' }; }
+  if (select) select.addEventListener('change', function () { if (started) load(source()); });
+  if (select && root.id === 'viewer') document.querySelectorAll('#runs [role="tab"]').forEach(function (tab) {
     tab.addEventListener('click', function () {
       var opt = select.querySelector('option[value="' + tab.dataset.group + '"]');
       if (!opt || opt.selected) return;
@@ -619,9 +695,10 @@
   new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       inView = e.isIntersecting;
-      if (inView && !started) { started = true; load(select.selectedOptions[0]); }
+      if (inView && !started) { started = true; load(source()); }
       last = null;
       if (inView && raf === null) raf = requestAnimationFrame(tick);
     });
   }, { rootMargin: '200px 0px' }).observe(root);
+  }
 })();
