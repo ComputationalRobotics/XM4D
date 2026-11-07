@@ -360,6 +360,9 @@
               <option value="casa3" data-src="assets/3d/casa3.bin">casa3</option>
               <option value="casa4" data-src="assets/3d/casa4.bin">casa4</option>
             </optgroup>
+            <optgroup label="RoboCasa">
+              <option value="casa-pose" data-src="assets/3d/casa-pose.bin">cereal box</option>
+            </optgroup>
             <optgroup label="EgoDexter">
               <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
             </optgroup>
@@ -484,7 +487,8 @@
       <p>
         XM4D&rsquo;s motion is explicit: a graph of nodes, each with a position and a rotation per frame, that carries
         the dynamic Gaussians. The reconstruction can therefore be edited and re-animated. A motion can drive a robot,
-        parts can be posed by hand, and the moving object can be left out.
+        a node can carry a known object&rsquo;s 6D pose, parts can be posed by hand, and the moving object can be left
+        out.
       </p>
     </div>
 
@@ -516,6 +520,22 @@
         <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
           <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
       </div>
+    </div>
+
+    <div class="app" id="app-pose">
+      <div class="app-text">
+        <h3>Follow a known object in 6D</h3>
+        <p>A robot carries a cereal box 1.8&nbsp;m along a kitchen counter and turns it a quarter turn, while the camera
+          moves 2.2&nbsp;m. From the RGB video alone, XM4D solves the camera&rsquo;s path and the box as one rigid node,
+          in the same world frame. The box&rsquo;s mesh is registered to the reconstructed box once; from then on, the
+          node&rsquo;s motion is the box&rsquo;s 6D pose in every frame.</p>
+        <p class="app-note">Against the simulator&rsquo;s ground truth, the camera path is off by 4.9&nbsp;mm (RMSE over
+          2.2&nbsp;m) and the box&rsquo;s pose by 2.2&deg; and 17&nbsp;mm on average, for a box 22&nbsp;cm tall. XM
+          certifies both solves, the cameras and the box&rsquo;s rotations.</p>
+      </div>
+      <div class="app-cols app-cols-2" aria-hidden="true"><span>Input, with the box&rsquo;s mesh at our pose</span><span>Reconstruction: the camera&rsquo;s path and the box&rsquo;s</span></div>
+      <figure class="app-clip"><video muted loop playsinline preload="none" width="1446" height="480" poster="assets/img/apps/casa-pose.jpg" data-src="assets/video/apps/casa-pose.mp4"></video>
+        <figcaption>RoboCasa kitchen <span>The robot is left out of the reconstruction, so in the 3D view the box moves on its own. Kitchen and box from RoboCasa (CC&nbsp;BY&nbsp;4.0).</span></figcaption></figure>
     </div>
 
     <div class="app" id="app-articulate">

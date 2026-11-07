@@ -50,14 +50,17 @@ assets/
                   duet-dancer (the Pexels dancer's reconstruction from one camera with a Unitree G1, fitted to her
                   skeleton and planted on the reconstructed floor, beside her) and robot-dancer (render | G1 in her
                   place), both from page_assets/human/ (deliver.sh); robot-dance-twirl (DAVIS: render | G1 in her
-                  place, robot_clips.py, top row trimmed); remove-car-roundabout (input | without the dynamic
-                  Gaussians, render_removal.py); all 12 fps; posters in img/apps/
+                  place, robot_clips.py, top row trimmed); casa-pose (a RoboCasa robot carries a cereal box while
+                  the camera moves: input with the box's mesh at our pose | the static kitchen with our camera path
+                  and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
+                  without the dynamic Gaussians, render_removal.py); all 12 fps; posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
                   export_viewer_fix.py (background thinned per voxel, so the white walls stay clean); casa-twin.bin
                   (the RoboCasa kitchen twin) from page_assets/robocasa/ (export_viewer_parts.py, then rename_parts.py
-                  for the part names, the right cabinet's 55-degree cap and the microwave held fixed)
+                  for the part names, the right cabinet's 55-degree cap and the microwave held fixed); casa-pose.bin
+                  (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
 ```
 
 ## Filling in the skeleton
