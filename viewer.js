@@ -295,7 +295,7 @@
     scene.parts = h.parts ? setupParts(h.parts, P0) : null;
     root.classList.toggle('is-articulated', !!scene.parts);
     if (!scene.parts) buildTracks();
-    t = 0; dir = 1; follow = true; setView('input');
+    t = 0; dir = 1; follow = true; active = 0; glide = null; setView('input');
     slider.max = T - 1; slider.value = 0;
     dirty = true; requestSort();
   }
@@ -315,6 +315,7 @@
   /* ── articulated parts: one slider per part, from its frame-0 pose: a revolute part turns about its hinge (axis
         through pivot, slider in degrees), a prismatic one slides along its axis (slider in % of its largest opening) ── */
   var demo = true, demoT = 0;
+  var views = root.dataset.partViews !== undefined, active = 0, glide = null;  // data-part-views: the input view goes to the part that moves
   function setupParts(parts, P0) {
     var R0 = nodesAt(0).R;
     partsBox.innerHTML = '';
@@ -323,13 +324,25 @@
       var part = { slide: slide, axis: normalize(pt.axis), pivot: slide ? pt.origin : pt.pivot, sign: slide ? 1 : pt.sign,
                    max: slide ? 100 : Math.ceil(pt.max_deg), len: pt.max_m, h: pt.h, deg: 0, unit: slide ? '%' : '°',
                    P0: [P0[k * 3], P0[k * 3 + 1], P0[k * 3 + 2]], R0: Array.prototype.slice.call(R0, k * 9, k * 9 + 9) };
+      if (pt.fixed) { part.fixed = true; return part; }  // held at its frame-0 pose, without a slider (its fit is not good enough to pose it)
+      if (views) {  // its view: the frame where it is opened furthest (the camera then looks at it)
+        var T = scene.T, best = -Infinity;
+        for (var f = 0; f < T; f++) {
+          var o = 0, c;
+          if (slide) for (c = 0; c < 3; c++) o += Math.pow(scene.A.n_pos[(k * T + f) * 3 + c] - part.P0[c], 2);
+          else for (c = 0; c < 9; c++) o -= scene.A.n_rot[(k * T + f) * 9 + c] * part.R0[c];
+          if (o > best) { best = o; part.view = f; }
+        }
+        var cv = scene.cams[part.view], fw = col(cv.R, 2);
+        part.depth = Math.max(0.05, (part.P0[0] - cv.c[0]) * fw[0] + (part.P0[1] - cv.c[1]) * fw[1] + (part.P0[2] - cv.c[2]) * fw[2]);
+      }
       var lab = document.createElement('label'), name = document.createElement('span'), val = document.createElement('output');
       var input = document.createElement('input');
       lab.className = 'viewer-part'; name.textContent = pt.name || (root.dataset.partName || 'Part') + ' ' + (k + 1);
       input.type = 'range'; input.min = 0; input.max = part.max; input.step = 1; input.value = 0;
       input.setAttribute('aria-label', name.textContent + (slide ? ' opening' : ' opening angle'));
       val.textContent = '0' + part.unit;
-      input.addEventListener('input', function () { stopDemo(); setPart(k, +input.value); });
+      input.addEventListener('input', function () { stopDemo(); setPart(k, +input.value); lookAt(k); });
       lab.appendChild(name); lab.appendChild(input); lab.appendChild(val); partsBox.appendChild(lab);
       part.input = input; part.out = val;
       return part;
@@ -358,11 +371,13 @@
     return { P: P, R: R, key: scene.parts.map(function (pt) { return pt.deg.toFixed(2); }).join(',') };
   }
   function demoAngles(dt) {  // until a slider is touched: each part opens to 3/4 of its range and closes, in turn
-    var per = 3.2, n = scene.parts.length;
-    demoT = (demoT + dt) % (per * n);
-    scene.parts.forEach(function (pt, k) {
-      var u = demoT - k * per, a = u > 0 && u < per ? Math.sin(Math.PI * u / per) : 0;
-      setPart(k, Math.round(0.75 * pt.max * a * a * 10) / 10);
+    var lead = views ? GLIDE : 0, per = 3.2 + lead;  // with part views, after the view has gone to it
+    var live = scene.parts.filter(function (pt) { return !pt.fixed; });
+    demoT = (demoT + dt) % (per * live.length);
+    lookAt(scene.parts.indexOf(live[Math.floor(demoT / per)]));
+    live.forEach(function (pt, k) {
+      var u = demoT - k * per - lead, a = u > 0 && u < 3.2 ? Math.sin(Math.PI * u / 3.2) : 0;
+      setPart(scene.parts.indexOf(pt), Math.round(0.75 * pt.max * a * a * 10) / 10);
     });
   }
 
@@ -445,6 +460,20 @@
     var A = sc.cams[f], B = sc.cams[g];
     return { R: quatToR(nlerp(A.q, B.q, a)), c: [0, 1, 2].map(function (i) { return A.c[i] * (1 - a) + B.c[i] * a; }) };
   }
+  var GLIDE = 1.2;  // seconds the input view takes to go from one part's view to the next
+  function followCamera() {  // the input camera; with part views, the active part's view, glided to from where the view was
+    if (!(views && scene.parts)) return inputCamera(shownT);
+    var B = scene.cams[scene.parts[active].view];
+    if (!glide) return { R: B.R.slice(), c: B.c.slice() };
+    var e = glide.u * glide.u * (3 - 2 * glide.u);
+    return { R: quatToR(nlerp(glide.q, B.q, e)), c: [0, 1, 2].map(function (i) { return glide.c[i] * (1 - e) + B.c[i] * e; }) };
+  }
+  function lookAt(k) {
+    if (!(views && scene.parts) || k === active) return;
+    var v = followCamera();
+    glide = follow ? { q: quatFromR(v.R), c: v.c, u: 0 } : null; active = k;
+    dirty = true; requestSort();
+  }
   function setView(mode) {
     follow = mode === 'input';
     viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === mode ? 'true' : 'false'); });
@@ -456,12 +485,12 @@
   var limit = +root.dataset.orbitLimit || 0;  // degrees the view may turn from the input camera (0: free)
   function unfollow() {  // leave the input camera where it is now and orbit about the point it looks at
     if (!follow) return;
-    var ic = inputCamera(shownT), f = col(ic.R, 2);
-    cam.R = ic.R; cam.c = ic.c; cam.target = [0, 1, 2].map(function (i) { return ic.c[i] + f[i] * scene.depth; });
-    cam.yaw = 0; cam.pitch = 0; cam.dist0 = scene.depth;
+    var ic = followCamera(), f = col(ic.R, 2), depth = views && scene.parts ? scene.parts[active].depth : scene.depth;
+    cam.R = ic.R; cam.c = ic.c; cam.target = [0, 1, 2].map(function (i) { return ic.c[i] + f[i] * depth; });
+    cam.yaw = 0; cam.pitch = 0; cam.dist0 = depth;
     setView('free');
   }
-  function current() { return follow ? inputCamera(shownT) : cam; }
+  function current() { return follow ? followCamera() : cam; }
 
   var drag = null;
   canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
@@ -587,7 +616,7 @@
         var cf = sc.cams[f].c;
         if (Math.hypot(cf[0] - eye[0], cf[1] - eye[1], cf[2] - eye[2]) > 1.5 * d) frust(sc.cams[f].R, cf, BLUE, 0.45, 1.2);
       }
-      if (!follow) { var ic = inputCamera(tt); frust(ic.R, ic.c, ORANGE, 1, 2.4); }
+      if (!follow) { var ic = followCamera(); frust(ic.R, ic.c, ORANGE, 1, 2.4); }
     }
     if (layers.tracks && sc.tracks) {
       var f1 = Math.floor(tt), f0 = Math.max(0, f1 - Math.min(TRAIL, Math.max(2, Math.round(T / 4))));  // short runs: shorter trails
@@ -607,6 +636,7 @@
     if (layers.graph && sc.parts) {  // hinge axes or slide rails, and each part's node
       var PN = partNodes();
       sc.parts.forEach(function (pt, k) {
+        if (pt.fixed) return;
         var lo = pt.slide ? 0 : pt.h[0] - 0.04, hi = pt.slide ? pt.len : pt.h[1] + 0.04;
         var a = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * lo; }), b = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * hi; });
         seg(a, b, INK, 0.55, 6.5); seg(a, b, EDGE, 1, 4.4);
@@ -663,6 +693,7 @@
   function tick(now) {
     raf = null;
     if (!inView) return;
+    if (glide && glide.u < 1 && last !== null) { glide.u = Math.min(1, glide.u + Math.min(0.1, (now - last) / 1000) / GLIDE); dirty = true; requestSort(); }
     if (playing && scene && scene.parts && last !== null) demoAngles(Math.min(0.1, (now - last) / 1000));
     else if (playing && scene && last !== null) {
       var dt = Math.min(0.1, (now - last) / 1000), T = scene.T;
