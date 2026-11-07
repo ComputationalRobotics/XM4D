@@ -56,8 +56,9 @@ assets/
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
                   export_viewer_fix.py (background thinned per voxel, so the white walls stay clean); casa-twin.bin
-                  (the RoboCasa kitchen twin, monocular) from page_assets/robocasa/mono_v3/ (export, then rename_parts.py
-                  for the part names, the caps after review (drawer 75 %, cabinets 30 and 41 degrees) and four parts held fixed); casa-pose.bin
+                  (the RoboCasa kitchen twin, monocular) from page_assets/robocasa/mono_v4/ (export_viewer_parts_v4.py: static
+                  Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
+                  after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
 ```
 
