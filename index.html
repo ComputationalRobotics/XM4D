@@ -205,6 +205,8 @@
           <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
           <span class="seg-label">HOI</span>
           <button role="tab" aria-selected="false" data-group="fridge">fridge</button>
+          <span class="seg-label">Pexels</span>
+          <button role="tab" aria-selected="false" data-group="dancer">dancer</button>
         </div>
       </div>
       <p class="gallery-note">Each run is seen from one of its input cameras, held fixed while time plays: the trained 4D Gaussians rendered from it, the 3D tracks, and the embedded deformation graph that moves the dynamic points.</p>
@@ -293,6 +295,10 @@
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
           <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own.</span></figcaption></figure>
       </div>
+      <div class="gallery-group" data-group="dancer" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="534" poster="assets/img/runs/dancer.jpg" data-src="assets/video/runs/dancer.mp4"></video>
+          <figcaption>Pexels &middot; dancer <span>A stock video (Polina Tankilevitch, Pexels). The graph is the 17 joints of a COCO body pose plus points on the feet and hands; the cells are cropped to her.</span></figcaption></figure>
+      </div>
     </div>
   </header>
 
@@ -356,6 +362,9 @@
             </optgroup>
             <optgroup label="EgoDexter">
               <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
+            </optgroup>
+            <optgroup label="Pexels">
+              <option value="dancer" data-src="assets/3d/dancer.bin">dancer</option>
             </optgroup>
           </select>
         </label>
@@ -484,23 +493,29 @@
       <div class="gallery-head">
         <div class="app-text">
           <h3>Dance with a robot</h3>
-          <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
-            animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
-            limits and with its own link lengths. It can dance beside the dancer, or take her place.</p>
+          <p>For people, the graph&rsquo;s nodes are body joints, so the solved motion is a skeleton animation. A Unitree
+            G1 humanoid follows the 17 joints of the body pose through inverse kinematics on its own joints, within
+            their limits and with its own link lengths. It can dance beside the dancer, or take her place.</p>
         </div>
         <div class="segmented" role="tablist" aria-label="Robot">
           <button role="tab" aria-selected="true" data-group="rb-duet">beside her</button>
           <button role="tab" aria-selected="false" data-group="rb-place">in her place</button>
+          <button role="tab" aria-selected="false" data-group="rb-crowd">in a crowd</button>
         </div>
       </div>
       <div class="gallery-group is-active" data-group="rb-duet" role="tabpanel">
-        <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="960" height="540" poster="assets/img/apps/duet-dance-twirl.jpg" data-src="assets/video/apps/duet-dance-twirl.mp4"></video>
-          <figcaption>DAVIS dance-twirl <span>The reconstruction from one input camera, with the robot&rsquo;s render moved sideways in the image so it dances beside her.</span></figcaption></figure>
+        <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="960" height="540" poster="assets/img/apps/duet-dancer.jpg" data-src="assets/video/apps/duet-dancer.mp4"></video>
+          <figcaption>Pexels dancer <span>The reconstruction from one input camera, with the robot&rsquo;s render moved sideways in the image so it dances beside her.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="rb-place" role="tabpanel" hidden>
         <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="338" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
-          <figcaption>DAVIS dance-twirl</figcaption></figure>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="338" poster="assets/img/apps/robot-dancer.jpg" data-src="assets/video/apps/robot-dancer.mp4"></video>
+          <figcaption>Pexels dancer</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="rb-crowd" role="tabpanel" hidden>
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
+          <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
       </div>
     </div>
 
