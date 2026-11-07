@@ -484,8 +484,7 @@
       <p>
         XM4D&rsquo;s motion is explicit: a graph of nodes, each with a position and a rotation per frame, that carries
         the dynamic Gaussians. The reconstruction can therefore be edited and re-animated. A motion can drive a robot,
-        parts can be posed by hand, and the moving object can be left out. The static solver on its own also tracks a
-        known object in 6D.
+        parts can be posed by hand, and the moving object can be left out.
       </p>
     </div>
 
@@ -516,58 +515,6 @@
         <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
         <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
           <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
-      </div>
-    </div>
-
-    <div class="app gallery" id="app-pose">
-      <div class="gallery-head">
-        <div class="app-text">
-          <h3>Track a known object in 6D</h3>
-          <p>Point the static solver at one object instead of the scene. The object&rsquo;s tracked surface points,
-            lifted with the depth, form a rigid scene of their own, and the camera&rsquo;s motion relative to them is the
-            object&rsquo;s motion. One global solve over the whole video gives the object&rsquo;s pose in every frame, with
-            no pose network and no per-frame model fitting. The object frame is set once: by registering the CAD model to
-            the cloud XM fused, or by the first frame&rsquo;s pose.</p>
-        </div>
-        <div class="segmented" role="tablist" aria-label="Sequence">
-          <button role="tab" aria-selected="true" data-group="ps-mustard">mustard</button>
-          <button role="tab" aria-selected="false" data-group="ps-bleach">bleach bottle</button>
-        </div>
-      </div>
-      <div class="app-cols app-cols-2" aria-hidden="true"><span>The CAD model&rsquo;s outline at XM&rsquo;s pose</span><span>The pose in 3D: XM&rsquo;s path in blue, the ground truth in grey</span></div>
-      <div class="gallery-group is-active" data-group="ps-mustard" role="tabpanel">
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="480" poster="assets/img/apps/pose6d-mustard0.jpg" data-src="assets/video/apps/pose6d-mustard0.mp4"></video>
-          <figcaption>YCBInEOAT mustard0 <span>RGB-D, 737 frames, with the still stretches sped up. The object frame comes from the
-            CAD registration; no ground-truth pose is used.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="ps-bleach" role="tabpanel" hidden>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="480" poster="assets/img/apps/pose6d-bleach_hard_00_03_chaitanya.jpg" data-src="assets/video/apps/pose6d-bleach_hard_00_03_chaitanya.mp4"></video>
-          <figcaption>YCBInEOAT bleach_hard_00_03_chaitanya <span>RGB-D, 441 frames, with the still stretches sped up: the bottle is
-            picked up and turned upside down. Where the gripper hides it, only a faint outline is drawn. The ground-truth path
-            jitters from frame to frame more than XM&rsquo;s.</span></figcaption></figure>
-      </div>
-      <div class="app-table">
-        <table>
-          <caption>YCBInEOAT, all 9 videos (7,449 frames), AUC (%) of ADD-S and ADD over 0&ndash;10&nbsp;cm</caption>
-          <thead>
-            <tr><th scope="col">Method</th><th scope="col">CAD model</th><th scope="col">First-frame pose</th><th scope="col" class="num">ADD&#8209;S</th><th scope="col" class="num">ADD</th></tr>
-          </thead>
-          <tbody>
-            <tr class="ours"><th scope="row">XM4D (static solver)</th><td>registered once</td><td>not used</td><td class="num">93.34</td><td class="num">83.99</td></tr>
-            <tr class="ours"><th scope="row">XM4D (static solver)</th><td>not used</td><td>ground truth</td><td class="num">92.15</td><td class="num">86.28</td></tr>
-            <tr><th scope="row">BundleTrack</th><td>not used</td><td>ground truth</td><td class="num">92.53</td><td class="num">87.34</td></tr>
-            <tr><th scope="row">BundleSDF</th><td>not used</td><td>ground truth</td><td class="num">93.77</td><td class="num">86.95</td></tr>
-            <tr><th scope="row">Wüthrich et al.</th><td>every frame</td><td>ground truth</td><td class="num">89.18</td><td class="num">78.28</td></tr>
-            <tr><th scope="row">se(3)-TrackNet</th><td>every frame</td><td>ground truth</td><td class="num">95.53</td><td class="num">92.66</td></tr>
-            <tr><th scope="row">FoundationPose</th><td>every frame</td><td>ground truth</td><td class="num">96.42</td><td class="num">93.09</td></tr>
-          </tbody>
-        </table>
-        <p class="app-note">Our rows follow the benchmark&rsquo;s evaluation script on every frame, with masks from SAM&nbsp;2
-          prompted by the first-frame mask. The other rows are as reported in FoundationPose (Wen et al., CVPR 2024),
-          Table&nbsp;4. The solve is certified globally optimal on 6 of the 9 videos; on the other three the duality gap
-          bounds the suboptimality by 1.6&ndash;8&nbsp;%. Most of the remaining error is rotation drift where the object
-          turns fast or shows a new face and few tracks survive. Methods that compare against the CAD model in every
-          frame avoid that drift. Data: Wen et al., IROS 2020; YCB models (CC&nbsp;BY&nbsp;4.0).</p>
       </div>
     </div>
 

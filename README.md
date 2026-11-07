@@ -51,9 +51,7 @@ assets/
                   skeleton and planted on the reconstructed floor, beside her) and robot-dancer (render | G1 in her
                   place), both from page_assets/human/ (deliver.sh); robot-dance-twirl (DAVIS: render | G1 in her
                   place, robot_clips.py, top row trimmed); remove-car-roundabout (input | without the dynamic
-                  Gaussians, render_removal.py); pose6d-<sequence> (YCBInEOAT, render_clip2.py: the CAD model at the
-                  pose of XM's rigid solve over the object's own tracks | the pose in 3D with XM's and the ground-truth
-                  paths; scripts, metrics and report: page_assets/pose6d/); all 12 fps; posters in img/apps/
+                  Gaussians, render_removal.py); all 12 fps; posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
