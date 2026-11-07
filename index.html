@@ -575,6 +575,55 @@
       </div>
     </div>
 
+    <div class="app" id="app-twin">
+      <div class="app-text">
+        <h3>A kitchen&rsquo;s digital twin, from a robot opening it</h3>
+        <p>In a RoboCasa kitchen, a mobile robot opens and closes seven parts in turn, while the camera follows it: a
+          drawer, two wall cabinets, the dishwasher, both fridge doors and the microwave. Each part is one rigid node.
+          From its solved poses, XM4D tells a hinge from a slide and fits its axis; all seven get the right kind of
+          joint. Drag a slider to open that part, and the view goes to it.</p>
+        <p class="app-note">From the RGB video, monocular depth and the camera&rsquo;s focal length; the parts&rsquo; masks
+          come from SAM&nbsp;3 with a few clicks each, and the robot is left out. Two parts have sliders: the drawer, and
+          the right wall cabinet up to 26&deg;, past which its door smears where its back was never seen. The others stay
+          closed: the left cabinet&rsquo;s hinge sits 24&nbsp;cm from the true one, the dishwasher&rsquo;s opens the wrong
+          way, the fridge doors&rsquo; stop at 19&deg; and 33&deg; of 70&deg; and 60&deg;, and the microwave&rsquo;s mask
+          took its whole front, not just the door.</p>
+      </div>
+      <div class="viewer viewer-app" data-src="assets/3d/casa-twin.bin" data-label="kitchen" data-part-views data-orbit-limit="10">
+        <div class="viewer-stage">
+          <canvas class="viewer-canvas" aria-label="3D view of the kitchen with its parts posed by the sliders"></canvas>
+          <p class="viewer-status" role="status">Loading…</p>
+          <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
+        </div>
+        <div class="viewer-panel">
+          <div class="viewer-field"><span class="viewer-label">Parts</span><div class="viewer-parts"></div></div>
+          <fieldset class="viewer-layers">
+            <legend class="viewer-label">Show</legend>
+            <label><input type="checkbox" data-layer="static" checked> Static scene</label>
+            <label><input type="checkbox" data-layer="dynamic" checked> Parts</label>
+            <label><input type="checkbox" data-layer="graph"> Joints <i class="key key-graph" aria-hidden="true"></i></label>
+            <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
+          </fieldset>
+          <fieldset class="viewer-views">
+            <legend class="viewer-label">View</legend>
+            <div class="segmented">
+              <button type="button" data-view="input" aria-pressed="true">Input camera</button>
+              <button type="button" data-view="free" aria-pressed="false">Orbit</button>
+            </div>
+          </fieldset>
+          <div class="viewer-time">
+            <button type="button" class="viewer-play" aria-label="Pause">
+              <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+            </button>
+            <span class="viewer-demo-label">Demo: each part in turn</span>
+            <input type="range" class="viewer-slider" min="0" max="1" step="any" value="0" aria-label="Time">
+            <span class="viewer-frame"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="app" id="app-remove">
       <div class="app-text">
         <h3>Remove the moving object</h3>
