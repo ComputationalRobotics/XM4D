@@ -47,7 +47,8 @@ assets/
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
                   saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
     apps/         Applications clips (scripts: 4DReconstruction/scratchpad/page_assets/apps/ unless noted):
-                  robot-dance-twirl (DAVIS: render | a Unitree G1 in her place, robot_clips.py, top row trimmed); casa-pose (a RoboCasa robot carries a cereal box while
+                  robot-dance-twirl (DAVIS: render | a Unitree G1 in her place, robot_clips.py, top row trimmed); robot-skater (Pexels
+                  skater, the G1's standing foot planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); casa-pose (a RoboCasa robot carries a cereal box while
                   the camera moves: input with the box's mesh at our pose | the static kitchen with our camera path
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
                   without the dynamic Gaussians, render_removal.py); all 12 fps; posters in img/apps/

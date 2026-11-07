@@ -487,7 +487,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .app-text { max-width: var(--col); }
 .app-text h3 { font-size: 20px; margin-bottom: 6px; }
 .app-text p { color: var(--graphite); font-size: 15.5px; }
-#app-robot .app-text, #app-pose .app-text, #app-articulate .app-text { margin-bottom: 16px; }
+#app-pose .app-text, #app-articulate .app-text { margin-bottom: 16px; }
 #app-pose .app-cols { grid-template-columns: 640fr 806fr; }  /* the clip's input and 3D panels are 640 and 806 px wide */
 .app.gallery .gallery-head { align-items: flex-end; }
 .app-cols { display: grid; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: var(--graphite); }

@@ -492,16 +492,29 @@
       </p>
     </div>
 
-    <div class="app" id="app-robot">
-      <div class="app-text">
-        <h3>Dance with a robot</h3>
-        <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
-          animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
-          limits and with its own link lengths, and takes the dancer&rsquo;s place.</p>
+    <div class="app gallery" id="app-robot">
+      <div class="gallery-head">
+        <div class="app-text">
+          <h3>Dance with a robot</h3>
+          <p>For people, the graph&rsquo;s nodes are the joints of a body pose, so the solved motion is a skeleton
+            animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
+            limits and with its own link lengths, and takes the person&rsquo;s place.</p>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Robot">
+          <button role="tab" aria-selected="true" data-group="rb-twirl">dance-twirl</button>
+          <button role="tab" aria-selected="false" data-group="rb-skater">skater</button>
+        </div>
       </div>
-      <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-      <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
-        <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
+      <div class="gallery-group is-active" data-group="rb-twirl" role="tabpanel">
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
+          <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="rb-skater" role="tabpanel" hidden>
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-skater.jpg" data-src="assets/video/apps/robot-skater.mp4"></video>
+          <figcaption>Pexels skater <span>A spin on one foot, with the camera following her. The robot keeps its standing foot on the ice, fitted from the reconstruction. Stock video by Tima Miroshnichenko, Pexels.</span></figcaption></figure>
+      </div>
     </div>
 
     <div class="app" id="app-pose">
