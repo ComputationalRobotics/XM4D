@@ -19,7 +19,7 @@ python3 -m http.server 8080   # then open http://localhost:8080
 index.html        all page content
 style.css         all styling; colors are tokens under :root (--accent = xmblue, --accent-2 = xmorange)
 main.js           BibTeX copy, gallery tabs, lazy video playback, method-step figure swap
-viewer.js         the 3D viewers (WebGL 2; Gallery, fridge, kitchen twin): Gaussian splats, deformation graph, cameras, 3D tracks
+viewer.js         the 3D viewers (WebGL 2; Gallery, fridge): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
 assets/
   favicon.svg
@@ -54,9 +54,7 @@ assets/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
-                  export_viewer_fix.py (background thinned per voxel, so the white walls stay clean); casa-twin.bin
-                  (the RoboCasa kitchen twin) from page_assets/robocasa/ (export_viewer_parts.py, then rename_parts.py
-                  for the part names, the right cabinet's 55-degree cap and the microwave held fixed); casa-pose.bin
+                  export_viewer_fix.py (background thinned per voxel, so the white walls stay clean); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
 ```
 
@@ -69,7 +67,7 @@ assets/
 - **Articulated runs:** a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
   `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge (or, for a
   `prismatic` part, slides along its axis). A part with `"fixed": true` keeps its frame-0 pose and gets no slider.
-  With `data-part-views` (assets/3d/casa-twin.bin), the input view glides to the camera that saw each part open
+  With `data-part-views` on the `.viewer`, the input view glides to the camera that saw each part open
   furthest, in the demo and when its slider is moved.
 - **Gallery runs:** add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's run picker; a
   value that matches an Example runs tab (`data-group`) is picked when that tab is.
