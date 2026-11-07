@@ -312,20 +312,23 @@
     return { P: P, R: R };
   }
 
-  /* ── articulated parts: one slider per part turns it about its hinge (axis through pivot), from its frame-0 pose ── */
+  /* ── articulated parts: one slider per part, from its frame-0 pose: a revolute part turns about its hinge (axis
+        through pivot, slider in degrees), a prismatic one slides along its axis (slider in % of its largest opening) ── */
   var demo = true, demoT = 0;
   function setupParts(parts, P0) {
     var R0 = nodesAt(0).R;
     partsBox.innerHTML = '';
     return parts.map(function (pt, k) {
-      var part = { axis: normalize(pt.axis), pivot: pt.pivot, sign: pt.sign, max: Math.ceil(pt.max_deg), h: pt.h, deg: 0,
+      var slide = pt.type === 'prismatic';
+      var part = { slide: slide, axis: normalize(pt.axis), pivot: slide ? pt.origin : pt.pivot, sign: slide ? 1 : pt.sign,
+                   max: slide ? 100 : Math.ceil(pt.max_deg), len: pt.max_m, h: pt.h, deg: 0, unit: slide ? '%' : '°',
                    P0: [P0[k * 3], P0[k * 3 + 1], P0[k * 3 + 2]], R0: Array.prototype.slice.call(R0, k * 9, k * 9 + 9) };
       var lab = document.createElement('label'), name = document.createElement('span'), val = document.createElement('output');
       var input = document.createElement('input');
-      lab.className = 'viewer-part'; name.textContent = (root.dataset.partName || 'Part') + ' ' + (k + 1);
+      lab.className = 'viewer-part'; name.textContent = pt.name || (root.dataset.partName || 'Part') + ' ' + (k + 1);
       input.type = 'range'; input.min = 0; input.max = part.max; input.step = 1; input.value = 0;
-      input.setAttribute('aria-label', name.textContent + ' opening angle');
-      val.textContent = '0°';
+      input.setAttribute('aria-label', name.textContent + (slide ? ' opening' : ' opening angle'));
+      val.textContent = '0' + part.unit;
       input.addEventListener('input', function () { stopDemo(); setPart(k, +input.value); });
       lab.appendChild(name); lab.appendChild(input); lab.appendChild(val); partsBox.appendChild(lab);
       part.input = input; part.out = val;
@@ -334,16 +337,22 @@
   }
   function setPart(k, deg) {
     var part = scene.parts[k];
-    part.deg = deg; part.input.value = deg; part.out.textContent = Math.round(deg) + '°';
+    part.deg = deg; part.input.value = deg; part.out.textContent = Math.round(deg) + part.unit;
     dirty = true; requestSort();
   }
   function stopDemo() { if (demo) { demo = false; setPlaying(false); } }
   function partNodes() {  // node positions and matrices from the sliders (a part's Gaussians keep their shapes, as in training)
     var M = scene.M, P = new Float32Array(M * 3), R = new Float32Array(M * 9);
     scene.parts.forEach(function (pt, k) {
+      var c;
+      if (pt.slide) {
+        for (c = 0; c < 3; c++) P[k * 3 + c] = pt.P0[c] + pt.axis[c] * pt.len * pt.deg / 100;
+        for (c = 0; c < 9; c++) R[k * 9 + c] = pt.R0[c];
+        return;
+      }
       var q = axisAngle(pt.axis, pt.sign * pt.deg * Math.PI / 180), d = [pt.P0[0] - pt.pivot[0], pt.P0[1] - pt.pivot[1], pt.P0[2] - pt.pivot[2]];
       var p = apply3(q, d), r = mul3(q, pt.R0);
-      for (var c = 0; c < 3; c++) P[k * 3 + c] = pt.pivot[c] + p[c];
+      for (c = 0; c < 3; c++) P[k * 3 + c] = pt.pivot[c] + p[c];
       for (c = 0; c < 9; c++) R[k * 9 + c] = r[c];
     });
     return { P: P, R: R, key: scene.parts.map(function (pt) { return pt.deg.toFixed(2); }).join(',') };
@@ -595,10 +604,11 @@
         dot(head, tr.color, 1, 6);
       });
     }
-    if (layers.graph && sc.parts) {  // hinge axes, and each part's node
+    if (layers.graph && sc.parts) {  // hinge axes or slide rails, and each part's node
       var PN = partNodes();
       sc.parts.forEach(function (pt, k) {
-        var a = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * (pt.h[0] - 0.04); }), b = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * (pt.h[1] + 0.04); });
+        var lo = pt.slide ? 0 : pt.h[0] - 0.04, hi = pt.slide ? pt.len : pt.h[1] + 0.04;
+        var a = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * lo; }), b = [0, 1, 2].map(function (i) { return pt.pivot[i] + pt.axis[i] * hi; });
         seg(a, b, INK, 0.55, 6.5); seg(a, b, EDGE, 1, 4.4);
         dot([PN.P[k * 3], PN.P[k * 3 + 1], PN.P[k * 3 + 2]], NODE, 1, 12);
       });

@@ -50,7 +50,9 @@ assets/
                   reconstruction from one camera with the Unitree G1 layer of the research code's robot_retarget_render.py
                   moved beside the dancer, duet_z.py), robot-dance-twirl (render | G1 in her place, robot_clips.py),
                   remove-car-roundabout (input | without the dynamic
-                  Gaussians, render_removal.py); all 12 fps; posters in img/apps/
+                  Gaussians, render_removal.py), pose6d-<sequence> (YCBInEOAT, render_clip2.py: the CAD model at the pose of XM's rigid
+                  solve over the object's own tracks | the pose in 3D with XM's and the ground-truth paths; scripts,
+                  metrics and report: 4DReconstruction/scratchpad/page_assets/pose6d/); all 12 fps; posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges
