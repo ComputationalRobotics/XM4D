@@ -492,43 +492,25 @@
       </p>
     </div>
 
-    <div class="app gallery" id="app-robot">
-      <div class="gallery-head">
-        <div class="app-text">
-          <h3>Dance with a robot</h3>
-          <p>For people, the graph&rsquo;s nodes are body joints, so the solved motion is a skeleton animation. A Unitree
-            G1 humanoid follows the 17 joints of the body pose through inverse kinematics on its own joints, within
-            their limits and with its own link lengths. It can dance beside the dancer, or take her place.</p>
-        </div>
-        <div class="segmented" role="tablist" aria-label="Robot">
-          <button role="tab" aria-selected="true" data-group="rb-duet">beside her</button>
-          <button role="tab" aria-selected="false" data-group="rb-place">in her place</button>
-          <button role="tab" aria-selected="false" data-group="rb-crowd">in a crowd</button>
-        </div>
+    <div class="app" id="app-robot">
+      <div class="app-text">
+        <h3>Dance with a robot</h3>
+        <p>For people, the graph&rsquo;s nodes are the 17 joints of a body pose, so the solved motion is a skeleton
+          animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
+          limits and with its own link lengths, and takes the dancer&rsquo;s place.</p>
       </div>
-      <div class="gallery-group is-active" data-group="rb-duet" role="tabpanel">
-        <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="960" height="540" poster="assets/img/apps/duet-dancer.jpg" data-src="assets/video/apps/duet-dancer.mp4"></video>
-          <figcaption>Pexels dancer <span>The reconstruction from one input camera, with the robot&rsquo;s render moved sideways in the image so it dances beside her.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="rb-place" role="tabpanel" hidden>
-        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="338" poster="assets/img/apps/robot-dancer.jpg" data-src="assets/video/apps/robot-dancer.mp4"></video>
-          <figcaption>Pexels dancer</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="rb-crowd" role="tabpanel" hidden>
-        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
-          <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
-      </div>
+      <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+      <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
+        <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
     </div>
 
     <div class="app" id="app-pose">
       <div class="app-text">
         <h3>Follow a known object in 6D</h3>
         <p>A robot carries a cereal box 1.8&nbsp;m along a kitchen counter and turns it a quarter turn, while the camera
-          moves 2.2&nbsp;m. From the RGB video alone, XM4D solves the camera&rsquo;s path and the box as one rigid node,
-          in the same world frame. The box&rsquo;s mesh is registered to the reconstructed box once; from then on, the
-          node&rsquo;s motion is the box&rsquo;s 6D pose in every frame.</p>
+          moves 2.2&nbsp;m. From the RGB video and the camera&rsquo;s focal length, XM4D solves the camera&rsquo;s path
+          and the box as one rigid node, in the same world frame. The box&rsquo;s mesh is registered to the reconstructed
+          box once; from then on, the node&rsquo;s motion is the box&rsquo;s 6D pose in every frame.</p>
         <p class="app-note">Against the simulator&rsquo;s ground truth, the camera path is off by 4.9&nbsp;mm (RMSE over
           2.2&nbsp;m) and the box&rsquo;s pose by 2.2&deg; and 17&nbsp;mm on average, for a box 22&nbsp;cm tall. XM
           certifies both solves, the cameras and the box&rsquo;s rotations.</p>
@@ -587,8 +569,8 @@
           drawer, two wall cabinets, the dishwasher, both fridge doors and the microwave. Each part is one rigid node.
           From its solved poses, XM4D tells a hinge from a slide and fits its axis; all seven get the right kind of
           joint. Drag a slider to open that part, and the view goes to it.</p>
-        <p class="app-note">This run uses the simulator&rsquo;s depth images in place of monocular depth, and the robot
-          is left out. The microwave stays closed: its tracks were lost as its door turned, and its fitted hinge is off.
+        <p class="app-note">This run uses the simulator&rsquo;s depth images in place of monocular depth, and its
+          segmentation for the masks of the parts and the robot; the robot is left out. The microwave stays closed: its tracks were lost as its door turned, and its fitted hinge is off.
           Where the tracks fell behind a door, its slider stops short of how far it opened (the fridge door: 53&deg; of
           70&deg;).</p>
       </div>
