@@ -73,7 +73,5 @@ assets/
   `prismatic` part, slides along its axis). A part with `"fixed": true` keeps its frame-0 pose and gets no slider.
   With `data-part-views` on the `.viewer` (assets/3d/casa-twin.bin), the input view glides to the camera that saw each part open
   furthest, in the demo and when its slider is moved.
-- **Benchmarks:** the numbers in `#benchmarks` come from 4DReconstruction/scratchpad/page_assets/bench/metrics.json
-  (make_results.py over the 76 runs of jobs.txt; DAVIS held-out scores from davis_eval.py, camera paths from eval_robo.py).
 - **Gallery runs:** add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's run picker; a
   value that matches an Example runs tab (`data-group`) is picked when that tab is.

@@ -28,7 +28,6 @@
     <a href="#method">How it works</a>
     <a href="#gallery">Gallery</a>
     <a href="#applications">Applications</a>
-    <a href="#benchmarks">Benchmarks</a>
     <a href="#citation">Cite</a>
   </div>
   <div class="topbar-actions">
@@ -635,56 +634,6 @@
       <div class="app-cols app-cols-2" aria-hidden="true"><span>Input video</span><span>Without the dynamic Gaussians</span></div>
       <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video>
         <figcaption>DAVIS car-roundabout, frames 36&ndash;74</figcaption></figure>
-    </div>
-  </section>
-
-  <!-- ───────────────────────── BENCHMARKS ───────────────────────── -->
-  <section class="bench" id="benchmarks" aria-labelledby="bench-title">
-    <div class="section-head">
-      <h2 id="bench-title">Benchmarks</h2>
-      <p>
-        XM4D was run with the same pipeline on 76 videos, each from a moving camera with something moving in front of
-        it. There were 30 from the DAVIS 2017 validation set, 24 from the Bonn RGB-D Dynamic dataset (people, balloons
-        and boxes) and 22 robot wrist-camera episodes from DROID. Every run gets the RGB video and the camera&rsquo;s
-        focal length; depth is monocular. 73 runs finished. The three that failed are DAVIS bike-packing, kite-surf and
-        motocross-jump.
-      </p>
-    </div>
-
-    <div class="app-table">
-      <table>
-        <caption>Camera path against ground truth (100 frames per sequence, after a similarity alignment)</caption>
-        <thead>
-          <tr><th scope="col">Dataset</th><th scope="col">Ground truth</th><th scope="col" class="num">ATE</th><th scope="col" class="num">RPE</th><th scope="col" class="num">Certified</th><th scope="col" class="num">Time</th></tr>
-        </thead>
-        <tbody>
-          <tr><th scope="row">Bonn, 24 sequences</th><td>motion capture</td><td class="num">1.9&nbsp;cm</td><td class="num">2.0&nbsp;cm, 1.5&deg;</td><td class="num">24 / 24</td><td class="num">7.3&nbsp;min</td></tr>
-          <tr><th scope="row">DROID, 22 episodes</th><td>robot kinematics</td><td class="num">1.3&nbsp;cm</td><td class="num">0.3&nbsp;cm, 0.5&deg;</td><td class="num">22 / 22</td><td class="num">3.1&nbsp;min</td></tr>
-        </tbody>
-      </table>
-      <p class="app-note">ATE and RPE are root-mean-square errors, averaged over the sequences. RPE is between consecutive
-        frames. The median ATE is 1.8&nbsp;cm on Bonn and 0.7&nbsp;cm on DROID, where the wrist camera moves 0.66&nbsp;m on
-        average. DROID&rsquo;s ground truth is the arm&rsquo;s forward kinematics times the wrist camera&rsquo;s hand-eye
-        calibration. &ldquo;Certified&rdquo; counts the static solves that XM proved globally optimal. Times are per
-        sequence on one RTX 6000 Ada, depth and tracking included.</p>
-    </div>
-
-    <div class="app-table">
-      <table>
-        <caption>DAVIS 2017 validation, 27 videos: every 8th frame held out of training</caption>
-        <thead>
-          <tr><th scope="col">Frames</th><th scope="col" class="num">PSNR</th><th scope="col" class="num">SSIM</th><th scope="col" class="num">LPIPS</th><th scope="col" class="num">J</th><th scope="col" class="num">F</th><th scope="col" class="num">J&amp;F</th></tr>
-        </thead>
-        <tbody>
-          <tr><th scope="row">Held out (225)</th><td class="num">22.1</td><td class="num">0.740</td><td class="num">0.274</td><td class="num">0.689</td><td class="num">0.672</td><td class="num">0.680</td></tr>
-          <tr><th scope="row">Trained on (1,615)</th><td class="num">25.7</td><td class="num">0.825</td><td class="num">0.229</td><td class="num">0.704</td><td class="num">0.686</td><td class="num">0.695</td></tr>
-        </tbody>
-      </table>
-      <p class="app-note">A held-out frame is rendered from its solved camera without ever being seen in training. J and F
-        compare the silhouette of the moving Gaussians with DAVIS&rsquo;s object masks, as region overlap and boundary
-        accuracy. All 29 static solves are certified, as are all 1,991 solves of the motion graph&rsquo;s segments. A
-        video takes 41&nbsp;min on average: 2.4 for depth, masks and tracks, 1.0 for the cameras, 2.8 for the motion
-        graph and 34.8 for training the 4D Gaussians.</p>
     </div>
   </section>
 
