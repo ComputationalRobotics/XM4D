@@ -21,14 +21,10 @@ style.css         all styling; colors are tokens under :root (--accent = xmblue,
 main.js           BibTeX copy, gallery tabs, lazy video playback, method-step figure swap
 viewer.js         the 3D viewers (WebGL 2; Gallery, fridge, kitchen twin): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
-handobj.js        the hand-object viewer (Applications; three.js 0.147 from jsDelivr, loaded when it nears the viewport):
-                  per clip, the object meshes at their solved 6D poses, both hand skeletons, the camera and the table;
-                  a camera view over the input frame with SAM 3's mask outlines dashed. Its clip tabs pick the clip here too
-picks.html        unlisted, noindex: the extended DAVIS 2017 runs (the benchmark batch, every 8th frame held out), one card
-                  each with a Keep box, for choosing what goes in the Gallery (the list is copied from the bar at the
-                  bottom; ticks kept in localStorage). Built by build_picks.py; clips in assets/video/ext/ and posters in
-                  assets/img/ext/ by build_ext.py (both in the session scratchpad, site_ho/), cut like the Example runs
-                  from each run's showcase_holdout.mp4 (camera 0's render, 3D tracks and EDG graph cells, 10 fps)
+handobj.html      the hand-object viewer's page, opened from the Applications' "Open in 3D" links (#<clip> picks the clip)
+handobj.js        that viewer (three.js 0.147 from jsDelivr, loaded when it nears the viewport): per clip, the object
+                  meshes at their solved 6D poses, both hand skeletons, the camera and the table; a camera view over the
+                  input frame with SAM 3's mask outlines dashed
 assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
@@ -48,7 +44,9 @@ assets/
                        with its tracked keypoints
     runs/         the Example runs gallery below the teaser: per run, one input camera's render, 3D tracks, and
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
-                  4DReconstruction/scratchpad/page_assets/runs/build_runs.py;
+                  4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 14 DAVIS runs after hike (bmx-trees to
+                  soapbox) are the extended DAVIS 2017 batch, every 8th frame held out, cut the same way from its
+                  showcase_holdout.mp4 (build_ext.py in the session scratchpad);
                   posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
                   static-<run>.mp4, the static solve's iterates (the horse's is the first part of teaser-solve.mp4),
@@ -70,6 +68,7 @@ assets/
                   Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
+                  bmx-trees ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10
     handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
                   objN.jpg textures, contours.json from the SAM 3 masks, frames_NN.jpg input atlases), from export_viewer.py
                   in the hand-object scratchpad (hoviewer_r6/tools/)

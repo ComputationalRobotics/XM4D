@@ -1,7 +1,8 @@
-/* XM4D project page — the hand-object viewer (Applications): per clip, the Hunyuan3D object meshes at their solved
-   6D poses, both hand skeletons, the camera and the table plane, scrubbed by frame; a camera view puts the meshes over
-   the input frame, with the SAM 3 mask outlines dashed. Data per clip in data-base/<clip>/ (tools: export_viewer.py).
-   three.js is loaded only when the viewer comes near the viewport. */
+/* XM4D project page — the hand-object viewer (handobj.html, opened from Applications): per clip, the Hunyuan3D object
+   meshes at their solved 6D poses, both hand skeletons, the camera and the table plane, scrubbed by frame; a camera view
+   puts the meshes over the input frame, with the SAM 3 mask outlines dashed. Data per clip in data-base/<clip>/ (tools:
+   export_viewer.py); the clip shown is the one in the address (#ip1149). three.js is loaded when the viewer nears the
+   viewport. */
 (function () {
   'use strict';
   var root = document.querySelector('.ho-viewer');
@@ -480,13 +481,12 @@
         var o = document.createElement('option'); o.value = c.id; o.textContent = c.caption || c.id; sel.appendChild(o);
       });
       if (!idx.clips.length) { say('No clips.'); return; }
-      sel.addEventListener('change', function () { loadClip(sel.value); });
-      // a clip tab above (data-clip) picks the same clip here
-      document.querySelectorAll('[role="tab"][data-clip]').forEach(function (tab) {
-        tab.addEventListener('click', function () { if (sel.value !== tab.dataset.clip) { sel.value = tab.dataset.clip; loadClip(sel.value); } });
-      });
-      var picked = document.querySelector('[role="tab"][data-clip][aria-selected="true"]');
-      sel.value = picked ? picked.dataset.clip : idx.clips[0].id;
+      // the clip in the address (#ip1149, as the Applications' "Open in 3D" links write it), else the first
+      var ids = idx.clips.map(function (c) { return c.id; });
+      function fromHash() { var h = location.hash.slice(1); return ids.indexOf(h) >= 0 ? h : null; }
+      sel.addEventListener('change', function () { history.replaceState(null, '', '#' + sel.value); loadClip(sel.value); });
+      window.addEventListener('hashchange', function () { var h = fromHash(); if (h && h !== sel.value) { sel.value = h; loadClip(h); } });
+      sel.value = fromHash() || ids[0];
       loadClip(sel.value);
     }).catch(function (e) { say('Could not load the clip list.'); console.error(e); });
   }

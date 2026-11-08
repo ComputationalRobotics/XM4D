@@ -568,6 +568,10 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .ho-viewer.is-paused .ho-play .icon-pause { display: none; }
 .ho-time .viewer-frame { min-width: 9ch; text-align: right; font-variant-numeric: tabular-nums; }
 .ho-legend { margin-top: 10px; font-size: 13.5px; color: var(--mist); line-height: 1.45; max-width: var(--col); }
+.ho-page { padding-top: 48px; }
+.ho-page .ho-viewer { margin-top: 0; }
+.ho-page .ho-stage { min-height: min(70vh, 640px); }
+.app-open { margin-top: 10px; }
 @media (max-width: 860px) {
   .ho-viewer { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "time" "input" "panel"; }
   .ho-stage { min-height: 0; aspect-ratio: 4 / 3; }

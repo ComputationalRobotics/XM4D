@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XM4D: hands and objects in 3D</title>
+  <meta name="description" content="XM4D's hand-object reconstructions of five iPhone videos in 3D: Hunyuan3D object meshes at their solved 6D poses, both hands, the camera and the table.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topbar" aria-label="Page">
+  <a class="topbar-brand" href="index.html">XM4D</a>
+  <div class="topbar-links"><a href="index.html#app-handobj">Back to Applications</a></div>
+</nav>
+
+<main>
+  <section class="ho-page" aria-labelledby="ho-title">
+    <div class="section-head">
+      <h2 id="ho-title">Hands and objects from a phone video, in 3D</h2>
+      <p>Each clip&rsquo;s reconstruction: the Hunyuan3D-2.1 object meshes at their solved 6D poses, both hand skeletons,
+        the camera and the fitted table, frame by frame. Drag to turn the scene, or switch to the camera view to see the
+        meshes over the input video.</p>
+    </div>
+    <div class="ho-viewer is-paused" data-base="assets/3d/handobj/">
+      <div class="ho-stage">
+        <canvas class="ho-bg" aria-hidden="true"></canvas>
+        <canvas class="ho-gl" aria-label="3D view of the selected clip"></canvas>
+        <canvas class="ho-overlay" aria-hidden="true"></canvas>
+        <p class="viewer-status ho-status" role="status">Loading…</p>
+        <p class="viewer-hint ho-hint">Drag to orbit · right-drag to pan · scroll to zoom</p>
+      </div>
+      <figure class="ho-input">
+        <canvas aria-label="Input frame"></canvas>
+        <figcaption>Input frame, with SAM&nbsp;3&rsquo;s mask outlines dashed</figcaption>
+      </figure>
+      <div class="ho-panel">
+        <div>
+          <label class="viewer-label" for="ho-clip">Clip</label>
+          <select class="viewer-scene ho-clip" id="ho-clip"></select>
+          <p class="ho-caption"></p>
+        </div>
+        <fieldset>
+          <legend class="viewer-label">View</legend>
+          <div class="segmented">
+            <button type="button" data-view="orbit" aria-pressed="true">Orbit</button>
+            <button type="button" data-view="input" aria-pressed="false">Camera view</button>
+          </div>
+        </fieldset>
+        <fieldset class="viewer-layers">
+          <legend class="viewer-label">Show</legend>
+          <label><input type="checkbox" data-layer="hands" checked> Hands <i class="key key-hands" aria-hidden="true"></i></label>
+          <label><input type="checkbox" data-layer="axes" checked> Object axes <i class="key key-axes" aria-hidden="true"></i></label>
+          <label><input type="checkbox" data-layer="points"> Scene points</label>
+          <label><input type="checkbox" data-layer="frustum"> Camera <i class="key key-cam" aria-hidden="true"></i></label>
+          <label><input type="checkbox" data-layer="outlines" checked> Mask outlines <i class="key key-outlines" aria-hidden="true"></i></label>
+        </fieldset>
+      </div>
+      <div class="ho-time">
+        <button type="button" class="ho-play" aria-label="Play">
+          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+        </button>
+        <input type="range" class="viewer-slider ho-slider" min="0" max="0" step="1" value="0" aria-label="Frame">
+        <span class="viewer-frame ho-frame"></span>
+      </div>
+    </div>
+    <p class="ho-legend">Orange: the person&rsquo;s left hand; blue: their right. In the camera view our meshes are
+      tinted and edged in their object&rsquo;s colour, over the input frame; the dashed lines are SAM&nbsp;3&rsquo;s mask
+      outlines, which follow only the visible part of an object, so they dip where fingers cover it.</p>
+  </section>
+</main>
+
+<script src="handobj.js" defer></script>
+</body>
+</html>
