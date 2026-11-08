@@ -21,6 +21,12 @@ style.css         all styling; colors are tokens under :root (--accent = xmblue,
 main.js           BibTeX copy, gallery tabs, lazy video playback, method-step figure swap
 viewer.js         the 3D viewers (WebGL 2; Gallery, fridge, kitchen twin): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
+handobj.js        the hand-object viewer (Applications; three.js 0.147 from jsDelivr, loaded when it nears the viewport):
+                  per clip, the object meshes at their solved 6D poses, both hand skeletons, the camera and the table;
+                  a camera view over the input frame with SAM 3's mask outlines dashed. Its clip tabs pick the clip here too
+picks.html        unlisted, noindex: every hand-object clip as a card with a Keep box, for choosing what goes on the
+                  main page (the list is copied from the bar at the bottom; ticks kept in localStorage). Built by
+                  build_picks.py (4DReconstruction scratchpad, site_ho/) from the hand-object review page; clips in assets/picks/
 assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
@@ -51,7 +57,9 @@ assets/
                   skater, the G1's standing foot planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); casa-pose (a RoboCasa robot carries a cereal box while
                   the camera moves: input with the box's mesh at our pose | the static kitchen with our camera path
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
-                  without the dynamic Gaussians, render_removal.py); all 12 fps; posters in img/apps/
+                  without the dynamic Gaussians, render_removal.py); handobj-<clip> (five iPhone clips: input with our
+                  hands and mesh outlines | MuJoCo, Hunyuan3D-2.1 meshes posed by their anchored tracks, round 6 of the
+                  hand-object work, render_user5.py); all 12 fps; posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
@@ -60,6 +68,9 @@ assets/
                   Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
+    handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
+                  objN.jpg textures, contours.json from the SAM 3 masks, frames_NN.jpg input atlases), from export_viewer.py
+                  in the hand-object scratchpad (hoviewer_r6/tools/)
 ```
 
 ## Filling in the skeleton

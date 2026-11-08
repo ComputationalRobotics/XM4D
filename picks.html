@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>XM4D: hand-object results to pick from</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* picks page: one card per clip, a Keep box each, the picked list copied from the bar at the bottom */
+    .picks-intro { padding-top: 40px; }
+    .picks-intro h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 12px; }
+    .picks-intro p { max-width: var(--col); color: var(--graphite); }
+    .picks-intro p + p { margin-top: 8px; }
+    .picks-group { padding-top: 56px; }
+    .picks-gid {
+      display: inline-grid; place-items: center; min-width: 1.6em; height: 1.6em; margin-right: 10px; padding: 0 6px;
+      border-radius: 6px; background: var(--ink); color: var(--paper); font-size: .7em; vertical-align: .12em;
+    }
+    .picks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr)); gap: 28px 24px; align-items: start; }
+    .pick { margin: 0; padding: 10px; border: 2px solid transparent; border-radius: 10px; transition: border-color .15s ease, background .15s ease; }
+    .pick.is-picked { border-color: var(--accent-2); background: rgba(var(--accent-2-rgb), .07); }
+    .pick video { width: 100%; border-radius: 6px; background: var(--paper-deep); }
+    .pick.is-tall video { max-height: 520px; width: auto; margin: 0 auto; }
+    .pick figcaption { margin-top: 8px; font-size: 14px; line-height: 1.4; color: var(--ink); }
+    .pick-id { font-family: var(--mono); font-size: 12.5px; color: var(--accent-2-ink); font-weight: 600; }
+    .pick-cap { display: block; color: var(--graphite); }
+    .pick-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; font-size: 14px; }
+    .pick-actions label { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; }
+    .pick-actions input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent-2); }
+    .pick-actions a { color: var(--graphite); font-size: 13.5px; }
+    .picks-bar {
+      position: sticky; bottom: 0; z-index: 20; margin-top: 64px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+      padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom, 0px));
+      background: rgba(241, 239, 233, .92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid var(--rule);
+    }
+    .picks-count { font-weight: 600; }
+    .picks-list { flex: 1 1 240px; min-width: 0; font-family: var(--mono); font-size: 12.5px; color: var(--graphite); overflow-wrap: anywhere; }
+    .picks-bar .btn { padding: 8px 14px; font-size: 14px; }
+    .picks-bar textarea { flex-basis: 100%; height: 4.5em; font: 12.5px/1.4 var(--mono); padding: 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper-raise); }
+    @media (prefers-reduced-motion: reduce) { .pick { transition: none; } }
+  </style>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Page">
+  <a class="topbar-brand" href="index.html">XM4D</a>
+  <div class="topbar-links"><a href="index.html#applications">Back to Applications</a></div>
+</nav>
+
+<main>
+  <section class="picks-intro">
+    <h1>Hand-object results to pick from</h1>
+    <p>Every clip from the hand-object runs, for choosing what goes on the main page: the overnight HOT3D and EgoViz-120
+      runs, and every version of your five iPhone clips. Tick <b>Keep</b> on the ones you want, then copy the list at the
+      bottom and send it to me. Ticks are saved in this browser only.</p>
+    <p>This page is not linked from the main page or indexed by search engines, but anyone with the link can open it.</p>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-A">
+    <div class="section-head"><h2 id="g-A"><span class="picks-gid">A</span>Your iPhone clips, current version</h2><p>Hunyuan3D meshes posed by their tracks, hands on the objects. These five are in Applications now.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="A1" data-name="handobj-ip1149">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1149.jpg" data-src="assets/video/apps/handobj-ip1149.mp4"></video>
+        <figcaption><span class="pick-id">A1</span> <b>Pouring a can into a cup</b> <span class="pick-cap">Reviewer: good as is.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/video/apps/handobj-ip1149.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="A2" data-name="handobj-ip1147">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1147.jpg" data-src="assets/video/apps/handobj-ip1147.mp4"></video>
+        <figcaption><span class="pick-id">A2</span> <b>Opening a jar</b> <span class="pick-cap">Reviewer: good as is.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/video/apps/handobj-ip1147.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="A3" data-name="handobj-ip1045">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/img/apps/handobj-ip1045.jpg" data-src="assets/video/apps/handobj-ip1045.mp4"></video>
+        <figcaption><span class="pick-id">A3</span> <b>A green cube into a bowl</b> <span class="pick-cap">Reviewer: good as is.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/video/apps/handobj-ip1045.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="A4" data-name="handobj-ip1117">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1117.jpg" data-src="assets/video/apps/handobj-ip1117.mp4"></video>
+        <figcaption><span class="pick-id">A4</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">Reviewer: show with a caveat; the right hand floats about 10 cm above the table at 143–165.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/video/apps/handobj-ip1117.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="A5" data-name="handobj-ip1073">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1073.jpg" data-src="assets/video/apps/handobj-ip1073.mp4"></video>
+        <figcaption><span class="pick-id">A5</span> <b>A roll of tape by a peg</b> <span class="pick-cap">Reviewer: show with caveats; the clip stops before the roll goes on, and the right hand floats beside the peg.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/video/apps/handobj-ip1073.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-B">
+    <div class="section-head"><h2 id="g-B"><span class="picks-gid">B</span>HOT3D: milk carton</h2><p>From the overnight hand-object runs. The numbers are against HOT3D&#x27;s ground truth, used only to score.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="B1" data-name="hot3d_milk_after">
+        <video muted loop playsinline preload="none" width="1358" height="540" poster="assets/picks/hot3d_milk_after.jpg" data-src="assets/picks/hot3d_milk_after.mp4"></video>
+        <figcaption><span class="pick-id">B1</span> <b>After the retargeting study</b> <span class="pick-cap">Both hands, the carton tracked at 30 fps. Right hand 31 mm, left 39 mm off in the world.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hot3d_milk_after.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="B2" data-name="hot3d_milk_before">
+        <video muted loop playsinline preload="none" width="1358" height="540" poster="assets/picks/hot3d_milk_before.jpg" data-src="assets/picks/hot3d_milk_before.mp4"></video>
+        <figcaption><span class="pick-id">B2</span> <b>Before the retargeting study</b> <span class="pick-cap">The earlier pipeline: right hand only, the carton tracked at 15 fps. Right hand 62 mm off.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hot3d_milk_before.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="B3" data-name="hot3d_milk_v2">
+        <video muted loop playsinline preload="none" width="1358" height="540" poster="assets/picks/hot3d_milk_v2.jpg" data-src="assets/picks/hot3d_milk_v2.mp4"></video>
+        <figcaption><span class="pick-id">B3</span> <b>Trimmed 3D clip</b> <span class="pick-cap">The 49 frames before the carton spins too fast to track.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hot3d_milk_v2.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="B4" data-name="hot3d_milk">
+        <video muted loop playsinline preload="none" width="1358" height="540" poster="assets/picks/hot3d_milk.jpg" data-src="assets/picks/hot3d_milk.mp4"></video>
+        <figcaption><span class="pick-id">B4</span> <b>First full 3D clip</b> <span class="pick-cap">All 142 frames, including the fast spins where the carton&#x27;s pose fails.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hot3d_milk.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="B5" data-name="hot3d_milk_twohand">
+        <video muted loop playsinline preload="none" width="720" height="720" poster="assets/picks/hot3d_milk_twohand.jpg" data-src="assets/picks/hot3d_milk_twohand.mp4"></video>
+        <figcaption><span class="pick-id">B5</span> <b>Both hands as one pair (2D)</b> <span class="pick-cap">150 frames; the left and right hand keep their identity throughout.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hot3d_milk_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-C">
+    <div class="section-head"><h2 id="g-C"><span class="picks-gid">C</span>EgoViz-120</h2><p>From the overnight hand-object runs: head-mounted kitchen and household clips. The percentages are the share of frames with each hand posed.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="C1" data-name="egoviz_7115c084">
+        <video muted loop playsinline preload="none" width="1682" height="540" poster="assets/picks/egoviz_7115c084.jpg" data-src="assets/picks/egoviz_7115c084.mp4"></video>
+        <figcaption><span class="pick-id">C1</span> <b>A box carried down the stairs (3D)</b> <span class="pick-cap">191 frames, with the box&#x27;s pose and both hands.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_7115c084.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C2" data-name="egoviz_7115c084_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_7115c084_twohand.jpg" data-src="assets/picks/egoviz_7115c084_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C2</span> <b>A box carried down the stairs (2D)</b> <span class="pick-cap">Both hands as one pair, 193 frames.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_7115c084_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C3" data-name="egoviz_883af6b6_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_883af6b6_twohand.jpg" data-src="assets/picks/egoviz_883af6b6_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C3</span> <b>Adding detergent (2D)</b> <span class="pick-cap">9 s; left 100 %, right 87 %. A jug in the left hand throughout: the best object here for 6D.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_883af6b6_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C4" data-name="egoviz_6668e9e8_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_6668e9e8_twohand.jpg" data-src="assets/picks/egoviz_6668e9e8_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C4</span> <b>Sautéing vegetables (2D)</b> <span class="pick-cap">15 s; left 100 %, right 99 %. A steel tray, shiny and nearly symmetric.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_6668e9e8_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C5" data-name="egoviz_3a4397c2_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_3a4397c2_twohand.jpg" data-src="assets/picks/egoviz_3a4397c2_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C5</span> <b>Cooking eggs (2D)</b> <span class="pick-cap">15 s; left 99 %, right 97 %. The clearest, largest hands.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_3a4397c2_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C6" data-name="egoviz_1516219f_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_1516219f_twohand.jpg" data-src="assets/picks/egoviz_1516219f_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C6</span> <b>Organizing a cleaning cart (2D)</b> <span class="pick-cap">15 s; left 90 %, right 85 %. The most head motion; a cloth hides the hands at 3–6 s.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_1516219f_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="C7" data-name="egoviz_34256e79_twohand">
+        <video muted loop playsinline preload="none" width="960" height="600" poster="assets/picks/egoviz_34256e79_twohand.jpg" data-src="assets/picks/egoviz_34256e79_twohand.mp4"></video>
+        <figcaption><span class="pick-id">C7</span> <b>Dicing potatoes (2D)</b> <span class="pick-cap">15 s; left 98 %, right 97 %. A knife and diced potato.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/egoviz_34256e79_twohand.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-D">
+    <div class="section-head"><h2 id="g-D"><span class="picks-gid">D</span>Your iPhone clips: Hunyuan3D, rounds 4 and 5</h2><p>Earlier rounds of the current version.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="D1" data-name="hy5_ip1149">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/hy5_ip1149.jpg" data-src="assets/picks/hy5_ip1149.mp4"></video>
+        <figcaption><span class="pick-id">D1</span> <b>Pouring a can into a cup</b> <span class="pick-cap">Round 5: poses from the tracks attached to the mesh; the hands not yet put back on the objects.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy5_ip1149.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="D2" data-name="hy5_ip1147">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/hy5_ip1147.jpg" data-src="assets/picks/hy5_ip1147.mp4"></video>
+        <figcaption><span class="pick-id">D2</span> <b>Opening a jar</b> <span class="pick-cap">Round 5: poses from the tracks attached to the mesh; the hands not yet put back on the objects.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy5_ip1147.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="D3" data-name="hy5_ip1045">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/picks/hy5_ip1045.jpg" data-src="assets/picks/hy5_ip1045.mp4"></video>
+        <figcaption><span class="pick-id">D3</span> <b>A green cube into a bowl</b> <span class="pick-cap">Round 5: poses from the tracks attached to the mesh; the hands not yet put back on the objects.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy5_ip1045.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="D4" data-name="hy5_ip1073">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/hy5_ip1073.jpg" data-src="assets/picks/hy5_ip1073.mp4"></video>
+        <figcaption><span class="pick-id">D4</span> <b>A roll of tape by a peg</b> <span class="pick-cap">Round 5: poses from the tracks attached to the mesh; the hands not yet put back on the objects.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy5_ip1073.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="D5" data-name="hy4_ip1149">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/hy4_ip1149.jpg" data-src="assets/picks/hy4_ip1149.mp4"></video>
+        <figcaption><span class="pick-id">D5</span> <b>Pouring a can into a cup</b> <span class="pick-cap">Round 4: the first Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy4_ip1149.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="D6" data-name="hy4_ip1147">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/hy4_ip1147.jpg" data-src="assets/picks/hy4_ip1147.mp4"></video>
+        <figcaption><span class="pick-id">D6</span> <b>Opening a jar</b> <span class="pick-cap">Round 4: the first Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/hy4_ip1147.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-E">
+    <div class="section-head"><h2 id="g-E"><span class="picks-gid">E</span>Your iPhone clips: before Hunyuan3D</h2><p>Objects rebuilt from the video itself as dense coloured models.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="E1" data-name="fin_ip1149">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/fin_ip1149.jpg" data-src="assets/picks/fin_ip1149.mp4"></video>
+        <figcaption><span class="pick-id">E1</span> <b>Pouring a can into a cup</b> <span class="pick-cap">The last version before the Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/fin_ip1149.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="E2" data-name="fin_ip1147">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/fin_ip1147.jpg" data-src="assets/picks/fin_ip1147.mp4"></video>
+        <figcaption><span class="pick-id">E2</span> <b>Opening a jar</b> <span class="pick-cap">The last version before the Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/fin_ip1147.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="E3" data-name="fin_ip1045">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/picks/fin_ip1045.jpg" data-src="assets/picks/fin_ip1045.mp4"></video>
+        <figcaption><span class="pick-id">E3</span> <b>A green cube into a bowl</b> <span class="pick-cap">The last version before the Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/fin_ip1045.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="E4" data-name="fin_ip1117">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/fin_ip1117.jpg" data-src="assets/picks/fin_ip1117.mp4"></video>
+        <figcaption><span class="pick-id">E4</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">The last version before the Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/fin_ip1117.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="E5" data-name="fin_ip1073">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/fin_ip1073.jpg" data-src="assets/picks/fin_ip1073.mp4"></video>
+        <figcaption><span class="pick-id">E5</span> <b>A roll of tape by a peg</b> <span class="pick-cap">The last version before the Hunyuan3D meshes.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/fin_ip1073.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-F">
+    <div class="section-head"><h2 id="g-F"><span class="picks-gid">F</span>Your iPhone clips: the shaking fix</h2><p>The same render before and after the objects&#x27; jitter was fixed.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="F1" data-name="jit_ip1147_before">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1147_before.jpg" data-src="assets/picks/jit_ip1147_before.mp4"></video>
+        <figcaption><span class="pick-id">F1</span> <b>Opening a jar</b> <span class="pick-cap">Before the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1147_before.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="F2" data-name="jit_ip1147_after">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1147_after.jpg" data-src="assets/picks/jit_ip1147_after.mp4"></video>
+        <figcaption><span class="pick-id">F2</span> <b>Opening a jar</b> <span class="pick-cap">After the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1147_after.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="F3" data-name="jit_ip1117_before">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1117_before.jpg" data-src="assets/picks/jit_ip1117_before.mp4"></video>
+        <figcaption><span class="pick-id">F3</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">Before the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1117_before.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="F4" data-name="jit_ip1117_after">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1117_after.jpg" data-src="assets/picks/jit_ip1117_after.mp4"></video>
+        <figcaption><span class="pick-id">F4</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">After the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1117_after.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="F5" data-name="jit_ip1073_before">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1073_before.jpg" data-src="assets/picks/jit_ip1073_before.mp4"></video>
+        <figcaption><span class="pick-id">F5</span> <b>A roll of tape by a peg</b> <span class="pick-cap">Before the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1073_before.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="F6" data-name="jit_ip1073_after">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/jit_ip1073_after.jpg" data-src="assets/picks/jit_ip1073_after.mp4"></video>
+        <figcaption><span class="pick-id">F6</span> <b>A roll of tape by a peg</b> <span class="pick-cap">After the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1073_after.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="F7" data-name="jit_ip1045_before">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/picks/jit_ip1045_before.jpg" data-src="assets/picks/jit_ip1045_before.mp4"></video>
+        <figcaption><span class="pick-id">F7</span> <b>A green cube into a bowl</b> <span class="pick-cap">Before the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1045_before.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="F8" data-name="jit_ip1045_after">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/picks/jit_ip1045_after.jpg" data-src="assets/picks/jit_ip1045_after.mp4"></video>
+        <figcaption><span class="pick-id">F8</span> <b>A green cube into a bowl</b> <span class="pick-cap">After the fix.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/jit_ip1045_after.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-G">
+    <div class="section-head"><h2 id="g-G"><span class="picks-gid">G</span>Your iPhone clips: first 3D pass</h2></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="G1" data-name="user_ip1149_3d">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/user_ip1149_3d.jpg" data-src="assets/picks/user_ip1149_3d.mp4"></video>
+        <figcaption><span class="pick-id">G1</span> <b>Pouring a can into a cup</b> <span class="pick-cap">First pass.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1149_3d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="G2" data-name="user_ip1147_3d">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/user_ip1147_3d.jpg" data-src="assets/picks/user_ip1147_3d.mp4"></video>
+        <figcaption><span class="pick-id">G2</span> <b>Opening a jar</b> <span class="pick-cap">First pass.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1147_3d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="G3" data-name="user_ip1045_3d">
+        <video muted loop playsinline preload="none" width="1268" height="960" poster="assets/picks/user_ip1045_3d.jpg" data-src="assets/picks/user_ip1045_3d.mp4"></video>
+        <figcaption><span class="pick-id">G3</span> <b>A green cube into a bowl</b> <span class="pick-cap">First pass.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1045_3d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="G4" data-name="user_ip1117_3d">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/user_ip1117_3d.jpg" data-src="assets/picks/user_ip1117_3d.mp4"></video>
+        <figcaption><span class="pick-id">G4</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">First pass.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1117_3d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="G5" data-name="user_ip1073_3d">
+        <video muted loop playsinline preload="none" width="1688" height="540" poster="assets/picks/user_ip1073_3d.jpg" data-src="assets/picks/user_ip1073_3d.mp4"></video>
+        <figcaption><span class="pick-id">G5</span> <b>A roll of tape by a peg</b> <span class="pick-cap">First pass.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1073_3d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="picks-group" aria-labelledby="g-H">
+    <div class="section-head"><h2 id="g-H"><span class="picks-gid">H</span>Your iPhone clips: 2D preview</h2><p>Both hand skeletons and the object masks on the input.</p></div>
+    <div class="picks-grid">
+      <figure class="pick" data-id="H1" data-name="user_ip1149_2d">
+        <video muted loop playsinline preload="none" width="960" height="540" poster="assets/picks/user_ip1149_2d.jpg" data-src="assets/picks/user_ip1149_2d.mp4"></video>
+        <figcaption><span class="pick-id">H1</span> <b>Pouring a can into a cup</b> <span class="pick-cap">2D preview.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1149_2d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="H2" data-name="user_ip1147_2d">
+        <video muted loop playsinline preload="none" width="960" height="540" poster="assets/picks/user_ip1147_2d.jpg" data-src="assets/picks/user_ip1147_2d.mp4"></video>
+        <figcaption><span class="pick-id">H2</span> <b>Opening a jar</b> <span class="pick-cap">2D preview.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1147_2d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick is-tall" data-id="H3" data-name="user_ip1045_2d">
+        <video muted loop playsinline preload="none" width="540" height="960" poster="assets/picks/user_ip1045_2d.jpg" data-src="assets/picks/user_ip1045_2d.mp4"></video>
+        <figcaption><span class="pick-id">H3</span> <b>A green cube into a bowl</b> <span class="pick-cap">2D preview.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1045_2d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="H4" data-name="user_ip1117_2d">
+        <video muted loop playsinline preload="none" width="960" height="540" poster="assets/picks/user_ip1117_2d.jpg" data-src="assets/picks/user_ip1117_2d.mp4"></video>
+        <figcaption><span class="pick-id">H4</span> <b>A pen holder and a dental pick</b> <span class="pick-cap">2D preview.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1117_2d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+      <figure class="pick" data-id="H5" data-name="user_ip1073_2d">
+        <video muted loop playsinline preload="none" width="960" height="540" poster="assets/picks/user_ip1073_2d.jpg" data-src="assets/picks/user_ip1073_2d.mp4"></video>
+        <figcaption><span class="pick-id">H5</span> <b>A roll of tape by a peg</b> <span class="pick-cap">2D preview.</span></figcaption>
+        <div class="pick-actions"><label><input type="checkbox"> Keep</label><a href="assets/picks/user_ip1073_2d.mp4" target="_blank" rel="noopener">Full size</a></div>
+      </figure>
+    </div>
+  </section>
+
+  <div class="picks-bar" role="region" aria-label="Picked clips">
+    <span class="picks-count">0 picked</span>
+    <span class="picks-list"></span>
+    <button type="button" class="btn picks-copy">Copy list</button>
+    <button type="button" class="btn picks-clear">Clear</button>
+    <textarea class="picks-text" readonly hidden aria-label="Picked clips, to copy"></textarea>
+  </div>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="main.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'xm4d-picks', picked = {};
+  try { picked = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { picked = {}; }
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.pick'));
+  var count = document.querySelector('.picks-count'), list = document.querySelector('.picks-list'), text = document.querySelector('.picks-text');
+  var toast = document.getElementById('toast'), toastTimer = null;
+  function say(msg) { toast.textContent = msg; toast.classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.classList.remove('visible'); }, 2400); }
+  function lines() { return cards.filter(function (c) { return picked[c.dataset.id]; }).map(function (c) { return c.dataset.id + ' ' + c.dataset.name; }); }
+  function update() {
+    cards.forEach(function (c) { var on = !!picked[c.dataset.id]; c.classList.toggle('is-picked', on); c.querySelector('input').checked = on; });
+    var l = lines(); count.textContent = l.length + ' picked';
+    list.textContent = l.map(function (s) { return s.split(' ')[0]; }).join(', ');
+    try { localStorage.setItem(KEY, JSON.stringify(picked)); } catch (e) { /* not saved: private window */ }
+  }
+  cards.forEach(function (c) {
+    c.querySelector('input').addEventListener('change', function (e) { if (e.target.checked) picked[c.dataset.id] = 1; else delete picked[c.dataset.id]; update(); });
+  });
+  document.querySelector('.picks-copy').addEventListener('click', function () {
+    var l = lines(); if (!l.length) { say('Nothing picked yet'); return; }
+    var s = 'XM4D picks (' + l.length + '):\n' + l.join('\n');
+    var fallback = function () { text.hidden = false; text.value = s; text.focus(); text.select(); say('Select the text and copy it'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s).then(function () { say('Copied ' + l.length + ' picks'); }, fallback);
+    else fallback();
+  });
+  document.querySelector('.picks-clear').addEventListener('click', function () { picked = {}; text.hidden = true; update(); });
+  update();
+})();
+</script>
+</body>
+</html>

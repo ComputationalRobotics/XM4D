@@ -1,0 +1,48 @@
+{
+ "clips": [
+  {
+   "id": "ip1149",
+   "caption": "Pouring a can into a cup",
+   "frames": 145,
+   "objects": [
+    "soda can",
+    "paper cup"
+   ]
+  },
+  {
+   "id": "ip1147",
+   "caption": "Opening a jar",
+   "frames": 178,
+   "objects": [
+    "jar",
+    "lid"
+   ]
+  },
+  {
+   "id": "ip1045",
+   "caption": "Green cube into a bowl",
+   "frames": 134,
+   "objects": [
+    "green cube",
+    "bowl"
+   ]
+  },
+  {
+   "id": "ip1117",
+   "caption": "Pen holder and dental pick",
+   "frames": 337,
+   "objects": [
+    "pen holder",
+    "dental pick"
+   ]
+  },
+  {
+   "id": "ip1073",
+   "caption": "Tape roll by a peg",
+   "frames": 145,
+   "objects": [
+    "tape roll"
+   ]
+  }
+ ]
+}
