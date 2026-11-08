@@ -18,6 +18,7 @@
   var frameLabel = root.querySelector('.viewer-frame');
   var partsBox = root.querySelector('.viewer-parts');
   var viewBtns = Array.prototype.slice.call(root.querySelectorAll('[data-view]'));
+  var trackBox = root.querySelector('[data-layer="tracks"]');
   var layers = {};
   root.querySelectorAll('[data-layer]').forEach(function (box) {
     layers[box.dataset.layer] = box.checked;
@@ -259,7 +260,7 @@
     return sPos;
   }
 
-  function setupScene(sc) {
+  function setupScene(sc, withTracks) {
     var h = sc.hdr, A = sc.A, T = h.n_frames, M = h.n_nodes;
     sceneId++;
     order = null; nDraw = 0; shownT = 0;
@@ -294,7 +295,11 @@
     scene.edgeMax = L0.length ? 6 * L0[L0.length >> 1] : Infinity;
     scene.parts = h.parts ? setupParts(h.parts, P0) : null;
     root.classList.toggle('is-articulated', !!scene.parts);
-    if (!scene.parts) buildTracks();
+    if (!scene.parts && withTracks) buildTracks();
+    if (trackBox) {  // a run whose graph nodes jitter in depth (data-tracks="off") shows none
+      trackBox.disabled = !scene.tracks;
+      trackBox.parentNode.title = scene.tracks ? '' : 'No 3D tracks for this run';
+    }
     t = 0; dir = 1; follow = true; active = 0; glide = null; setView('input');
     slider.max = T - 1; slider.value = 0;
     dirty = true; requestSort();
@@ -396,9 +401,38 @@
       }
       return [x, y, z];
     }
+    // only Gaussians the images pinned down get a track: opaque, not tiny, in a dense part of the dynamic cloud at
+    // frame 0, and no more jagged than twice the run's median (a faint floater far from the body zigzags through space)
+    var i, all0 = [];
+    for (i = 0; i < nD; i++) all0.push(posAt(i, frames[0]));
+    var med = [0, 1, 2].map(function (a) { return median(all0.map(function (p) { return p[a]; })); });
+    var cell = median(all0.map(function (p) { return Math.hypot(p[0] - med[0], p[1] - med[1], p[2] - med[2]); })) / 8 || 1;
+    var vox = new Map(), key = function (p, a, b, c) { return (Math.floor(p[0] / cell) + a) + ',' + (Math.floor(p[1] / cell) + b) + ',' + (Math.floor(p[2] / cell) + c); };
+    all0.forEach(function (p) { var s = key(p, 0, 0, 0); vox.set(s, (vox.get(s) || 0) + 1); });
+    var dens = function (p) {
+      var n = 0;
+      for (var a = -1; a < 2; a++) for (var b = -1; b < 2; b++) for (var c = -1; c < 2; c++) n += vox.get(key(p, a, b, c)) || 0;
+      return n;
+    };
+    var qs = sc.A.d_scale, qa = sc.A.d_rgba, qBig = function (i) { return Math.max(qs[i * 3], qs[i * 3 + 1], qs[i * 3 + 2]); };  // log size, quantised
     var cand = [], step = Math.max(1, Math.floor(nD / 4000));
-    for (var i = 0; i < nD; i += step) cand.push(i);
-    var p0 = cand.map(function (i) { return posAt(i, frames[0]); }), dist = new Float32Array(cand.length).fill(Infinity), pick = [0];
+    for (i = 0; i < nD; i += step) cand.push(i);
+    var qMin = median(cand.map(qBig)) + 255 * Math.log(0.5) / (h.log_scale[1] - h.log_scale[0]), dMin = 0.25 * median(cand.map(function (i) { return dens(all0[i]); }));
+    cand = cand.filter(function (i) { return qa[i * 4 + 3] >= 128 && qBig(i) >= qMin && dens(all0[i]) >= dMin; });
+    var paths = cand.map(function (i) {
+      var pts = new Float32Array(T * 3);
+      for (var f = 0; f < T; f++) { var p = posAt(i, frames[f]); pts[f * 3] = p[0]; pts[f * 3 + 1] = p[1]; pts[f * 3 + 2] = p[2]; }
+      return pts;
+    });
+    var jag = paths.map(function (P) {
+      var s = 0;
+      for (var f = 1; f < T - 1; f++) s += Math.hypot(P[f * 3 - 3] - 2 * P[f * 3] + P[f * 3 + 3], P[f * 3 - 2] - 2 * P[f * 3 + 1] + P[f * 3 + 4], P[f * 3 - 1] - 2 * P[f * 3 + 2] + P[f * 3 + 5]);
+      return T > 2 ? s / (T - 2) : 0;
+    }), jMax = 2 * median(jag);
+    var keep = cand.map(function (_, n) { return n; }).filter(function (n) { return jag[n] <= jMax; });
+    cand = keep.map(function (n) { return cand[n]; }); paths = keep.map(function (n) { return paths[n]; });
+    if (!cand.length) { sc.tracks = []; sc.posAt = posAt; return; }
+    var p0 = cand.map(function (i) { return all0[i]; }), dist = new Float32Array(cand.length).fill(Infinity), pick = [0];
     for (var n = 1; n < nTr && n < cand.length; n++) {
       var last = p0[pick[n - 1]], best = 0;
       for (var j = 0; j < cand.length; j++) {
@@ -408,12 +442,12 @@
       }
       pick.push(best);
     }
-    sc.tracks = pick.map(function (j, n) {
-      var pts = new Float32Array(T * 3);
-      for (var f = 0; f < T; f++) { var p = posAt(cand[j], frames[f]); pts[f * 3] = p[0]; pts[f * 3 + 1] = p[1]; pts[f * 3 + 2] = p[2]; }
-      return { pts: pts, color: hsl((n * 137.508) % 360, 0.8, 0.5) };
-    });
+    sc.tracks = pick.map(function (j, n) { return { pts: paths[j], color: hsl((n * 137.508) % 360, 0.8, 0.5) }; });
     sc.posAt = posAt;
+  }
+  function median(v) {
+    var s = Float64Array.from(v).sort();
+    return s.length ? s[s.length >> 1] : 0;
   }
   function hsl(hh, s, l) {
     var k = function (n) { return (n + hh / 30) % 12; }, a = s * Math.min(l, 1 - l);
@@ -446,7 +480,7 @@
       })();
     }).then(function (buf) {
       if (ctl !== abort) return;
-      setupScene(parse(buf));
+      setupScene(parse(buf), opt.dataset.tracks !== 'off');
       say('');
     }).catch(function (err) {
       if (err.name !== 'AbortError') say('Could not load ' + label + ' (' + err.message + ').');

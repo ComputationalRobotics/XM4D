@@ -75,3 +75,7 @@ assets/
   furthest, in the demo and when its slider is moved.
 - **Gallery runs:** add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's run picker; a
   value that matches an Example runs tab (`data-group`) is picked when that tab is.
+- **3D tracks:** the viewer draws up to 110 dynamic Gaussians, spread out at frame 0, chosen only among opaque, not tiny
+  ones in a dense part of the dynamic cloud whose paths are no more jagged than twice the run's median; faint floaters
+  far from the body would otherwise zigzag through empty space (skating, playground). `data-tracks="off"` on an option
+  shows none (truck: every node of its graph jitters in depth, so no track is clean).

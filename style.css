@@ -442,6 +442,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 }
 .viewer-layers label { display: flex; align-items: center; gap: 9px; padding: 3px 0; cursor: pointer; }
 .viewer-layers input { width: 16px; height: 16px; margin: 0; accent-color: var(--ink); }
+.viewer-layers label:has(input:disabled) { opacity: 0.45; cursor: default; }
 .key { margin-left: auto; width: 26px; height: 10px; border-radius: 5px; }
 .key-graph { background: linear-gradient(90deg, #4fc74f 0 60%, #e63d3d 60%); }
 .key-cameras { background: var(--accent); }
