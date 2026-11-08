@@ -24,9 +24,11 @@ viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at t
 handobj.js        the hand-object viewer (Applications; three.js 0.147 from jsDelivr, loaded when it nears the viewport):
                   per clip, the object meshes at their solved 6D poses, both hand skeletons, the camera and the table;
                   a camera view over the input frame with SAM 3's mask outlines dashed. Its clip tabs pick the clip here too
-picks.html        unlisted, noindex: every hand-object clip as a card with a Keep box, for choosing what goes on the
-                  main page (the list is copied from the bar at the bottom; ticks kept in localStorage). Built by
-                  build_picks.py (4DReconstruction scratchpad, site_ho/) from the hand-object review page; clips in assets/picks/
+picks.html        unlisted, noindex: the extended DAVIS 2017 runs (the benchmark batch, every 8th frame held out), one card
+                  each with a Keep box, for choosing what goes in the Gallery (the list is copied from the bar at the
+                  bottom; ticks kept in localStorage). Built by build_picks.py; clips in assets/video/ext/ and posters in
+                  assets/img/ext/ by build_ext.py (both in the session scratchpad, site_ho/), cut like the Example runs
+                  from each run's showcase_holdout.mp4 (camera 0's render, 3D tracks and EDG graph cells, 10 fps)
 assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
