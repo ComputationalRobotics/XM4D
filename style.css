@@ -94,8 +94,9 @@ em { font-style: italic; }
   left: max(var(--gutter), env(safe-area-inset-left, 0px)); right: max(var(--gutter), env(safe-area-inset-right, 0px));
   bottom: max(16px, env(safe-area-inset-bottom, 0px));
   padding: 6px 8px 6px 6px; border-radius: 999px;
-  border: 1px solid rgba(28, 28, 32, .12); background: rgba(250, 249, 245, .82);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(28, 28, 32, .1);
+  border: 1px solid rgba(28, 28, 32, .12); background: rgba(250, 249, 245, .93);   /* no backdrop blur: over a playing
+     full-screen video it is recomputed every frame and makes playback stutter */
+  box-shadow: 0 2px 12px rgba(28, 28, 32, .1);
   transition: opacity .3s ease;
 }
 .intro-btn, .intro-cue {
@@ -135,8 +136,8 @@ em { font-style: italic; }
 .intro-cue {
   position: absolute; z-index: 2; left: 50%; transform: translateX(-50%);
   bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + 60px); height: 36px; padding: 0 14px;
-  border: 1px solid rgba(28, 28, 32, .12); background: rgba(250, 249, 245, .82);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(28, 28, 32, .1);
+  border: 1px solid rgba(28, 28, 32, .12); background: rgba(250, 249, 245, .93);
+  box-shadow: 0 2px 12px rgba(28, 28, 32, .1);
   transition: opacity .3s ease;
 }
 .intro-cue:hover { background: var(--paper-raise); text-decoration: none; }

@@ -350,10 +350,9 @@
     });
     seek.addEventListener('input', function () { seeking = true; promo.currentTime = +seek.value; showTime(); });
     seek.addEventListener('change', function () { seeking = false; showTime(); });
-    promo.addEventListener('timeupdate', showTime);
     promo.addEventListener('loadedmetadata', showTime);
-    var tick = function () { if (!promo.paused && onScreen) showTime(); requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
+    /* the bar follows playback about 8 times a second, and not at all while it is hidden */
+    setInterval(function () { if (!promo.paused && onScreen && getComputedStyle(bar).opacity !== '0') showTime(); }, 125);
 
     var idleTimer = null;
     var wake = function () {
