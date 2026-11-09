@@ -33,7 +33,9 @@ assets/
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
+  img/promo.jpg   the teaser's poster (its frame at 3.9 s)
   video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
+    promo.mp4          the hero's teaser (70 s, 720p, music; the 720p web cut, built in xm4d_new/teaser/ on the Passport)
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
     teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
@@ -78,7 +80,8 @@ assets/
 
 - **Links:** the Paper buttons (top bar and hero) point to `#`; Code points to XM4D-release.
 - **Venue, BibTeX:** see the `TODO` comments in `index.html`.
-- **Hero video:** uncomment the `hero-video` block and drop the files under `assets/video/`.
+- **Hero video:** the `hero-video` block plays `assets/video/promo.mp4` muted (viewers unmute it from the controls);
+  main.js pauses it while it is off screen.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
 - **Articulated runs:** a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
   `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge (or, for a
