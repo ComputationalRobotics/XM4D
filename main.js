@@ -293,7 +293,7 @@
     }
   }
 
-  /* ── Teaser: full screen above the page. Autoplays muted (not with reduced motion), pauses off screen,
+  /* ── Teaser: full screen above the page. Autoplays muted, pauses off screen,
        fades and recedes as the page scrolls up over it ── */
   var intro = document.getElementById('teaser');
   var promo = document.getElementById('promo');
@@ -302,7 +302,7 @@
     var playBtn = document.getElementById('promo-play');
     var soundBtn = document.getElementById('promo-sound');
     var cue = intro.querySelector('.intro-cue');
-    var userPaused = !!reduce, onScreen = true;
+    var userPaused = false, onScreen = true;     /* autoplays even with reduced motion (Pause is right there); that only skips the fade */
 
     var paint = function () {
       intro.classList.toggle('is-paused', userPaused);
