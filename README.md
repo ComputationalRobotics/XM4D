@@ -29,7 +29,8 @@ fridge.html       the fridge's 3D viewer (viewer.js; a slider per door), opened 
 kitchen.html      the RoboCasa kitchen twin's 3D viewer (viewer.js; a slider per part, the view goes to each part)
 assets/
   favicon.svg
-  group-logo.png  Computational Robotics Group logo
+  group-logo.png  Computational Robotics Group logo (group-logo-alpha.png: its white made transparent, for the teaser's overlay)
+  harvard-shield.svg  Harvard shield (from the group's GRASP page), for the teaser's overlay
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
@@ -37,9 +38,12 @@ assets/
   img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
   video/
     promo-1440.mp4, promo-1080.mp4, promo-720.mp4
-                       the teaser, full screen above the page (81.6 s, music; v7, drawn natively at 2560x1440 and
-                       encoded for crisp text; built in xm4d_new/teaser/ on the Passport). The <video> lists them with
-                       media conditions, so a screen loads only the sharpest one it can use
+                       the teaser, full screen above the page (79.2 s, music; v7.1, built in xm4d_new/teaser/ on the
+                       Passport), without its titles, labels and logos: main.js draws those as SVG over it from
+    promo-text.json    (per item: text runs, font, box; per frame: x, y, opacity, scale, in the 1920x1080 design
+                       space), so the text is as sharp as the page's. The <video> lists the three with media
+                       conditions, so a screen loads only the sharpest one it can use
+    promo-720-text.mp4 the 720p cut with its text baked in: the fallback if promo-text.json cannot be read
     runs/         the Example runs gallery below the teaser: per run, one input camera's render, 3D tracks, and
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
                   4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 14 DAVIS runs after hike (bmx-trees to

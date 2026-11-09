@@ -75,6 +75,8 @@ em { font-style: italic; }
   position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
   object-fit: cover; background: var(--intro-bg);
 }
+.intro-text { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+.intro-text text { font-family: var(--font); font-kerning: normal; text-rendering: geometricPrecision; }
 .intro-hit { position: absolute; inset: 0; z-index: 1; width: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; }
 .intro-hit:focus-visible { outline-offset: -6px; }
 /* the large icon in the middle: shown while paused, and flashed on each click */

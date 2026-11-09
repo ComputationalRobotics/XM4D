@@ -217,6 +217,92 @@
         window.scrollTo({ top: intro.offsetTop + intro.offsetHeight, behavior: reduce ? 'auto' : 'smooth' });
       });
     }
+
+    /* the overlay: the teaser's text, pills and logos as SVG over the text-free video, in the teaser's 1920x1080 design
+       space (assets/video/promo-text.json: per item its runs, font, box and per-frame x, y, opacity, scale). The SVG is
+       fitted like the video (cover or contain), and follows the frame on screen. If the file cannot be read, the video
+       falls back to the 720p cut with its text baked in. */
+    var layer = document.getElementById('promo-text');
+    if (layer) {
+      var NS = 'http://www.w3.org/2000/svg', cues = null, nodes = [], lastF = -1;
+      layer.style.visibility = 'hidden';
+      var fitLayer = function () {
+        layer.setAttribute('preserveAspectRatio', getComputedStyle(promo).objectFit === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice');
+      };
+      var at = function (v, i) { return typeof v === 'number' ? v : v[i]; };
+      var build = function (data) {
+        cues = data;
+        data.items.forEach(function (it) {
+          var g = document.createElementNS(NS, 'g'), el;
+          g.style.display = 'none';
+          if (it.kind === 'text') {
+            el = document.createElementNS(NS, 'text');
+            var f = it.font, size = f.size;
+            el.setAttribute('font-size', size); el.setAttribute('font-weight', f.weight || 400);
+            el.setAttribute('fill', f.fill || '#1c1c20'); el.setAttribute('text-anchor', it.anchor || 'start');
+            if (f.ls) el.setAttribute('letter-spacing', (f.ls * size).toFixed(2));
+            var up = 0;
+            it.runs.forEach(function (r) {
+              var ts = document.createElementNS(NS, 'tspan'), shift = r.sup ? -0.36 * size : 0;
+              ts.textContent = r.t;
+              if (r.fill) ts.setAttribute('fill', r.fill);
+              if (r.weight) ts.setAttribute('font-weight', r.weight);
+              if (r.sup) ts.setAttribute('font-size', (0.6 * size).toFixed(2));
+              if (shift !== up) { ts.setAttribute('dy', (shift - up).toFixed(2)); up = shift; }
+              el.appendChild(ts);
+            });
+          } else if (it.kind === 'image') {
+            el = document.createElementNS(NS, 'image');
+            el.setAttribute('href', it.href);
+            el.setAttribute('x', it.box[0]); el.setAttribute('y', it.box[1]);
+            el.setAttribute('width', it.box[2] - it.box[0]); el.setAttribute('height', it.box[3] - it.box[1]);
+          } else {
+            el = document.createElementNS(NS, 'rect');
+            el.setAttribute('x', it.rect[0]); el.setAttribute('y', it.rect[1]);
+            el.setAttribute('width', it.rect[2] - it.rect[0]); el.setAttribute('height', it.rect[3] - it.rect[1]);
+            if (it.rx) { el.setAttribute('rx', it.rx); el.setAttribute('ry', it.rx); }
+            el.setAttribute('fill', it.fill || 'none');
+            if (it.stroke) { el.setAttribute('stroke', it.stroke); el.setAttribute('stroke-width', it.sw || 1); }
+          }
+          g.appendChild(el); layer.appendChild(g); nodes.push(g);
+        });
+        fitLayer(); draw(true);
+        /* the poster has the text baked in: the layer shows once the text-free video has a frame up */
+        var show = function () { layer.style.visibility = ''; };
+        if (promo.readyState >= 2) show(); else promo.addEventListener('loadeddata', show, { once: true });
+      };
+      var draw = function (force, t) {     /* t: the presented frame's media time, when the browser reports it */
+        if (!cues) return;
+        var f = Math.max(0, Math.min(cues.frames - 1, Math.round((t === undefined ? promo.currentTime : t) * cues.fps - 1e-3)));
+        if (f === lastF && !force) return;
+        lastF = f;
+        cues.items.forEach(function (it, k) {
+          var g = nodes[k];
+          if (f < it.f0 || f > it.f1) { if (g.style.display !== 'none') g.style.display = 'none'; return; }
+          var i = f - it.f0, o = at(it.o, i);
+          if (o <= 0.002) { g.style.display = 'none'; return; }
+          g.style.display = '';
+          g.setAttribute('opacity', o.toFixed(3));
+          g.setAttribute('transform', 'translate(' + at(it.x, i) + ' ' + at(it.y, i) + ') scale(' + at(it.s, i) + ')');
+        });
+      };
+      var follow = function () {
+        if (promo.requestVideoFrameCallback) {
+          var onFrame = function (now, meta) { draw(false, meta && meta.mediaTime); promo.requestVideoFrameCallback(onFrame); };
+          promo.requestVideoFrameCallback(onFrame);
+        } else {
+          var loop = function () { if (!promo.paused) draw(); requestAnimationFrame(loop); };
+          requestAnimationFrame(loop);
+        }
+        ['seeked', 'timeupdate', 'loadeddata'].forEach(function (ev) { promo.addEventListener(ev, function () { draw(); }); });
+        window.addEventListener('resize', fitLayer);
+      };
+      fetch('assets/video/promo-text.json?v=10').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) { return (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () { build(data); follow(); }); })
+        .catch(function () {                      /* no overlay: the cut with its text baked in */
+          var t = promo.currentTime; promo.src = 'assets/video/promo-720-text.mp4?v=10'; promo.currentTime = t; sync();
+        });
+    }
     showTime(); sync();
   }
 })();
