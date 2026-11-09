@@ -3,7 +3,12 @@
    every frame by the deformation graph (viewer-worker.js poses and sorts them), and over them the graph, the input
    cameras, and 3D tracks of a few dynamic Gaussians. The panel picks the run and what is shown; the view follows the
    input camera until it is dragged. A run with hinged parts (an articulated object: header "parts") is posed by one
-   slider per part instead of time. */
+   slider per part instead of time.
+   A v2 file (export_viewer_v2.py) carries every Gaussian of the trained model and its appearance model: a GPU pass
+   evaluates the colour MLP per Gaussian for the shown frame and eye (embedding of frame t, features, view direction),
+   and the splats are drawn as gsplat's classic rasteriser draws them (0.3 px dilation, opacity-aware support, alpha
+   clamped to 0.999, the frustum-clamped Jacobian, the camera's principal point), accumulated in a float target, so the
+   input-camera view reproduces the eval's render of that frame (measure_viewer.py measures it). */
 (function () {
   'use strict';
 
@@ -12,7 +17,7 @@
   function Viewer(root) {
   var canvas = root.querySelector('.viewer-canvas');
   var status = root.querySelector('.viewer-status');
-  var select = root.querySelector('.viewer-scene');
+  var select = root.querySelector('.viewer-scene') || (root.id ? document.querySelector('.viewer-scene[data-for="' + root.id + '"]') : null);
   var playBtn = root.querySelector('.viewer-play');
   var slider = root.querySelector('.viewer-slider');
   var frameLabel = root.querySelector('.viewer-frame');
@@ -46,9 +51,9 @@
     var t = [-(R[0] * c[0] + R[3] * c[1] + R[6] * c[2]), -(R[1] * c[0] + R[4] * c[1] + R[7] * c[2]), -(R[2] * c[0] + R[5] * c[1] + R[8] * c[2])];
     return new Float32Array([R[0], R[1], R[2], 0, R[3], R[4], R[5], 0, R[6], R[7], R[8], 0, t[0], t[1], t[2], 1]);
   }
-  function projMatrix(fx, fy, w, h) {
+  function projMatrix(I, w, h) {  // OpenCV camera (+z ahead, y down), intrinsics I (px) on a w x h target
     var n = 0.01, f = 1000;
-    return new Float32Array([2 * fx / w, 0, 0, 0, 0, -2 * fy / h, 0, 0, 0, 0, f / (f - n), 1, 0, 0, -(f * n) / (f - n), 0]);
+    return new Float32Array([2 * I.fx / w, 0, 0, 0, 0, -2 * I.fy / h, 0, 0, 2 * I.cx / w - 1, 1 - 2 * I.cy / h, f / (f - n), 1, 0, 0, -(f * n) / (f - n), 0]);
   }
   function mul4(A, B) {
     var o = new Float32Array(16);
@@ -117,40 +122,93 @@
     return { p: p, u: u, a: function (name) { return gl.getAttribLocation(p, name); } };
   }
 
-  // splats: 3 texels per Gaussian (512 per row): centre xyz + rgba8, covariance xx xy xz yy, covariance yz zz
+  // splats: 3 texels per Gaussian (512 per row): centre xyz + rgba8 (rgb: baked colour, a: opacity), covariance
+  // xx xy xz yy, covariance yz zz. Projected as gsplat's classic rasteriser does (persp_proj + add_blur + the
+  // opacity-aware box): the Jacobian at the frustum-clamped centre, +0.3 px on the diagonal, support where
+  // alpha = min(0.999, o exp(-sigma)) >= 1/255, culled by its box against the image. Colour from the appearance pass
+  // (u_col) when the run has one. Pixel coordinates are the camera's (y down), with the principal point u_K.zw.
   var SPLAT_VS = '#version 300 es\n' +
-    'precision highp float; precision highp int; precision highp usampler2D;\n' +
-    'uniform usampler2D u_tex; uniform mat4 u_proj, u_view; uniform vec2 u_focal, u_viewport;\n' +
+    'precision highp float; precision highp int; precision highp usampler2D; precision highp sampler2D;\n' +
+    'uniform usampler2D u_tex; uniform sampler2D u_col; uniform bool u_app; uniform mat4 u_view; uniform vec4 u_K; uniform vec2 u_viewport;\n' +
     'uniform int u_nDyn; uniform bool u_static, u_dyn;\n' +
-    'in vec2 a_corner; in uint a_index; out vec4 v_color; out vec2 v_pos;\n' +
+    'in vec2 a_corner; in uint a_index; out vec4 v_color; flat out vec3 v_conic; flat out vec2 v_mean;\n' +
     'void main() {\n' +
     '  int i = int(a_index); bool dyn = i < u_nDyn;\n' +
     '  gl_Position = vec4(0., 0., 2., 1.);\n' +
     '  if (dyn ? !u_dyn : !u_static) return;\n' +
     '  ivec2 b = ivec2((i & 511) * 3, i >> 9);\n' +
     '  uvec4 t0 = texelFetch(u_tex, b, 0);\n' +
-    '  vec4 cam = u_view * vec4(uintBitsToFloat(t0.xyz), 1.), clip = u_proj * cam;\n' +
-    '  float lim = 1.2 * clip.w;\n' +
-    '  if (cam.z < 0.01 || abs(clip.x) > lim || abs(clip.y) > lim) return;\n' +
+    '  vec3 c = (u_view * vec4(uintBitsToFloat(t0.xyz), 1.)).xyz;\n' +
+    '  float op = float(t0.w >> 24) / 255.;\n' +
+    '  if (c.z < 0.01 || op < 1. / 255.) return;\n' +
     '  vec4 c1 = uintBitsToFloat(texelFetch(u_tex, b + ivec2(1, 0), 0));\n' +
     '  vec2 c2 = uintBitsToFloat(texelFetch(u_tex, b + ivec2(2, 0), 0).xy);\n' +
-    '  mat3 V = mat3(c1.x, c1.y, c1.z, c1.y, c1.w, c2.x, c1.z, c2.x, c2.y);\n' +
-    '  float z2 = cam.z * cam.z;\n' +
-    '  mat3 J = mat3(u_focal.x / cam.z, 0., -u_focal.x * cam.x / z2, 0., -u_focal.y / cam.z, u_focal.y * cam.y / z2, 0., 0., 0.);\n' +
-    '  mat3 T = transpose(mat3(u_view)) * J, S = transpose(T) * V * T;\n' +
-    '  S[0][0] += 0.3; S[1][1] += 0.3;\n' +
-    '  float mid = 0.5 * (S[0][0] + S[1][1]), r = length(vec2(0.5 * (S[0][0] - S[1][1]), S[0][1]));\n' +
-    '  float l1 = mid + r, l2 = mid - r;\n' +
-    '  if (l2 <= 0.) return;\n' +
-    '  vec2 d = normalize(vec2(S[0][1], l1 - S[0][0]));\n' +
-    '  vec2 e1 = min(sqrt(2. * l1), 1024.) * d, e2 = min(sqrt(2. * l2), 1024.) * vec2(d.y, -d.x);\n' +
-    '  uint c = t0.w;\n' +
-    '  v_color = vec4(float(c & 255u), float((c >> 8) & 255u), float((c >> 16) & 255u), float(c >> 24)) / 255.;\n' +
-    '  v_pos = a_corner;\n' +
-    '  gl_Position = vec4(clip.xy / clip.w + (a_corner.x * e1 + a_corner.y * e2) * 2. / u_viewport, 0., 1.);\n' +
+    '  mat3 V = mat3(c1.x, c1.y, c1.z, c1.y, c1.w, c2.x, c1.z, c2.x, c2.y), Rv = mat3(u_view), Vc = Rv * V * transpose(Rv);\n' +
+    '  float fx = u_K.x, fy = u_K.y, cx = u_K.z, cy = u_K.w, W = u_viewport.x, H = u_viewport.y, rz = 1. / c.z;\n' +
+    '  float tx = c.z * min((W - cx) / fx + 0.15 * W / fx, max(-(cx / fx + 0.15 * W / fx), c.x * rz));\n' +
+    '  float ty = c.z * min((H - cy) / fy + 0.15 * H / fy, max(-(cy / fy + 0.15 * H / fy), c.y * rz));\n' +
+    '  vec3 j0 = vec3(fx * rz, 0., -fx * tx * rz * rz), j1 = vec3(0., fy * rz, -fy * ty * rz * rz);\n' +
+    '  vec3 v0 = Vc * j0, v1 = Vc * j1;\n' +
+    '  float A = dot(j0, v0) + 0.3, B = dot(j0, v1), D = dot(j1, v1) + 0.3, det = A * D - B * B;\n' +
+    '  if (det <= 0.) return;\n' +
+    '  vec2 m = vec2(fx * c.x * rz + cx, fy * c.y * rz + cy);\n' +
+    '  float ext = min(3.33, sqrt(2. * log(op * 255.)));\n' +
+    '  vec2 rad = ceil(ext * sqrt(vec2(A, D)));\n' +
+    '  if (m.x + rad.x <= 0. || m.x - rad.x >= W || m.y + rad.y <= 0. || m.y - rad.y >= H) return;\n' +
+    '  float mid = 0.5 * (A + D), r = length(vec2(0.5 * (A - D), B)), l1 = mid + r, l2 = max(mid - r, 0.);\n' +
+    '  vec2 e = abs(B) > 1e-9 * mid ? normalize(vec2(B, l1 - A)) : (A >= D ? vec2(1., 0.) : vec2(0., 1.));\n' +
+    '  vec2 p = m + ext * (a_corner.x * sqrt(l1) * e + a_corner.y * sqrt(l2) * vec2(-e.y, e.x)) + a_corner;\n' +   // + 1 px: the pixel centres on the support's edge
+    '  uint k = t0.w;\n' +
+    '  vec3 rgb = u_app ? texelFetch(u_col, ivec2(i & 511, i >> 9), 0).rgb : vec3(float(k & 255u), float((k >> 8) & 255u), float((k >> 16) & 255u)) / 255.;\n' +
+    '  v_color = vec4(rgb, op); v_conic = vec3(D, -B, A) / det; v_mean = m;\n' +
+    '  gl_Position = vec4(2. * p.x / W - 1., 1. - 2. * p.y / H, 0., 1.);\n' +
     '}';
-  var SPLAT_FS = '#version 300 es\nprecision highp float;\nin vec4 v_color; in vec2 v_pos; out vec4 o;\n' +
-    'void main() { float A = -dot(v_pos, v_pos); if (A < -4.) discard; float B = exp(A) * v_color.a; o = vec4(B * v_color.rgb, B); }';
+  var SPLAT_FS = '#version 300 es\nprecision highp float;\nuniform vec2 u_viewport;\nin vec4 v_color; flat in vec3 v_conic; flat in vec2 v_mean; out vec4 o;\n' +
+    'void main() {\n' +
+    '  vec2 d = v_mean - vec2(gl_FragCoord.x, u_viewport.y - gl_FragCoord.y);\n' +
+    '  float s = 0.5 * (v_conic.x * d.x * d.x + v_conic.z * d.y * d.y) + v_conic.y * d.x * d.y;\n' +
+    '  float a = min(0.999, v_color.a * exp(-s));\n' +
+    '  if (s < 0. || a < 1. / 255.) discard;\n' +
+    '  o = vec4(a * v_color.rgb, a);\n' +
+    '}';
+
+  // the appearance pass (v2 runs): one fragment per Gaussian (512 per row) evaluates the trained colour MLP,
+  // sigmoid(MLP([embedding, features, SH bases of the view direction]) + colour logit), as AppearanceOptModule does.
+  // The embedding's (and the features' offset) share of the first layer is a per-frame bias (u_bs static, u_bd
+  // dynamic: they differ in split0 mode); the weights are 4x4 blocks in uniform blocks (see appSetup).
+  function appSource(NB, NF, NH) {  // NB output blocks of 4 (width/4), NF feature blocks of 4, NH hidden layers
+    var s = '#version 300 es\nprecision highp float; precision highp int; precision highp usampler2D;\n' +
+      'uniform usampler2D u_tex, u_app; uniform int u_n, u_nDyn; uniform vec3 u_eye; uniform vec4 u_bs[' + NB + '], u_bd[' + NB + '];\n' +
+      'layout(std140) uniform First { mat4 W1[' + (NF + 1) * NB + ']; mat4 W3[' + NB + ']; vec4 BH[' + NH * NB + ']; vec4 B3; };\n';
+    for (var h = 0; h < NH; h++) s += 'layout(std140) uniform Hid' + h + ' { mat4 H' + h + '[' + NB * NB + ']; };\n';
+    s += 'out vec4 o;\nvoid main() {\n' +
+      '  ivec2 q = ivec2(gl_FragCoord.xy); int i = q.y * 512 + q.x;\n' +
+      '  if (i >= u_n) { o = vec4(0.); return; }\n' +
+      '  ivec2 b = ivec2(q.x * ' + (NF / 4 + 1) + ', q.y);\n' +
+      '  vec3 pos = uintBitsToFloat(texelFetch(u_tex, ivec2(q.x * 3, q.y), 0).xyz);\n' +
+      '  vec3 d = normalize(pos - u_eye);\n' +
+      '  vec4 x[' + (NF + 1) + '];\n' +
+      '  for (int t = 0; t < ' + NF / 4 + '; t++) {\n' +
+      '    uvec4 u = texelFetch(u_app, b + ivec2(t, 0), 0);\n' +
+      '    for (int c = 0; c < 4; c++) x[t * 4 + c] = vec4(u[c] & 255u, (u[c] >> 8) & 255u, (u[c] >> 16) & 255u, u[c] >> 24);\n' +
+      '  }\n' +
+      '  x[' + NF + '] = vec4(0.28209479177387814, -0.48860251190292 * d.y, 0.48860251190292 * d.z, -0.48860251190292 * d.x);\n' +
+      '  vec3 clog = uintBitsToFloat(texelFetch(u_app, b + ivec2(' + NF / 4 + ', 0), 0).xyz);\n' +
+      '  bool dyn = i < u_nDyn; vec4 h[' + NB + '], g[' + NB + '];\n' +
+      '  for (int k = 0; k < ' + NB + '; k++) h[k] = dyn ? u_bd[k] : u_bs[k];\n' +
+      '  for (int j = 0; j < ' + (NF + 1) + '; j++) for (int k = 0; k < ' + NB + '; k++) h[k] += W1[j * ' + NB + ' + k] * x[j];\n' +
+      '  for (int k = 0; k < ' + NB + '; k++) h[k] = max(h[k], 0.);\n';
+    for (h = 0; h < NH; h++) {
+      s += '  for (int k = 0; k < ' + NB + '; k++) g[k] = BH[' + h * NB + ' + k];\n' +
+        '  for (int j = 0; j < ' + NB + '; j++) for (int k = 0; k < ' + NB + '; k++) g[k] += H' + h + '[j * ' + NB + ' + k] * h[j];\n' +
+        '  for (int k = 0; k < ' + NB + '; k++) h[k] = max(g[k], 0.);\n';
+    }
+    s += '  vec4 y = B3;\n  for (int j = 0; j < ' + NB + '; j++) y += W3[j] * h[j];\n' +
+      '  o = vec4(1. / (1. + exp(-(y.xyz + clog))), 1.);\n}';
+    return s;
+  }
+  var FULL_VS = '#version 300 es\nvoid main() { gl_Position = vec4(float((gl_VertexID & 1) * 4 - 1), float((gl_VertexID >> 1) * 4 - 1), 0., 1.); }';
+  var COPY_FS = '#version 300 es\nprecision highp float; uniform sampler2D u_img; out vec4 o;\nvoid main() { o = texelFetch(u_img, ivec2(gl_FragCoord.xy), 0); }';
 
   // screen-space thick segments, clipped at the near plane
   var LINE_VS = '#version 300 es\nprecision highp float;\n' +
@@ -187,12 +245,12 @@
     '  vec3 c = mix(vec3(1.), v_color.rgb, clamp(fill - d + 0.5, 0., 1.)); o = vec4(c * a, a);\n' +
     '}';
 
-  var splatP, lineP, dotP;
-  try { splatP = program(SPLAT_VS, SPLAT_FS); lineP = program(LINE_VS, LINE_FS); dotP = program(DOT_VS, DOT_FS); }
+  var splatP, lineP, dotP, copyP;
+  try { splatP = program(SPLAT_VS, SPLAT_FS); lineP = program(LINE_VS, LINE_FS); dotP = program(DOT_VS, DOT_FS); copyP = program(FULL_VS, COPY_FS); }
   catch (err) { say('The viewer could not start: ' + err.message); return; }
 
   function quad(corners) { var b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(corners), gl.STATIC_DRAW); return b; }
-  var splatQuad = quad([-2, -2, 2, -2, 2, 2, -2, 2]);
+  var splatQuad = quad([-1, -1, 1, -1, 1, 1, -1, 1]);
   var lineQuad = quad([0, -1, 1, -1, 1, 1, 0, 1]);
   var dotQuad = quad([-1, -1, 1, -1, 1, 1, -1, 1]);
 
@@ -221,7 +279,119 @@
   var lineV = instanced(lineP, lineQuad, [['a_a', 3], ['a_b', 3], ['a_color', 4], ['a_width', 1]]);
   var dotV = instanced(dotP, dotQuad, [['a_p', 3], ['a_color', 4], ['a_size', 1]]);
   gl.bindVertexArray(null);
-  var tex = gl.createTexture();
+  var tex = gl.createTexture(), emptyVao = gl.createVertexArray();
+
+  // a float target for the splats (8-bit blending of hundreds of layers drifts), then copied to the canvas
+  var floatOK = !!gl.getExtension('EXT_color_buffer_float'), blend32 = floatOK && !!gl.getExtension('EXT_float_blend');
+  var acc = { fb: null, tex: null, w: 0, h: 0, fmt: floatOK ? (blend32 ? 'RGBA32F' : 'RGBA16F') : 'canvas' };
+  function accTarget(w, h) {
+    if (!floatOK) return null;
+    if (acc.w !== w || acc.h !== h) {
+      if (acc.tex) gl.deleteTexture(acc.tex);
+      if (!acc.fb) acc.fb = gl.createFramebuffer();
+      acc.tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, acc.tex);
+      gl.texStorage2D(gl.TEXTURE_2D, 1, blend32 ? gl.RGBA32F : gl.RGBA16F, w, h);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, acc.fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, acc.tex, 0);
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) { floatOK = false; acc.fmt = 'canvas'; gl.bindFramebuffer(gl.FRAMEBUFFER, null); return null; }
+      acc.w = w; acc.h = h;
+    }
+    return acc.fb;
+  }
+
+  /* ── appearance (v2 runs): per-Gaussian features + colour logits in a texture, the MLP in uniform blocks ── */
+  var appTex = gl.createTexture(), colTex = gl.createTexture(), colFb = gl.createFramebuffer(), appUbo = [], appProgs = {};
+  function appSetup(sc, n) {  // false when this run has no appearance model (v1 file) or this GPU cannot run it
+    var h = sc.hdr, A = sc.A, ap = h.app;
+    if (!ap || !A.s_feat || !A.app_w) return false;
+    var L = ap.layers, E = ap.embed_dim, F = ap.feat_dim, nSH = (ap.sh_degree + 1) * (ap.sh_degree + 1), Wd = L[0][0], NB = Wd / 4, NF = F / 4, NH = L.length - 2;
+    var ok = Wd % 4 === 0 && F % 16 === 0 && nSH <= 4 && L[0][1] === E + F + nSH && L[L.length - 1][0] === 3 && NH >= 0 &&
+      L.slice(1, -1).every(function (l) { return l[0] === Wd && l[1] === Wd; }) && L[L.length - 1][1] === Wd &&
+      Wd * Wd * 4 <= gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE) && ((NF + 1) * NB * 16 + NB * 16 + (NH * NB + 1) * 4) * 4 <= gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE);
+    if (!ok) { console.warn('viewer: appearance model not supported here; baked colours'); return false; }
+    var key = NB + ',' + NF + ',' + NH, P = appProgs[key];
+    if (!P) {
+      try { P = appProgs[key] = program(FULL_VS, appSource(NB, NF, NH)); }
+      catch (err) { console.warn('viewer: appearance pass failed to compile; baked colours', err); return false; }
+      gl.uniformBlockBinding(P.p, gl.getUniformBlockIndex(P.p, 'First'), 0);
+      for (var hh = 0; hh < NH; hh++) gl.uniformBlockBinding(P.p, gl.getUniformBlockIndex(P.p, 'Hid' + hh), 1 + hh);
+    }
+    // weights: [W (out x in, row-major), b] per layer
+    var w = A.app_w, off = 0, Ws = [], Bs = [];
+    L.forEach(function (l) { Ws.push(w.subarray(off, off + l[0] * l[1])); off += l[0] * l[1]; Bs.push(w.subarray(off, off + l[0])); off += l[0]; });
+    var lo = A.feat_lo, hi = A.feat_hi, In = L[0][1];
+    // first layer, features (dequantised: lo + q (hi - lo) / 255) and SH bases, as 4x4 blocks: block (j, k) column c = input 4j+c, row r = output 4k+r
+    var first = new Float32Array(((NF + 1) * NB * 16 + NB * 16 + (NH * NB + 1) * 4)), j, k, c, r;
+    for (j = 0; j <= NF; j++) for (k = 0; k < NB; k++) for (c = 0; c < 4; c++) for (r = 0; r < 4; r++) {
+      var jin = 4 * j + c, o = 4 * k + r, v = 0;
+      if (jin < F) v = Ws[0][o * In + E + jin] * (hi[jin] - lo[jin]) / 255;
+      else if (jin - F < nSH) v = Ws[0][o * In + E + jin];
+      first[((j * NB + k) * 4 + c) * 4 + r] = v;
+    }
+    var o3 = (NF + 1) * NB * 16, last = Ws[L.length - 1];
+    for (j = 0; j < NB; j++) for (c = 0; c < 4; c++) for (r = 0; r < 3; r++) first[o3 + (j * 4 + c) * 4 + r] = last[r * Wd + 4 * j + c];
+    var ob = o3 + NB * 16;
+    for (hh = 0; hh < NH; hh++) first.set(Bs[1 + hh], ob + hh * Wd);
+    first.set(Bs[L.length - 1], ob + NH * Wd);
+    var ubos = [first];
+    for (hh = 0; hh < NH; hh++) {
+      var Hm = new Float32Array(NB * NB * 16), Wh = Ws[1 + hh];
+      for (j = 0; j < NB; j++) for (k = 0; k < NB; k++) for (c = 0; c < 4; c++) for (r = 0; r < 4; r++) Hm[((j * NB + k) * 4 + c) * 4 + r] = Wh[(4 * k + r) * Wd + 4 * j + c];
+      ubos.push(Hm);
+    }
+    ubos.forEach(function (u, i) {
+      if (!appUbo[i]) appUbo[i] = gl.createBuffer();
+      gl.bindBuffer(gl.UNIFORM_BUFFER, appUbo[i]); gl.bufferData(gl.UNIFORM_BUFFER, u, gl.STATIC_DRAW);
+    });
+    gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+    // per frame: the first layer's bias + its embedding share + the features' offset (lo)
+    var T = h.n_frames, Em = A.app_embed, bias = new Float32Array(T * Wd);
+    for (var f = 0; f < T; f++) for (o = 0; o < Wd; o++) {
+      var acc0 = Bs[0][o], row = o * In;
+      for (var e = 0; e < E; e++) acc0 += Ws[0][row + e] * Em[f * E + e];
+      for (j = 0; j < F; j++) acc0 += Ws[0][row + E + j] * lo[j];
+      bias[f * Wd + o] = acc0;
+    }
+    // per Gaussian (dynamic first, as everywhere): NF/4 texels of uint8 features, then the colour logits (float32)
+    var rows = Math.ceil(n / 512), per = NF / 4 + 1, data = new Uint32Array(rows * 512 * per * 4), u8 = new Uint8Array(data.buffer), f32 = new Float32Array(data.buffer);
+    var nD = h.n_dyn;
+    for (var i = 0; i < n; i++) {
+      var dyn = i < nD, ii = dyn ? i : i - nD, fe = dyn ? A.d_feat : A.s_feat, cl = dyn ? A.d_clog : A.s_clog, base = i * per * 4;
+      u8.set(fe.subarray(ii * F, ii * F + F), base * 4);
+      f32[base + (per - 1) * 4] = cl[ii * 3]; f32[base + (per - 1) * 4 + 1] = cl[ii * 3 + 1]; f32[base + (per - 1) * 4 + 2] = cl[ii * 3 + 2];
+    }
+    gl.bindTexture(gl.TEXTURE_2D, appTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32UI, 512 * per, rows, 0, gl.RGBA_INTEGER, gl.UNSIGNED_INT, data);
+    gl.bindTexture(gl.TEXTURE_2D, colTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, floatOK ? gl.RGBA16F : gl.RGBA8, 512, rows, 0, gl.RGBA, floatOK ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, colFb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colTex, 0);
+    var good = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    if (!good) { console.warn('viewer: no colour target for the appearance pass; baked colours'); return false; }
+    return { P: P, n: n, rows: rows, Wd: Wd, NB: NB, NH: NH, bias: bias, mode: ap.mode || 'base', key: null };
+  }
+  function appPass(app, tt, eye) {  // colours of every Gaussian at time tt seen from eye (cached until either changes)
+    var key = tt + ',' + eye.join(',');
+    if (app.key === key) return;
+    app.key = key;
+    var T = scene.T, f = Math.max(0, Math.min(T - 1, Math.floor(tt))), g = Math.min(f + 1, T - 1), a = tt - f, Wd = app.Wd;
+    var bd = new Float32Array(Wd), bs = new Float32Array(Wd);
+    for (var o = 0; o < Wd; o++) {
+      bd[o] = app.bias[f * Wd + o] * (1 - a) + app.bias[g * Wd + o] * a;
+      bs[o] = app.mode === 'split0' ? app.bias[o] : bd[o];   // split0 (NVIDIA): the static scene keeps frame 0's embedding
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, colFb); gl.viewport(0, 0, 512, app.rows); gl.disable(gl.BLEND);
+    gl.useProgram(app.P.p);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(app.P.u.u_tex, 0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, appTex); gl.uniform1i(app.P.u.u_app, 1);
+    gl.uniform1i(app.P.u.u_n, app.n); gl.uniform1i(app.P.u.u_nDyn, scene.hdr.n_dyn); gl.uniform3f(app.P.u.u_eye, eye[0], eye[1], eye[2]);
+    gl.uniform4fv(app.P.u['u_bs[0]'], bs); gl.uniform4fv(app.P.u['u_bd[0]'], bd);
+    for (var i = 0; i <= app.NH; i++) gl.bindBufferBase(gl.UNIFORM_BUFFER, i, appUbo[i]);
+    gl.bindVertexArray(emptyVao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
 
   /* ── scene ── */
   var scene = null, worker = new Worker('viewer-worker.js'), sceneId = 0;
@@ -283,6 +453,7 @@
       cams.push({ R: R, c: [c[3], c[7], c[11]], q: quatFromR(R) });
     }
     scene = { hdr: h, A: A, T: T, M: M, cams: cams, w: w, dNode: dNode, pingpong: T <= 24 };
+    scene.app = appSetup(sc, h.n_dyn + h.n_static);
     // focus: the graph's centroid at frame 0, at its depth along camera 0's axis
     var P0 = nodesAt(0).P, cen = [0, 0, 0];
     for (i = 0; i < M; i++) for (k = 0; k < 3; k++) cen[k] += P0[i * 3 + k] / M;
@@ -508,11 +679,12 @@
   function inputCamera(t) {
     var sc = scene, f = Math.max(0, Math.min(sc.T - 1, Math.floor(t))), g = Math.min(f + 1, sc.T - 1), a = t - f;
     var A = sc.cams[f], B = sc.cams[g];
+    if (a === 0) return { R: A.R.slice(), c: A.c.slice() };
     return { R: quatToR(nlerp(A.q, B.q, a)), c: [0, 1, 2].map(function (i) { return A.c[i] * (1 - a) + B.c[i] * a; }) };
   }
   var GLIDE = 1.2;  // seconds the input view takes to go from one part's view to the next
-  function followCamera() {  // the input camera; with part views, the active part's view, glided to from where the view was
-    if (!(views && scene.parts)) return inputCamera(shownT);
+  function followCamera(tt) {  // the input camera (at time tt, default the shown one); with part views, the active part's view, glided to from where the view was
+    if (!(views && scene.parts)) return inputCamera(tt === undefined ? shownT : tt);
     var B = scene.cams[scene.parts[active].view];
     if (!glide) return { R: B.R.slice(), c: B.c.slice() };
     var e = glide.u * glide.u * (3 - 2 * glide.u);
@@ -612,17 +784,19 @@
     var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; dirty = true; }
   }
-  function focal() {  // the input camera's focal length, so its whole image fits the canvas (CSS px)
-    var h = scene.hdr, K = h.K;
-    return Math.min(K[0][0] * canvas.clientWidth / h.image[0], K[1][1] * canvas.clientHeight / h.image[1]);
+  function intr() {  // the input camera's intrinsics on the canvas (device px): its whole image fits, centred
+    var h = scene.hdr, K = h.K, s = Math.min(canvas.width / h.image[0], canvas.height / h.image[1]);
+    return { fx: K[0][0] * s, fy: K[1][1] * s, cx: canvas.width / 2 + (K[0][2] - h.image[0] / 2) * s, cy: canvas.height / 2 + (K[1][2] - h.image[1] / 2) * s };
   }
+  function focal() { return intr().fx / dpr; }  // CSS px
 
   /* ── sorting (in the worker) ── */
   var busy = false, want = false, seq = 0, lastSent = null;
   function requestSort() {
     if (!scene) return;
     if (busy) { want = true; return; }
-    var v = current(), view = viewMatrix(v.R, v.c), nodes = scene.parts ? partNodes() : null;
+    // sorted for the view it will be drawn from: the input camera at the time being posed (t), not the one shown now
+    var v = follow ? followCamera(t) : cam, view = viewMatrix(v.R, v.c), nodes = scene.parts ? partNodes() : null;
     var key = (nodes ? nodes.key : t.toFixed(4)) + Array.prototype.join.call(view, ',') + layers.static + layers.dynamic;
     if (key === lastSent && order) return;
     lastSent = key; busy = true; want = false; seq++;
@@ -640,6 +814,7 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, orderBuf);
     gl.bufferData(gl.ARRAY_BUFFER, m.order, gl.DYNAMIC_DRAW);
     order = m.order; nDraw = m.order.length; shownT = m.t;
+    sorts++; if (m.ms !== undefined) sortMs.push(m.ms);
     dirty = true;
     if (want || m.t !== t) requestSort();
   };
@@ -695,12 +870,16 @@
     } else if (layers.graph) {
       var N = nodesAt(tt), E = sc.A.edges;
       var P3 = function (m) { return [N.P[m * 3], N.P[m * 3 + 1], N.P[m * 3 + 2]]; };
+      // a node the video did not observe at this frame (n_obs: its position there is the table completion's infill,
+      // not data) is drawn faint, and so are its edges
+      var fo = Math.round(tt), obs = sc.A.n_obs ? function (m) { return sc.A.n_obs[m * T + fo] > 0; } : function () { return true; };
       for (var e = 0; e < E.length; e += 2) {
         var a = P3(E[e]), b = P3(E[e + 1]), len = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
         if (!(len <= sc.edgeMax)) continue;  // a node gone astray at this frame (and NaN) would draw a line across the view
-        seg(a, b, INK, 0.55, 4.2); seg(a, b, EDGE, 1, 2.4);
+        var k2 = obs(E[e]) && obs(E[e + 1]) ? 1 : 0.3;
+        seg(a, b, INK, 0.55 * k2, 4.2); seg(a, b, EDGE, k2, 2.4);
       }
-      for (var m = 0; m < sc.M; m++) { var p = P3(m); if (isFinite(p[0] + p[1] + p[2])) dot(p, NODE, 1, 10); }
+      for (var m = 0; m < sc.M; m++) { var p = P3(m); if (isFinite(p[0] + p[1] + p[2])) dot(p, NODE, obs(m) ? 1 : 0.3, 10); }
     }
     return { L: new Float32Array(L), D: new Float32Array(D) };
   }
@@ -709,20 +888,34 @@
   var dirty = true, t = 0, dir = 1, playing = true, inView = false, last = null, raf = null;
   function draw() {
     resize();
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    var W = canvas.width, H = canvas.height;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, W, H);
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     if (!scene || !order) return;
-    var v = current(), view = viewMatrix(v.R, v.c), fpx = focal() * dpr;
-    var proj = projMatrix(fpx, fpx, canvas.width, canvas.height), vp = mul4(proj, view), vpSize = [canvas.width, canvas.height];
+    var v = current(), view = viewMatrix(v.R, v.c), I = intr();
+    var proj = projMatrix(I, W, H), vp = mul4(proj, view), vpSize = [W, H];
+    if (scene.app) appPass(scene.app, shownT, v.c);
+    var fb = accTarget(W, H);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.viewport(0, 0, W, H);
+    if (fb) gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFuncSeparate(gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE);
+    gl.blendFuncSeparate(gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE);   // front to back: under
     gl.useProgram(splatP.p);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(splatP.u.u_tex, 0);
-    gl.uniformMatrix4fv(splatP.u.u_proj, false, proj); gl.uniformMatrix4fv(splatP.u.u_view, false, view);
-    gl.uniform2f(splatP.u.u_focal, fpx, fpx); gl.uniform2f(splatP.u.u_viewport, vpSize[0], vpSize[1]);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, colTex); gl.uniform1i(splatP.u.u_col, 1);
+    gl.uniform1i(splatP.u.u_app, scene.app ? 1 : 0);
+    gl.uniformMatrix4fv(splatP.u.u_view, false, view);
+    gl.uniform4f(splatP.u.u_K, I.fx, I.fy, I.cx, I.cy); gl.uniform2f(splatP.u.u_viewport, W, H);
     gl.uniform1i(splatP.u.u_nDyn, scene.hdr.n_dyn); gl.uniform1i(splatP.u.u_static, layers.static ? 1 : 0); gl.uniform1i(splatP.u.u_dyn, layers.dynamic ? 1 : 0);
     gl.bindVertexArray(splatVao);
     gl.drawArraysInstanced(gl.TRIANGLE_FAN, 0, 4, nDraw);
+    if (fb) {  // the float image to the canvas (premultiplied, as the canvas is)
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.disable(gl.BLEND);
+      gl.useProgram(copyP.p); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, acc.tex); gl.uniform1i(copyP.u.u_img, 0);
+      gl.bindVertexArray(emptyVao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.enable(gl.BLEND);
+    }
     var o = overlays();
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     if (o.L.length) {
@@ -768,10 +961,56 @@
   playBtn.addEventListener('click', function () { if (scene && scene.parts) demo = !playing; setPlaying(!playing); });
   slider.addEventListener('input', function () { setPlaying(false); t = +slider.value; requestSort(); });
 
-  /* ── scene picking (the panel's own run list) ── */
-  var started = false;
+  /* ── a handle for tests (measure_viewer.py): pause at a frame in the input view, read the canvas back ── */
+  var sorts = 0, sortMs = [];
+  root.xm4d = {
+    info: function () {
+      return scene ? { T: scene.T, image: scene.hdr.image, n: scene.hdr.n_static + scene.hdr.n_dyn, version: scene.hdr.version || 1,
+                       app: !!scene.app, target: acc.fmt, canvas: [canvas.width, canvas.height], dpr: dpr } : null;
+    },
+    frame: function (f) { setPlaying(false); setView('input'); t = f; slider.value = f; requestSort(); },
+    ready: function () { return !!(scene && order && !busy && shownT === t); },
+    capture: function () {  // the canvas as drawn now: RGBA bytes (premultiplied, i.e. over black), rows top first, base64
+      draw();
+      var w = canvas.width, h = canvas.height, px = new Uint8Array(w * h * 4), out = new Uint8Array(w * h * 4);
+      gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      for (var y = 0; y < h; y++) out.set(px.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
+      var s = '';
+      for (var i = 0; i < out.length; i += 0x8000) s += String.fromCharCode.apply(null, out.subarray(i, i + 0x8000));
+      return { w: w, h: h, data: btoa(s) };
+    },
+    timeDraw: function (n, keepColours) {  // GPU+CPU ms per full redraw (appearance pass included unless keepColours), synchronised by a 1-px read
+      var px = new Uint8Array(4), t0 = performance.now();
+      for (var i = 0; i < n; i++) { if (scene.app && !keepColours) scene.app.key = null; draw(); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); }
+      return (performance.now() - t0) / n;
+    },
+    sortStats: function () { return { sorts: sorts, ms: sortMs.slice(-20) }; },
+    debug: function (what) {  // float readbacks for tests: 'colors' (appearance pass output) or 'order'
+      var b64 = function (a) { var u = new Uint8Array(a.buffer, a.byteOffset, a.byteLength), s = ''; for (var i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+      if (what === 'order') return b64(order);
+      draw(); var r = scene.app.rows, px = new Float32Array(512 * r * 4);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, colFb); gl.readPixels(0, 0, 512, r, gl.RGBA, gl.FLOAT, px); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      return b64(px);
+    }
+  };
+
+  /* ── scene picking (the run list: in the panel, or anywhere with data-for="<this viewer's id>"). An option with
+        data-page is an application's own 3D page (fridge, kitchen twin, hand-object clips): it shows, as it is, in the
+        frame the list's data-embed names (?embed: without its top bar and heading), in place of this viewer ── */
+  var started = false, frame = select && select.dataset.embed ? document.getElementById(select.dataset.embed) : null;
   function source() { return select ? select.selectedOptions[0] : { dataset: { src: root.dataset.src }, textContent: root.dataset.label || '' }; }
-  if (select) select.addEventListener('change', function () { if (started) load(source()); });
+  if (select) select.addEventListener('change', function () {
+    var opt = source(), page = opt.dataset.page;
+    if (frame) {
+      frame.hidden = !page; root.hidden = !!page;
+      if (page) { var u = page.split('#'); frame.src = u[0] + '?embed' + (u[1] ? '#' + u[1] : ''); return; }
+      if (frame.getAttribute('src')) frame.removeAttribute('src');     /* the page stops drawing */
+    }
+    if (started) load(opt);
+  });
+  if (frame) window.addEventListener('message', function (e) {   /* the embedded page reports its height (embed.js) */
+    if (e.source === frame.contentWindow && e.data && e.data.xm4dEmbedHeight) frame.style.height = e.data.xm4dEmbedHeight + 'px';
+  });
 
   new ResizeObserver(function () { dirty = true; }).observe(canvas);
   new IntersectionObserver(function (entries) {

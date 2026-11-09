@@ -321,9 +321,16 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 
 /* example runs below the teaser: a picker grouped by dataset; the run's three columns are labelled above its clip */
 .runs { margin-top: 0; }
-.runs > h3, .viewer-title { margin-bottom: 12px; }
+.runs > h3 { margin-bottom: 12px; }
 .runs .segmented { margin-bottom: 16px; }
-.viewer-title { margin-top: 44px; }
+/* the 3D viewer's heading, with its run list (it also picks the applications' own 3D pages, shown in the frame below) */
+.viewer-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; margin: 44px 0 12px; }
+.viewer-pick { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.viewer-pick .viewer-label { margin: 0; }
+.viewer-pick .viewer-scene { width: auto; min-width: 240px; max-width: 100%; }
+.viewer-embed { display: block; width: 100%; height: 640px; border: 0; }
+.viewer-embed[hidden], .viewer[hidden] { display: none; }
+@media (max-width: 520px) { .viewer-pick { flex: 1 1 100%; } .viewer-pick .viewer-scene { flex: 1; min-width: 0; } }
 .runs .segmented { border-radius: 18px; align-items: center; }
 .seg-label {
   padding: 0 4px 0 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em;
@@ -618,6 +625,12 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .viewer-page { padding-top: 48px; }
 .viewer-page .viewer { margin-top: 0; }
 .viewer-page-note { max-width: var(--col); margin-top: 14px; color: var(--graphite); font-size: 15px; }
+/* an application's 3D page inside the Gallery's frame (?embed): only its viewer and controls, edge to edge */
+.is-embed .topbar, .is-embed .skip-link, .is-embed main > section > .section-head, .is-embed .ho-legend { display: none; }
+.is-embed main > section { padding: 0; max-width: none; }
+.is-embed body { background: var(--paper); }
+html.is-embed { overflow: hidden; }                 /* the frame takes the page's height (embed.js) */
+.is-embed .ho-page .ho-stage { min-height: 560px; }  /* not 70vh: in the frame, vh follows the frame's height, which follows the page */
 @media (max-width: 860px) {
   .ho-viewer { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "time" "input" "panel"; }
   .ho-stage, .ho-page .ho-stage { min-height: 0; aspect-ratio: 4 / 3; }   /* the page's min-height would push the stage past a phone's width */

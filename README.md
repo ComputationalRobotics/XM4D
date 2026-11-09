@@ -22,6 +22,8 @@ main.js           BibTeX copy, gallery tabs, lazy video playback, method-step fi
 viewer.js         the 3D viewers (WebGL 2; Gallery, fridge, kitchen twin): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
 handobj.html      the hand-object viewer's page, opened from the Applications' "Open in 3D" links (#<clip> picks the clip)
+embed.js          fridge.html, kitchen.html and handobj.html inside the Gallery's frame (?embed: no top bar or heading;
+                  reports the page's height so the frame fits it)
 handobj.js        that viewer (three.js 0.147 from jsDelivr, loaded when it nears the viewport): per clip, the object
                   meshes at their solved 6D poses, both hand skeletons, the camera and the table; a camera view over the
                   input frame with SAM 3's mask outlines dashed
@@ -105,11 +107,16 @@ assets/
   With `data-part-views` on the `.viewer` (assets/3d/casa-twin.bin), the input view glides to the camera that saw each part open
   furthest, in the demo and when its slider is moved.
 - **Gallery:** the clips (a `button[role=tab]` and a `.gallery-group` panel per run in `#runs`) and the 3D viewer below
-  them have separate run lists; add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's.
+  them have separate run lists; add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's
+  (`#viewer-run`, above the viewer, tied to it by `data-for`). An option with `data-page` (the Applications group) shows
+  that application's own 3D page, as it is, in the frame `#viewer-embed` in place of the viewer. Every run in the viewer's
+  list has a clip; dog, mbike-trick, paragliding-launch, parkour, scooter-black and the NVIDIA runs have only clips.
 - **3D tracks:** the viewer draws the file's stored tracks (pick_tracks.py): up to 110 dynamic Gaussians, spread out at
-  frame 0, only ones on the surface the input video shows (within 5 % of the rendered depth, from each frame's own
-  input camera, in 80 % of the frames they are in view) that are opaque, not tiny, in a dense part of the dynamic cloud,
-  and no more jagged than 1.5 times the run's median. A hidden Gaussian, skinned to far nodes, otherwise sweeps through
-  space several times farther than the body. Trails are drawn through a moving average over 2 frames either side (runs
-  over 24 frames); the clips' tracks cell draws the first 60 the same way. A file without stored tracks falls back to
+  frame 0, only ones the input video shows: in each frame's render from its own input camera, a Gaussian's blending
+  weight must reach a quarter of the median of its own part's (main graph node's) visible Gaussians, in 60 % of the
+  frames it is in view. Hidden ones (behind the body or the background) fall to ~0 and get none; a thin limb or a small,
+  far-away body still counts (a depth test dropped parkour's legs, a run-wide weight dropped EgoDexter's hand). They must
+  also be opaque, not tiny, in a dense part of the dynamic cloud, and no more jagged, relative to their speed, than 1.5
+  times the run's median. Trails are drawn through a moving average over 2 frames either side (runs over 24 frames); the
+  clips' tracks cell draws the first 60 the same way. A file without stored tracks falls back to
   the old in-browser choice. `data-tracks="off"` on an option shows none (truck).

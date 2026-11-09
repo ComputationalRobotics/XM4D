@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261109e">
+  <link rel="stylesheet" href="style.css?v=20261109f">
 </head>
 <body>
 
@@ -311,7 +311,65 @@
         <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own. <a href="fridge.html">Open it in 3D</a>, with a slider per door.</span></figcaption></figure>
       </div>
     </div>
-    <h3 class="viewer-title">3D viewer</h3>
+    <div class="viewer-head">
+      <h3 class="viewer-title">3D viewer</h3>
+      <label class="viewer-pick" for="viewer-run"><span class="viewer-label">Run</span>
+        <select class="viewer-scene" id="viewer-run" data-for="viewer" data-embed="viewer-embed">
+          <optgroup label="DAVIS">
+            <option value="bear" data-src="assets/3d/bear.bin" selected>bear</option>
+            <option value="camel" data-src="assets/3d/camel.bin">camel</option>
+            <option value="train" data-src="assets/3d/train.bin">train</option>
+            <option value="blackswan" data-src="assets/3d/blackswan.bin">blackswan</option>
+            <option value="car-roundabout" data-src="assets/3d/car-roundabout.bin">car-roundabout</option>
+            <option value="breakdance-flare" data-src="assets/3d/breakdance-flare.bin">breakdance-flare</option>
+            <option value="dance-twirl" data-src="assets/3d/dance-twirl.bin">dance-twirl</option>
+            <option value="hike" data-src="assets/3d/hike.bin">hike</option>
+            <option value="bmx-trees" data-src="assets/3d/bmx-trees.bin">bmx-trees</option>
+            <option value="breakdance" data-src="assets/3d/breakdance.bin">breakdance</option>
+            <option value="car-shadow" data-src="assets/3d/car-shadow.bin">car-shadow</option>
+            <option value="cows" data-src="assets/3d/cows.bin">cows</option>
+            <option value="gold-fish" data-src="assets/3d/gold-fish.bin">gold-fish</option>
+            <option value="horsejump-high" data-src="assets/3d/horsejump-high.bin">horsejump-high</option>
+            <option value="loading" data-src="assets/3d/loading.bin">loading</option>
+            <option value="pigs" data-src="assets/3d/pigs.bin">pigs</option>
+            <option value="soapbox" data-src="assets/3d/soapbox.bin">soapbox</option>
+          </optgroup>
+          <optgroup label="DyCheck">
+            <option value="block" data-src="assets/3d/block.bin">block</option>
+            <option value="paper-windmill" data-src="assets/3d/paper-windmill.bin">paper-windmill</option>
+            <option value="spin" data-src="assets/3d/spin.bin">spin</option>
+            <option value="teddy" data-src="assets/3d/teddy.bin">teddy</option>
+            <option value="wheel" data-src="assets/3d/wheel.bin">wheel</option>
+          </optgroup>
+          <optgroup label="Syn4D">
+            <option value="bear1" data-src="assets/3d/bear1.bin">bear1</option>
+            <option value="bear2" data-src="assets/3d/bear2.bin">bear2</option>
+            <option value="bear3" data-src="assets/3d/bear3.bin">bear3</option>
+            <option value="bear4" data-src="assets/3d/bear4.bin">bear4</option>
+            <option value="casa1" data-src="assets/3d/casa1.bin">casa1</option>
+            <option value="casa2" data-src="assets/3d/casa2.bin">casa2</option>
+            <option value="casa3" data-src="assets/3d/casa3.bin">casa3</option>
+            <option value="casa4" data-src="assets/3d/casa4.bin">casa4</option>
+          </optgroup>
+          <optgroup label="RoboCasa">
+            <option value="casa-pose" data-src="assets/3d/casa-pose.bin">cereal box</option>
+          </optgroup>
+          <optgroup label="EgoDexter">
+            <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
+          </optgroup>
+          <optgroup label="Applications">
+            <option value="app-fridge" data-page="fridge.html">fridge doors</option>
+            <option value="app-kitchen" data-page="kitchen.html">kitchen twin</option>
+            <option value="app-ip1149" data-page="handobj.html#ip1149">can and cup</option>
+            <option value="app-ip1147" data-page="handobj.html#ip1147">jar</option>
+            <option value="app-ip1045" data-page="handobj.html#ip1045">cube and bowl</option>
+            <option value="app-ip1117" data-page="handobj.html#ip1117">pen holder</option>
+            <option value="app-ip1073" data-page="handobj.html#ip1073">tape roll</option>
+            <option value="app-hot3d-milk" data-page="handobj.html#hot3d-milk">milk carton (HOT3D)</option>
+          </optgroup>
+        </select>
+      </label>
+    </div>
     <div class="viewer" id="viewer">
       <div class="viewer-stage">
         <canvas class="viewer-canvas" aria-label="3D view of the selected reconstruction"></canvas>
@@ -319,66 +377,6 @@
         <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
       </div>
       <div class="viewer-panel">
-        <label class="viewer-field"><span class="viewer-label">Run</span>
-          <select class="viewer-scene">
-            <optgroup label="DAVIS">
-              <option value="bear" data-src="assets/3d/bear.bin" selected>bear</option>
-              <option value="camel" data-src="assets/3d/camel.bin">camel</option>
-              <option value="train" data-src="assets/3d/train.bin">train</option>
-              <option value="blackswan" data-src="assets/3d/blackswan.bin">blackswan</option>
-              <option value="car-roundabout" data-src="assets/3d/car-roundabout.bin">car-roundabout</option>
-              <option value="breakdance-flare" data-src="assets/3d/breakdance-flare.bin">breakdance-flare</option>
-              <option value="dance-twirl" data-src="assets/3d/dance-twirl.bin">dance-twirl</option>
-              <option value="hike" data-src="assets/3d/hike.bin">hike</option>
-              <option value="bmx-trees" data-src="assets/3d/bmx-trees.bin">bmx-trees</option>
-              <option value="breakdance" data-src="assets/3d/breakdance.bin">breakdance</option>
-              <option value="car-shadow" data-src="assets/3d/car-shadow.bin">car-shadow</option>
-              <option value="cows" data-src="assets/3d/cows.bin">cows</option>
-              <option value="dog" data-src="assets/3d/dog.bin">dog</option>
-              <option value="gold-fish" data-src="assets/3d/gold-fish.bin">gold-fish</option>
-              <option value="horsejump-high" data-src="assets/3d/horsejump-high.bin">horsejump-high</option>
-              <option value="loading" data-src="assets/3d/loading.bin">loading</option>
-              <option value="mbike-trick" data-src="assets/3d/mbike-trick.bin">mbike-trick</option>
-              <option value="paragliding-launch" data-src="assets/3d/paragliding-launch.bin">paragliding-launch</option>
-              <option value="parkour" data-src="assets/3d/parkour.bin">parkour</option>
-              <option value="pigs" data-src="assets/3d/pigs.bin">pigs</option>
-              <option value="scooter-black" data-src="assets/3d/scooter-black.bin">scooter-black</option>
-              <option value="soapbox" data-src="assets/3d/soapbox.bin">soapbox</option>
-            </optgroup>
-            <optgroup label="NVIDIA">
-              <option value="balloon1" data-src="assets/3d/balloon1.bin">Balloon1</option>
-              <option value="balloon2" data-src="assets/3d/balloon2.bin">Balloon2</option>
-              <option value="jumping" data-src="assets/3d/jumping.bin">Jumping</option>
-              <option value="playground" data-src="assets/3d/playground.bin">Playground</option>
-              <option value="skating" data-src="assets/3d/skating.bin">Skating</option>
-              <option value="truck" data-src="assets/3d/truck.bin" data-tracks="off">Truck</option>
-              <option value="umbrella" data-src="assets/3d/umbrella.bin">Umbrella</option>
-            </optgroup>
-            <optgroup label="DyCheck">
-              <option value="block" data-src="assets/3d/block.bin">block</option>
-              <option value="paper-windmill" data-src="assets/3d/paper-windmill.bin">paper-windmill</option>
-              <option value="spin" data-src="assets/3d/spin.bin">spin</option>
-              <option value="teddy" data-src="assets/3d/teddy.bin">teddy</option>
-              <option value="wheel" data-src="assets/3d/wheel.bin">wheel</option>
-            </optgroup>
-            <optgroup label="Syn4D">
-              <option value="bear1" data-src="assets/3d/bear1.bin">bear1</option>
-              <option value="bear2" data-src="assets/3d/bear2.bin">bear2</option>
-              <option value="bear3" data-src="assets/3d/bear3.bin">bear3</option>
-              <option value="bear4" data-src="assets/3d/bear4.bin">bear4</option>
-              <option value="casa1" data-src="assets/3d/casa1.bin">casa1</option>
-              <option value="casa2" data-src="assets/3d/casa2.bin">casa2</option>
-              <option value="casa3" data-src="assets/3d/casa3.bin">casa3</option>
-              <option value="casa4" data-src="assets/3d/casa4.bin">casa4</option>
-            </optgroup>
-            <optgroup label="RoboCasa">
-              <option value="casa-pose" data-src="assets/3d/casa-pose.bin">cereal box</option>
-            </optgroup>
-            <optgroup label="EgoDexter">
-              <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
-            </optgroup>
-          </select>
-        </label>
         <fieldset class="viewer-layers">
           <legend class="viewer-label">Show</legend>
           <label><input type="checkbox" data-layer="static" checked> Static scene</label>
@@ -404,6 +402,7 @@
         </div>
       </div>
     </div>
+    <iframe class="viewer-embed" id="viewer-embed" title="3D view of the selected application" hidden></iframe>
   </section>
 
   <!-- ───────────────────────── SOLVER ITERATIONS ───────────────────────── -->
@@ -412,19 +411,9 @@
   <section class="solver" id="solver" aria-labelledby="solver-title">
     <div class="section-head">
       <h2 id="solver-title">Inside the solver</h2>
-      <p>
-        Both stages are solved by the same GPU Burer&ndash;Monteiro solver. These clips replay its iterates, from a copy
-        of the solver that saved every one.
-      </p>
-      <p>
-        <strong>Static solve:</strong> scaled bundle adjustment over the static tracks. Every frame&rsquo;s lifted depth is
-        placed by that iterate&rsquo;s camera and depth scale, and comes into register as the cameras settle.
-      </p>
-      <p>
-        <strong>Deformation graph:</strong> one segment&rsquo;s rotation-only problem. Each node&rsquo;s translations follow
-        from its rotations in closed form. The clip starts from zero translation, with every node at its rest position,
-        and from identity rotations, shown as the faint frames. The inset plots the cost above the optimum.
-      </p>
+      <p>Both stages are solved by the same GPU Burer&ndash;Monteiro solver. These clips replay its iterates.</p>
+      <p><strong>Static solve:</strong> scaled bundle adjustment over the static tracks.</p>
+      <p><strong>Deformation graph:</strong> one segment&rsquo;s rotation-only problem.</p>
     </div>
     <div class="gallery solver-runs">
       <div class="gallery-head">
@@ -505,8 +494,7 @@
         <div class="app-text">
           <h3>Dance with a robot</h3>
           <p>For people, the graph&rsquo;s nodes are the joints of a body pose, so the solved motion is a skeleton
-            animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints, within their
-            limits and with its own link lengths, and takes the person&rsquo;s place.</p>
+            animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints.</p>
         </div>
         <div class="segmented" role="tablist" aria-label="Robot">
           <button role="tab" aria-selected="true" data-group="rb-twirl">dance-twirl</button>
@@ -812,6 +800,6 @@
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="main.js?v=20261109e" defer></script>
-<script src="viewer.js?v=20261109a" defer></script>
+<script src="viewer.js?v=20261109b" defer></script>
 </body>
 </html>

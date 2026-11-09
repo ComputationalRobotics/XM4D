@@ -1,5 +1,5 @@
 /* XM4D gallery viewer, worker: poses the dynamic Gaussians at time t through the deformation graph (the trainer's
-   skinning, x = sum_k w_k (p_k(t) + R_k(t) rel_k)) and sorts all Gaussians front to back for the current view. */
+   skinning, x = sum_k w_k (p_k(t) + R_k(t) rel_k)) and sorts all Gaussians front to back for the current view (exactly, by camera depth). */
 'use strict';
 
 var S = null;
@@ -31,29 +31,28 @@ function pose(t, nodes) {  // nodes: explicit node positions and matrices (an ar
   return out;
 }
 
-var depthBuf = null, keyBuf = null, counts = new Uint32Array(65536), starts = new Uint32Array(65536);
-function sort(view, dyn) {  // 16-bit counting sort on camera depth (OpenCV: +z ahead), nearest first; drops what is behind
-  var n = S.nDyn + S.nStatic, v2 = view[2], v6 = view[6], v10 = view[10], v14 = view[14];
-  if (!depthBuf || depthBuf.length < n) { depthBuf = new Float32Array(n); keyBuf = new Uint16Array(n); }
-  var lo = Infinity, hi = -Infinity, near = 0.01, i, d;
-  for (i = 0; i < n; i++) {
-    var src = i < S.nDyn ? dyn : S.sPos, b = (i < S.nDyn ? i : i - S.nDyn) * 3;
-    d = v2 * src[b] + v6 * src[b + 1] + v10 * src[b + 2] + v14;
-    depthBuf[i] = d;
-    if (d > near) { if (d < lo) lo = d; if (d > hi) hi = d; }
+var keys = null, keyU = null, idxA = null, idxB = null, h0 = new Uint32Array(65536), h1 = new Uint32Array(65536);
+function sort(view, dyn) {  // camera depth (OpenCV: +z ahead), nearest first, exact: LSD radix sort on the float32 bits
+  // (positive floats order as their bits), low 16 then high 16, as gsplat sorts by the depth's float bits; drops what is
+  // nearer than the near plane
+  var n = S.nDyn + S.nStatic, v2 = view[2], v6 = view[6], v10 = view[10], v14 = view[14], near = 0.01, i, j, d, m = 0;
+  if (!keys || keys.length < n) { keys = new Float32Array(n); keyU = new Uint32Array(keys.buffer); idxA = new Uint32Array(n); idxB = new Uint32Array(n); }
+  var nD = S.nDyn, sp = S.sPos;
+  for (i = 0; i < nD; i++) {
+    d = v2 * dyn[i * 3] + v6 * dyn[i * 3 + 1] + v10 * dyn[i * 3 + 2] + v14;
+    if (d > near) { keys[m] = d; idxA[m++] = i; }
   }
-  counts.fill(0);
-  var scale = hi > lo ? 65535 / (hi - lo) : 0, cnt = 0;
-  for (i = 0; i < n; i++) {
-    d = depthBuf[i];
-    if (d <= near) continue;
-    var key = ((d - lo) * scale) | 0;
-    keyBuf[i] = key; counts[key]++; cnt++;
+  for (i = 0; i < S.nStatic; i++) {
+    d = v2 * sp[i * 3] + v6 * sp[i * 3 + 1] + v10 * sp[i * 3 + 2] + v14;
+    if (d > near) { keys[m] = d; idxA[m++] = i + nD; }
   }
-  starts[0] = 0;
-  for (i = 1; i < 65536; i++) starts[i] = starts[i - 1] + counts[i - 1];
-  var order = new Uint32Array(cnt);
-  for (i = 0; i < n; i++) if (depthBuf[i] > near) order[starts[keyBuf[i]]++] = i;
+  h0.fill(0); h1.fill(0);
+  for (j = 0; j < m; j++) { var u = keyU[j]; h0[u & 0xffff]++; h1[u >>> 16]++; }
+  var s0 = 0, s1 = 0, c;
+  for (i = 0; i < 65536; i++) { c = h0[i]; h0[i] = s0; s0 += c; c = h1[i]; h1[i] = s1; s1 += c; }
+  for (j = 0; j < m; j++) idxB[h0[keyU[j] & 0xffff]++] = j;
+  var order = new Uint32Array(m);
+  for (j = 0; j < m; j++) { var jj = idxB[j]; order[h1[keyU[jj] >>> 16]++] = idxA[jj]; }
   return order;
 }
 
@@ -64,6 +63,6 @@ self.onmessage = function (e) {
   if (m.type !== 'sort' || !S || m.id !== S.id) return;
   var key = m.nodes ? m.nodesKey : m.t;
   if (cacheT !== key) { cacheDyn = pose(m.t, m.nodes); cacheT = key; }
-  var order = sort(m.view, cacheDyn), dyn = cacheDyn.slice();
-  self.postMessage({ id: S.id, t: m.t, seq: m.seq, order: order, dyn: dyn }, [order.buffer, dyn.buffer]);
+  var t0 = performance.now(), order = sort(m.view, cacheDyn), ms = performance.now() - t0, dyn = cacheDyn.slice();
+  self.postMessage({ id: S.id, t: m.t, seq: m.seq, order: order, dyn: dyn, ms: ms }, [order.buffer, dyn.buffer]);
 };
