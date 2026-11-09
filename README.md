@@ -72,7 +72,7 @@ assets/
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
                   bmx-trees ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10;
-                  breakdance from its retrain with a floor on gsplat's scene scale (bench_debug/ssfix/, update_run.py
+                  breakdance, pigs and paragliding-launch from their retrains with a floor on gsplat's scene scale (bench_debug/ssfix/, update_run.py
                   in page_assets/viewer_pages/, which also re-cuts its clip): its camera barely moves, so the scale
                   (the cameras' extent) had frozen the means and capped every Gaussian near one pixel
     handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
