@@ -31,24 +31,15 @@ assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
   img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
-    teaser/       crops of the teaser (from the paper's teaser.pdf) for the hero walkthrough
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
   img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
-  video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
+  video/
     promo-1440.mp4, promo-1080.mp4, promo-720.mp4
                        the teaser, full screen above the page (81.6 s, music; v7, drawn natively at 2560x1440 and
                        encoded for crisp text; built in xm4d_new/teaser/ on the Passport). The <video> lists them with
                        media conditions, so a screen loads only the sharpest one it can use
-    teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
-    teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
-    teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
-    teaser-solve.mp4   Solve: over panel (b), the XM solver's iterates on this video (from a replay of its solve
-                       that saved every iterate: the cameras, and every frame's lifted depth placed by its camera
-                       and depth scale), then the dynamic tracks through time (cameras along the path, tracks growing)
-    teaser-render.mp4  Render: the trained model rendered at every frame from panel (c)'s camera and crop,
-                       with its tracked keypoints
     runs/         the Example runs gallery below the teaser: per run, one input camera's render, 3D tracks, and
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
                   4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 14 DAVIS runs after hike (bmx-trees to
@@ -56,7 +47,7 @@ assets/
                   showcase_holdout.mp4 (build_ext.py in the session scratchpad);
                   posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
-                  static-<run>.mp4, the static solve's iterates (the horse's is the first part of teaser-solve.mp4),
+                  static-<run>.mp4, the static solve's iterates,
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
                   saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
     apps/         Applications clips (scripts: 4DReconstruction/scratchpad/page_assets/apps/ unless noted):
