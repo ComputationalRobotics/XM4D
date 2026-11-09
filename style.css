@@ -152,7 +152,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 }
 .award-chip svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .hero-title {
-  max-width: 900px;
+  max-width: none;                     /* the title fits one line from tablet width up */
   font-size: clamp(23px, 2.9vw, 34px);
   font-weight: 500;
   line-height: 1.3;
