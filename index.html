@@ -8,7 +8,7 @@
 
   <meta property="og:title" content="XM4D: 4D Reconstruction through Certifiable Geometric Optimization">
   <meta property="og:description" content="Certifiably optimal cameras and non-rigid motion from casual videos, solved on the GPU and scaling to thousands of frames.">
-  <meta property="og:image" content="assets/img/teaser.jpg">
+  <meta property="og:image" content="assets/img/teaser.jpg?v=2">
   <meta property="og:type" content="website">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261109b">
+  <link rel="stylesheet" href="style.css?v=20261109c">
 </head>
 <body>
 
@@ -553,7 +553,7 @@
 
     <div class="app" id="app-pose">
       <div class="app-text">
-        <h3>Follow a known object in 6D</h3>
+        <h3>6D pose estimation</h3>
         <p>A robot carries a cereal box 1.8&nbsp;m along a kitchen counter and turns it a quarter turn, while the camera
           moves 2.2&nbsp;m. From the RGB video and the camera&rsquo;s focal length, XM4D solves the camera&rsquo;s path
           and the box as one rigid node, in the same world frame. The box&rsquo;s mesh is registered to the reconstructed
@@ -684,7 +684,7 @@
       <div class="method-steps">
 
         <!-- data-img: figure shown in the sticky stage while this step is active -->
-        <article class="step" data-img="assets/img/teaser.jpg" data-title="Inputs">
+        <article class="step" data-img="assets/img/teaser.jpg?v=2" data-title="Inputs">
           <h3>Lift tracks with predicted depth</h3>
           <p>
             Point trackers and a monocular depth model give 2D tracks and per-frame depth. Every
@@ -692,7 +692,7 @@
           </p>
         </article>
 
-        <article class="step" data-img="assets/img/view-graph.jpg" data-title="Static stage">
+        <article class="step" data-img="assets/img/view-graph.jpg?v=2" data-title="Static stage">
           <h3>Certified cameras</h3>
           <p>
             A scaled bundle adjustment over camera poses, per-frame depth scales, and static
@@ -701,7 +701,7 @@
           </p>
         </article>
 
-        <article class="step" data-img="assets/img/view-graph.jpg" data-title="Dynamic stage">
+        <article class="step" data-img="assets/img/view-graph.jpg?v=2" data-title="Dynamic stage">
           <h3>Certified non-rigid motion</h3>
           <p>
             Dynamic motion is an embedded deformation graph whose node transformations are
@@ -710,7 +710,7 @@
           </p>
         </article>
 
-        <article class="step step-last" data-img="assets/img/teaser.jpg" data-title="Rendering">
+        <article class="step step-last" data-img="assets/img/teaser.jpg?v=2" data-title="Rendering">
           <h3>4D Gaussian splatting</h3>
           <p>
             The certified cameras and graph motion initialize dynamic Gaussian splatting, which
@@ -722,7 +722,7 @@
 
       <div class="method-stage">
         <div class="stage-sticky">
-          <img id="stage-img" src="assets/img/teaser.jpg" alt="">
+          <img id="stage-img" src="assets/img/teaser.jpg?v=2" alt="">
           <div class="stage-hud" aria-hidden="true">
             <span class="hud-task" id="hud-task">Inputs</span>
           </div>

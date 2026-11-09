@@ -292,7 +292,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 
 .hero-lede {
-  max-width: 600px;
+  max-width: none;                     /* the full content width, like the title */
   margin-top: 36px;
   font-size: clamp(17px, 1.6vw, 20px);
   line-height: 1.45;

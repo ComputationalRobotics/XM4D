@@ -31,7 +31,7 @@ assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo (group-logo-alpha.png: its white made transparent, for the teaser's overlay)
   harvard-shield.svg  Harvard shield (from the group's GRASP page), for the teaser's overlay
-  img/            teaser.jpg, view-graph.jpg (rendered from the paper figures)
+  img/            teaser.jpg, view-graph.jpg (the arXiv paper's overview and view-graph figures, from 2026-pami-xm4d/arxiv-crg/figures/)
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
