@@ -58,8 +58,7 @@ assets/
                   (not the DAVIS annotations) and one COCO skeleton per person (xm4d_new/dance_gallery/ on the Passport);
                   EgoDexter fruits / remote (sub-clips of its Fruits and Rotunda sequences) and HOI jar / can and cup
                   (the user's iPhone clips ip1147 / ip1149, two WiLoR hands) from desk's hand-object recipe with a floor on
-                  gsplat's scene scale (drivers and inspection sheets: xm4d_new/new_runs_scripts/ on the Passport;
-                  videos only so far, their light viewer files in xm4d_new/site_bins_offline/);
+                  gsplat's scene scale (drivers and inspection sheets: xm4d_new/new_runs_scripts/ on the Passport);
                   posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
                   static-<run>.mp4, the static solve's iterates,
@@ -79,9 +78,12 @@ assets/
                   recorded frame-exact with a virtual clock in a GPU headless Chrome (page_assets/viewer_pages/
                   record_viewer.py, record_native.sh); posters in img/apps/
   3d/             one file per Gallery run. Full quality (format v2, page_assets/viewer/export_viewer_v2.py, export_all_v2.sh)
-                  for the 13 whose light file fell furthest from the paper's eval render (ranked in /dev/shm/viewer_fix/rank):
+                  for the 11 whose light file fell furthest from the paper's eval render (ranked in /dev/shm/viewer_fix/rank):
                   horsejump-high (the teaser's gsplat_v3), dance-twirl, car-roundabout, teddy, hike, blackswan, casa2, cows,
-                  block, bear, breakdance, wheel, bear4. Every Gaussian, the trained skinning (6 nodes), each node's observed
+                  block, bear, breakdance; and the five hand-object runs (egodexter, egodexter-fruits, egodexter-rotunda,
+                  hoi-jar, hoi-pour), whose light files break up the hand and the object although the whole-frame score
+                  (24-32 dB) hides it, the hand being a small part of the frame; bear4 and wheel, the two of the 13 that lost
+                  least, went back to light files to make room. Every Gaussian, the trained skinning (6 nodes), each node's observed
                   frames (n_obs), and the appearance model (per-Gaussian features, the colour MLP, the frame embeddings),
                   which viewer.js evaluates per frame and view; at the input cameras the browser matches the eval render to
                   ~43-50 dB. 22-60 MB each, so the rest (GitHub Pages' 1 GB site limit) keep the light format:
