@@ -187,8 +187,12 @@
         <button role="tab" aria-selected="false" data-group="casa-pose">cereal box</button>
         <span class="seg-label">EgoDexter</span>
         <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
+        <button role="tab" aria-selected="false" data-group="egodexter-fruits">fruits</button>
+        <button role="tab" aria-selected="false" data-group="egodexter-rotunda">remote</button>
         <span class="seg-label">HOI</span>
         <button role="tab" aria-selected="false" data-group="fridge">fridge</button>
+        <button role="tab" aria-selected="false" data-group="hoi-jar">jar</button>
+        <button role="tab" aria-selected="false" data-group="hoi-pour">can and cup</button>
       </div>
       <div class="run-cols" aria-hidden="true"><span>Render</span><span>3D tracks</span><span>Deformation graph</span></div>
       <div class="gallery-group is-active" data-group="bear" role="tabpanel">
@@ -363,9 +367,25 @@
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
         <figcaption>EgoDexter &middot; desk <span>The hand's graph is the 21 keypoints of a WiLoR hand pose; the marker, orange, and block it picks up (segmented with SAM2) each move as one rigid part.</span></figcaption></figure>
       </div>
+      <div class="gallery-group" data-group="egodexter-fruits" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/egodexter-fruits.jpg" data-src="assets/video/runs/egodexter-fruits.mp4"></video>
+        <figcaption>EgoDexter &middot; fruits <span>The pear, the apple and the bananas are each one rigid part.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="egodexter-rotunda" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/egodexter-rotunda.jpg" data-src="assets/video/runs/egodexter-rotunda.mp4"></video>
+        <figcaption>EgoDexter &middot; remote</figcaption></figure>
+      </div>
       <div class="gallery-group" data-group="fridge" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
         <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own. <a href="fridge.html">Open it in 3D</a>, with a slider per door.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="hoi-jar" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/hoi-jar.jpg" data-src="assets/video/runs/hoi-jar.mp4"></video>
+        <figcaption>HOI &middot; jar <span>Both hands are WiLoR hand poses; the jar and its lid are each one rigid part.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="hoi-pour" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/hoi-pour.jpg" data-src="assets/video/runs/hoi-pour.mp4"></video>
+        <figcaption>HOI &middot; can and cup</figcaption></figure>
       </div>
     </div>
     <div class="viewer-head">

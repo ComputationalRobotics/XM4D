@@ -56,6 +56,10 @@ assets/
                   from grids rendered by page_assets/runs/grids/render_grids.sh;
                   disc-jockey and kids-turning (DAVIS 2017, two people each) from their held-out runs, with SAM 3 masks
                   (not the DAVIS annotations) and one COCO skeleton per person (xm4d_new/dance_gallery/ on the Passport);
+                  EgoDexter fruits / remote (sub-clips of its Fruits and Rotunda sequences) and HOI jar / can and cup
+                  (the user's iPhone clips ip1147 / ip1149, two WiLoR hands) from desk's hand-object recipe with a floor on
+                  gsplat's scene scale (drivers and inspection sheets: xm4d_new/new_runs_scripts/ on the Passport;
+                  videos only so far, their light viewer files in xm4d_new/site_bins_offline/);
                   posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
                   static-<run>.mp4, the static solve's iterates,
