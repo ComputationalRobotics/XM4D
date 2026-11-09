@@ -41,11 +41,27 @@
   /* ── Result galleries: tabs + lazy, viewport-gated playback ── */
   var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-src]'));
 
+  function setPoster(video) {
+    if (video.dataset.poster) { video.poster = video.dataset.poster; delete video.dataset.poster; }
+  }
   function load(video) {
     if (video.dataset.loaded) return;
+    setPoster(video);
     video.src = video.dataset.src;
     video.dataset.loaded = '1';
   }
+  /* the clips' posters (data-poster) load as each nears the screen, and only once the teaser has started, so that on
+     a first visit the teaser gets the bandwidth instead of some fifty images below it */
+  var startPosters = function () {
+    if (startPosters.done) return;
+    startPosters.done = true;
+    var posters = Array.prototype.slice.call(document.querySelectorAll('video[data-poster]'));
+    if (!('IntersectionObserver' in window)) { posters.forEach(setPoster); return; }
+    var pio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { setPoster(e.target); pio.unobserve(e.target); } });
+    }, { rootMargin: '600px 0px' });
+    posters.forEach(function (v) { pio.observe(v); });
+  };
   function tryPlay(video) {
     load(video);
     var p = video.play();
@@ -135,23 +151,36 @@
     var bar = intro.querySelector('.intro-bar');
     var cue = intro.querySelector('.intro-cue');
     var userPaused = false, onScreen = true, seeking = false;     /* autoplays even with reduced motion: Pause is right there */
+    var ready = false, starved = false, shownT = null;            /* shownT: media time of the frame on screen */
+
+    /* a slow connection (where the browser tells) gets a lighter cut than the screen alone would pick */
+    var net = navigator.connection;
+    if (net && (net.saveData || net.downlink < 10)) {
+      var want = net.saveData || net.downlink < 5 ? 720 : 1080;
+      var picked = Array.prototype.slice.call(promo.querySelectorAll('source')).filter(function (s) {
+        return !s.media || window.matchMedia(s.media).matches;
+      })[0];
+      var res = picked ? +(/promo-(\d+)/.exec(picked.src) || [0, 0])[1] : 0;
+      if (res > want) promo.src = picked.src.replace('promo-' + res, 'promo-' + want);
+    }
 
     var clock = function (s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); };
     var showTime = function () {
-      var d = promo.duration || +seek.max, t = seeking ? +seek.value : promo.currentTime;
+      var d = promo.duration || +seek.max, t = seeking ? +seek.value : (shownT !== null ? shownT : promo.currentTime);
       if (!seeking) seek.value = t;
       seek.max = d; seek.style.setProperty('--p', (100 * t / d).toFixed(2) + '%');
       timeEl.textContent = clock(t) + ' / ' + clock(d);
     };
     var paint = function () {
+      intro.classList.toggle('is-loading', !userPaused && (!ready || starved));
       intro.classList.toggle('is-paused', userPaused);
       intro.classList.toggle('is-sound', !promo.muted);
-      var label = userPaused ? 'Play the teaser' : 'Pause the teaser';
+      var label = userPaused ? 'Play the teaser' : intro.classList.contains('is-loading') ? 'Loading the teaser' : 'Pause the teaser';
       playBtn.setAttribute('aria-label', label); hit.setAttribute('aria-label', label);
       soundBtn.setAttribute('aria-pressed', String(!promo.muted));
     };
     var sync = function () {
-      if (userPaused || !onScreen) { if (!promo.paused) promo.pause(); }
+      if (userPaused || !onScreen || !ready) { if (!promo.paused) promo.pause(); }
       else {
         var p = promo.play();
         if (p && p.catch) p.catch(function () { userPaused = true; paint(); });   /* autoplay blocked: show Play */
@@ -173,7 +202,34 @@
       if (!promo.muted) userPaused = false;     /* turning the sound on means "play it" */
       sync();
     });
-    seek.addEventListener('input', function () { seeking = true; promo.currentTime = +seek.value; showTime(); });
+    /* playback waits, paused on the first frame with the ring showing, until it can play through without stopping:
+       8 s buffered, or 3 s while the download runs at least 1.5x faster than playback. A download slower than that
+       steps down to the next lighter cut (1440p, 1080p, 720p). A browser that buffers nothing until it plays (iOS)
+       starts after 4 s. Whenever playback later waits for data, the ring shows again */
+    var begin = function () { if (ready) return; ready = true; clearInterval(watch); startPosters(); sync(); };
+    var ahead = function () {
+      var b = promo.buffered, t = promo.currentTime;
+      for (var i = 0; i < b.length; i++) if (b.start(i) <= t + 0.1 && b.end(i) > t) return b.end(i) - t;
+      return 0;
+    };
+    var CUTS = [1440, 1080, 720], since = null;
+    var check = function () {
+      if (ready || !(promo.readyState >= 1) || !promo.duration) return;
+      if (since === null) since = performance.now();
+      var a = ahead(), dt = (performance.now() - since) / 1000, rate = a / Math.max(dt, 0.25);
+      if (a >= Math.min(8, promo.duration - promo.currentTime - 0.5) || (a >= 3 && rate >= 1.5)) { begin(); return; }
+      if (dt > 4 && a < 0.5) { begin(); return; }
+      var m = /promo-(\d+)\.mp4/.exec(promo.currentSrc), lower = m && CUTS[CUTS.indexOf(+m[1]) + 1];
+      if (dt > 2 && rate < 1.5 && lower) { since = null; promo.src = promo.currentSrc.replace('promo-' + m[1], 'promo-' + lower); }
+    };
+    var watch = setInterval(check, 250);
+    promo.addEventListener('progress', check);
+    setTimeout(startPosters, 15000);                 /* the page's other images, even if the teaser never gets going */
+    promo.addEventListener('waiting', function () { starved = true; paint(); });
+    ['playing', 'pause', 'seeked'].forEach(function (ev) {
+      promo.addEventListener(ev, function () { if (ev !== 'seeked' || promo.readyState >= 3) { starved = false; paint(); } });
+    });
+    seek.addEventListener('input', function () { seeking = true; shownT = null; promo.currentTime = +seek.value; showTime(); });
     seek.addEventListener('change', function () { seeking = false; showTime(); });
     promo.addEventListener('loadedmetadata', showTime);
     /* the bar follows playback about 8 times a second, and not at all while it is hidden */
@@ -267,9 +323,7 @@
           g.appendChild(el); layer.appendChild(g); nodes.push(g);
         });
         fitLayer(); draw(true);
-        /* the poster has the text baked in: the layer shows once the text-free video has a frame up */
-        var show = function () { layer.style.visibility = ''; };
-        if (promo.readyState >= 2) show(); else promo.addEventListener('loadeddata', show, { once: true });
+        layer.style.visibility = '';             /* the poster is the text-free first frame, so the text can show at once */
       };
       var draw = function (force, t) {     /* t: the presented frame's media time, when the browser reports it */
         if (!cues) return;
@@ -288,7 +342,10 @@
       };
       var follow = function () {
         if (promo.requestVideoFrameCallback) {
-          var onFrame = function (now, meta) { draw(false, meta && meta.mediaTime); promo.requestVideoFrameCallback(onFrame); };
+          var onFrame = function (now, meta) {
+            if (meta) shownT = meta.mediaTime;     /* the bar follows the frames shown, never a clock running ahead of them */
+            draw(false, meta && meta.mediaTime); promo.requestVideoFrameCallback(onFrame);
+          };
           promo.requestVideoFrameCallback(onFrame);
         } else {
           var loop = function () { if (!promo.paused) draw(); requestAnimationFrame(loop); };
@@ -304,5 +361,5 @@
         });
     }
     showTime(); sync();
-  }
+  } else startPosters();
 })();

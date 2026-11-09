@@ -90,6 +90,18 @@ em { font-style: italic; }
 .intro-big .i-pause { fill: none; stroke-width: 3; }
 .intro-big .i-play { margin-left: 5px; }
 .intro.is-paused .intro-big, .intro-big.is-flash { opacity: 1; transform: scale(1); }
+/* loading: a ring above the scroll cue (clear of the title card) until the teaser can play through, and while
+   playback waits for data */
+.intro-load {
+  position: absolute; left: 50%; bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + 116px); z-index: 1;
+  width: 44px; height: 44px; margin-left: -22px;
+  border-radius: 50%; border: 3px solid rgba(28, 28, 32, .14); border-top-color: var(--accent);
+  pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility 0s linear .2s;
+}
+.intro.is-loading .intro-load { opacity: 1; visibility: visible; transition-delay: 0s; animation: intro-spin .9s linear infinite; }
+.intro.is-loading .intro-big { opacity: 0; }
+@keyframes intro-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .intro.is-loading .intro-load { animation-duration: 2.4s; } }
 /* the bar: play/pause, seek, time, sound */
 .intro-bar {
   position: absolute; z-index: 2; display: flex; align-items: center; gap: 12px;
@@ -146,7 +158,13 @@ em { font-style: italic; }
 .intro-cue svg { animation: intro-nudge 1.8s ease-in-out infinite; }
 @keyframes intro-nudge { 50% { transform: translateY(3px); } }
 /* while it plays, the bar and the cue step aside when the pointer rests (any move, touch or key brings them back) */
-.intro.is-idle:not(.is-paused) .intro-bar, .intro.is-idle:not(.is-paused) .intro-cue { opacity: 0; pointer-events: none; }
+.intro.is-idle:not(.is-paused):not(.is-loading) .intro-bar, .intro.is-idle:not(.is-paused):not(.is-loading) .intro-cue { opacity: 0; pointer-events: none; }
+/* while loading, the bar's play button turns into a small ring too (the only one in the portrait layout) */
+.intro.is-loading #promo-play svg { display: none; }
+.intro.is-loading #promo-play::before {
+  content: ""; width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid rgba(28, 28, 32, .16); border-top-color: var(--accent); animation: intro-spin .9s linear infinite;
+}
 .intro.is-idle:not(.is-paused) .intro-hit { cursor: none; }
 @media (min-aspect-ratio: 2/1) {                     /* ultra-wide: the whole frame, its sides fading into the bars */
   .intro-video {
@@ -160,7 +178,7 @@ em { font-style: italic; }
   .intro-stage { position: relative; aspect-ratio: 16 / 9; }
   .intro-bar { position: relative; left: auto; right: auto; bottom: auto; margin: 10px var(--gutter) 0; }
   .intro.is-idle:not(.is-paused) .intro-bar { opacity: 1; pointer-events: auto; }
-  .intro-cue { display: none; }
+  .intro-cue, .intro-load { display: none; }
   .intro-big { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
   .intro-big svg { width: 28px; height: 28px; }
 }

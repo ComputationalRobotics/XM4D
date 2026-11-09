@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261109d">
+  <link rel="stylesheet" href="style.css?v=20261109e">
 </head>
 <body>
 
@@ -26,7 +26,7 @@
      pauses off screen (main.js). The top bar sits below it and sticks once it scrolls away. -->
 <div class="intro" id="teaser" role="region" aria-label="Teaser video">
   <div class="intro-stage">
-    <video id="promo" class="intro-video" autoplay muted loop playsinline preload="auto" width="1280" height="720" poster="assets/img/promo.jpg?v=11" aria-label="XM4D teaser: results, the pipeline, and this page">
+    <video id="promo" class="intro-video" muted loop playsinline preload="auto" width="1280" height="720" poster="assets/img/promo.jpg?v=12" aria-label="XM4D teaser: results, the pipeline, and this page">
       <!-- text-free cuts (the text is drawn over them as SVG); the sharpest the screen can use: 1440p on large or
            high-density screens, 1080p on most laptops, else 720p -->
       <source src="assets/video/promo-1440.mp4?v=11" type="video/mp4" media="(min-width: 1800px), (min-width: 1000px) and (min-resolution: 1.75dppx)">
@@ -40,6 +40,8 @@
       <svg class="i-play" width="40" height="40" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>
       <svg class="i-pause" width="40" height="40" viewBox="0 0 24 24"><path d="M9 5.5v13M15 5.5v13"/></svg>
     </span>
+    <!-- shown until enough of the teaser is in to play through, and whenever playback waits for data -->
+    <span class="intro-load" role="status" aria-label="Loading the teaser"></span>
   </div>
   <div class="intro-bar">
     <button type="button" class="intro-btn" id="promo-play" aria-label="Pause the teaser">
@@ -177,135 +179,135 @@
       </div>
       <div class="run-cols" aria-hidden="true"><span>Render</span><span>3D tracks</span><span>Deformation graph</span></div>
       <div class="gallery-group is-active" data-group="bear" role="tabpanel">
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bear.jpg" data-src="assets/video/runs/bear.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/bear.jpg" data-src="assets/video/runs/bear.mp4"></video>
         <figcaption>DAVIS &middot; bear</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="camel" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/camel.jpg" data-src="assets/video/runs/camel.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/camel.jpg" data-src="assets/video/runs/camel.mp4"></video>
         <figcaption>DAVIS &middot; camel</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="train" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/train.jpg" data-src="assets/video/runs/train.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/train.jpg" data-src="assets/video/runs/train.mp4"></video>
         <figcaption>DAVIS &middot; train</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="blackswan" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
         <figcaption>DAVIS &middot; blackswan</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="car-roundabout" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-roundabout.jpg" data-src="assets/video/runs/car-roundabout.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/car-roundabout.jpg" data-src="assets/video/runs/car-roundabout.mp4"></video>
         <figcaption>DAVIS &middot; car-roundabout <span>The camera is held where it is in the first frame, so the clip ends when the car leaves its view.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
         <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="dance-twirl" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
         <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 17 joints of a COCO body pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="hike" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
         <figcaption>DAVIS &middot; hike <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="bmx-trees" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bmx-trees.jpg" data-src="assets/video/runs/bmx-trees.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/bmx-trees.jpg" data-src="assets/video/runs/bmx-trees.mp4"></video>
         <figcaption>DAVIS &middot; bmx-trees</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="breakdance" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance.jpg" data-src="assets/video/runs/breakdance.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/breakdance.jpg" data-src="assets/video/runs/breakdance.mp4"></video>
         <figcaption>DAVIS &middot; breakdance</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="car-shadow" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-shadow.jpg" data-src="assets/video/runs/car-shadow.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/car-shadow.jpg" data-src="assets/video/runs/car-shadow.mp4"></video>
         <figcaption>DAVIS &middot; car-shadow</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="cows" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/cows.jpg" data-src="assets/video/runs/cows.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/cows.jpg" data-src="assets/video/runs/cows.mp4"></video>
         <figcaption>DAVIS &middot; cows</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="dog" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dog.jpg" data-src="assets/video/runs/dog.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/dog.jpg" data-src="assets/video/runs/dog.mp4"></video>
         <figcaption>DAVIS &middot; dog</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="gold-fish" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/gold-fish.jpg" data-src="assets/video/runs/gold-fish.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/gold-fish.jpg" data-src="assets/video/runs/gold-fish.mp4"></video>
         <figcaption>DAVIS &middot; gold-fish</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="horsejump-high" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/horsejump-high.jpg" data-src="assets/video/runs/horsejump-high.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/horsejump-high.jpg" data-src="assets/video/runs/horsejump-high.mp4"></video>
         <figcaption>DAVIS &middot; horsejump-high</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="loading" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/loading.jpg" data-src="assets/video/runs/loading.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/loading.jpg" data-src="assets/video/runs/loading.mp4"></video>
         <figcaption>DAVIS &middot; loading</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="mbike-trick" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/mbike-trick.jpg" data-src="assets/video/runs/mbike-trick.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/mbike-trick.jpg" data-src="assets/video/runs/mbike-trick.mp4"></video>
         <figcaption>DAVIS &middot; mbike-trick</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="paragliding-launch" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/paragliding-launch.jpg" data-src="assets/video/runs/paragliding-launch.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/paragliding-launch.jpg" data-src="assets/video/runs/paragliding-launch.mp4"></video>
         <figcaption>DAVIS &middot; paragliding-launch</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="parkour" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/parkour.jpg" data-src="assets/video/runs/parkour.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/parkour.jpg" data-src="assets/video/runs/parkour.mp4"></video>
         <figcaption>DAVIS &middot; parkour</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="pigs" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/pigs.jpg" data-src="assets/video/runs/pigs.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/pigs.jpg" data-src="assets/video/runs/pigs.mp4"></video>
         <figcaption>DAVIS &middot; pigs</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="scooter-black" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/scooter-black.jpg" data-src="assets/video/runs/scooter-black.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/scooter-black.jpg" data-src="assets/video/runs/scooter-black.mp4"></video>
         <figcaption>DAVIS &middot; scooter-black</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="soapbox" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/soapbox.jpg" data-src="assets/video/runs/soapbox.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/soapbox.jpg" data-src="assets/video/runs/soapbox.mp4"></video>
         <figcaption>DAVIS &middot; soapbox</figcaption></figure>
       </div>
       <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
         <figcaption>NVIDIA Dynamic Scenes &middot; Truck <span>12 time steps, played forward and back.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="umbrella" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/umbrella.jpg" data-src="assets/video/runs/umbrella.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/umbrella.jpg" data-src="assets/video/runs/umbrella.mp4"></video>
         <figcaption>NVIDIA Dynamic Scenes &middot; Umbrella <span>12 time steps, played forward and back.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="skating" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
         <figcaption>NVIDIA Dynamic Scenes &middot; Skating <span>12 time steps, played forward and back.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="balloon2" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/balloon2.jpg" data-src="assets/video/runs/balloon2.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/balloon2.jpg" data-src="assets/video/runs/balloon2.mp4"></video>
         <figcaption>NVIDIA Dynamic Scenes &middot; Balloon2 <span>12 time steps, played forward and back.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="paper-windmill" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
         <figcaption>DyCheck &middot; paper-windmill <span>Frames 0&ndash;72, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="block" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/block.jpg" data-src="assets/video/runs/block.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/block.jpg" data-src="assets/video/runs/block.mp4"></video>
         <figcaption>DyCheck &middot; block <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="spin" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/spin.jpg" data-src="assets/video/runs/spin.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/spin.jpg" data-src="assets/video/runs/spin.mp4"></video>
         <figcaption>DyCheck &middot; spin <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="teddy" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/teddy.jpg" data-src="assets/video/runs/teddy.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/teddy.jpg" data-src="assets/video/runs/teddy.mp4"></video>
         <figcaption>DyCheck &middot; teddy <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="wheel" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
         <figcaption>DyCheck &middot; wheel <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
         <figcaption>EgoDexter &middot; desk <span>The hand's graph is the 21 keypoints of a WiLoR hand pose; the marker, orange, and block it picks up (segmented with SAM2) each move as one rigid part.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="fridge" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
         <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own. <a href="fridge.html">Open it in 3D</a>, with a slider per door.</span></figcaption></figure>
       </div>
     </div>
@@ -436,11 +438,11 @@
       <div class="gallery-group is-active" data-group="sv-horsejump-high" role="tabpanel">
         <div class="solver-grid">
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1188" height="772" poster="assets/img/solver/static-horsejump-high.jpg" data-src="assets/video/solver/static-horsejump-high.mp4"></video>
+          <video muted loop playsinline preload="none" width="1188" height="772" data-poster="assets/img/solver/static-horsejump-high.jpg" data-src="assets/video/solver/static-horsejump-high.mp4"></video>
           <figcaption>Static solve <span>50 frames, 8 iterations.</span></figcaption>
         </figure>
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-horsejump-high.jpg" data-src="assets/video/solver/edg-horsejump-high.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/edg-horsejump-high.jpg" data-src="assets/video/solver/edg-horsejump-high.mp4"></video>
           <figcaption>Deformation graph, one segment <span>Frames 0&ndash;10, 125 nodes, 33 iterations. The rank-3 solution fails the certificate, so the solver lifts to rank 4, where it certifies the optimum.</span></figcaption>
         </figure>
         </div>
@@ -448,11 +450,11 @@
       <div class="gallery-group" data-group="sv-bear" role="tabpanel" hidden>
         <div class="solver-grid">
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-bear.jpg" data-src="assets/video/solver/static-bear.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/static-bear.jpg" data-src="assets/video/solver/static-bear.mp4"></video>
           <figcaption>Static solve <span>82 frames, 6 iterations, certified at rank 3. The camera barely moves, so the change is small.</span></figcaption>
         </figure>
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-bear.jpg" data-src="assets/video/solver/edg-bear.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/edg-bear.jpg" data-src="assets/video/solver/edg-bear.mp4"></video>
           <figcaption>Deformation graph, one segment <span>Frames 29&ndash;39, 36 nodes, 4 iterations, certified at rank 3. The bear turns little; most of the change is the nodes leaving their rest positions.</span></figcaption>
         </figure>
         </div>
@@ -460,11 +462,11 @@
       <div class="gallery-group" data-group="sv-car-roundabout" role="tabpanel" hidden>
         <div class="solver-grid">
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-car-roundabout.jpg" data-src="assets/video/solver/static-car-roundabout.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/static-car-roundabout.jpg" data-src="assets/video/solver/static-car-roundabout.mp4"></video>
           <figcaption>Static solve <span>75 frames, 9 iterations, certified at rank 3.</span></figcaption>
         </figure>
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-car-roundabout.jpg" data-src="assets/video/solver/edg-car-roundabout.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/edg-car-roundabout.jpg" data-src="assets/video/solver/edg-car-roundabout.mp4"></video>
           <figcaption>Deformation graph, one segment <span>Frames 60&ndash;70, 34 nodes, 5 iterations, certified at rank 3. The car&rsquo;s nodes yaw as it turns.</span></figcaption>
         </figure>
         </div>
@@ -472,11 +474,11 @@
       <div class="gallery-group" data-group="sv-paper-windmill" role="tabpanel" hidden>
         <div class="solver-grid">
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/static-paper-windmill.jpg" data-src="assets/video/solver/static-paper-windmill.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/static-paper-windmill.jpg" data-src="assets/video/solver/static-paper-windmill.mp4"></video>
           <figcaption>Static solve <span>277 frames, 7 iterations, certified at rank 3.</span></figcaption>
         </figure>
         <figure class="solver-fig">
-          <video muted loop playsinline preload="none" width="1280" height="720" poster="assets/img/solver/edg-paper-windmill.jpg" data-src="assets/video/solver/edg-paper-windmill.mp4"></video>
+          <video muted loop playsinline preload="none" width="1280" height="720" data-poster="assets/img/solver/edg-paper-windmill.jpg" data-src="assets/video/solver/edg-paper-windmill.mp4"></video>
           <figcaption>Deformation graph, one segment <span>Frames 230&ndash;239, 63 nodes, 4 iterations, certified at rank 3. The pinwheel&rsquo;s nodes turn with it.</span></figcaption>
         </figure>
         </div>
@@ -513,12 +515,12 @@
       </div>
       <div class="gallery-group is-active" data-group="rb-twirl" role="tabpanel">
         <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
           <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="rb-skater" role="tabpanel" hidden>
         <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" poster="assets/img/apps/robot-skater.jpg" data-src="assets/video/apps/robot-skater.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-skater.jpg" data-src="assets/video/apps/robot-skater.mp4"></video>
           <figcaption>Pexels skater <span>A spin on one foot, with the camera following her. The robot keeps its standing foot on the ice, fitted from the reconstruction. Stock video by Tima Miroshnichenko, Pexels.</span></figcaption></figure>
       </div>
     </div>
@@ -535,7 +537,7 @@
           certifies both solves, the cameras and the box&rsquo;s rotations.</p>
       </div>
       <div class="app-cols app-cols-2" aria-hidden="true"><span>Input, with the box&rsquo;s mesh at our pose</span><span>Reconstruction: the camera&rsquo;s path and the box&rsquo;s</span></div>
-      <figure class="app-clip"><video muted loop playsinline preload="none" width="1446" height="480" poster="assets/img/apps/casa-pose.jpg" data-src="assets/video/apps/casa-pose.mp4"></video>
+      <figure class="app-clip"><video muted loop playsinline preload="none" width="1446" height="480" data-poster="assets/img/apps/casa-pose.jpg" data-src="assets/video/apps/casa-pose.mp4"></video>
         <figcaption>RoboCasa kitchen <span>The robot is left out of the reconstruction, so in the 3D view the box moves on its own. Kitchen and box from RoboCasa (CC&nbsp;BY&nbsp;4.0).</span></figcaption></figure>
     </div>
 
@@ -560,37 +562,37 @@
       </div>
       <div class="gallery-group is-active" data-group="ho-ip1149" role="tabpanel">
         <div class="app-cols app-cols-ho" aria-hidden="true"><span>Input, with our hands and mesh outlines</span><span>Reconstruction</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1149.jpg" data-src="assets/video/apps/handobj-ip1149.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" data-poster="assets/img/apps/handobj-ip1149.jpg" data-src="assets/video/apps/handobj-ip1149.mp4"></video>
           <figcaption>Pouring a can into a cup <span>A static camera above the table. The right hand lifts the cup a little toward the camera while the can pours.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1149">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
       <div class="gallery-group" data-group="ho-ip1147" role="tabpanel" hidden>
         <div class="app-cols app-cols-ho" aria-hidden="true"><span>Input, with our hands and mesh outlines</span><span>Reconstruction</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1147.jpg" data-src="assets/video/apps/handobj-ip1147.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" data-poster="assets/img/apps/handobj-ip1147.jpg" data-src="assets/video/apps/handobj-ip1147.mp4"></video>
           <figcaption>Opening a jar <span>Both hands unscrew the lid. Once the lid is off, the jar&rsquo;s outline is a little narrow.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1147">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
       <div class="gallery-group" data-group="ho-ip1045" role="tabpanel" hidden>
         <div class="app-cols app-cols-ho-portrait" aria-hidden="true"><span>Input, with our hands and mesh outlines</span><span>Reconstruction</span></div>
-        <figure class="app-clip app-clip-portrait"><video muted loop playsinline preload="none" width="1268" height="960" poster="assets/img/apps/handobj-ip1045.jpg" data-src="assets/video/apps/handobj-ip1045.mp4"></video>
+        <figure class="app-clip app-clip-portrait"><video muted loop playsinline preload="none" width="1268" height="960" data-poster="assets/img/apps/handobj-ip1045.jpg" data-src="assets/video/apps/handobj-ip1045.mp4"></video>
           <figcaption>A green cube into a bowl <span>A handheld camera looking down. One hand drops the cube in from above; it stays in the bowl while the other hand lifts the bowl.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1045">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
       <div class="gallery-group" data-group="ho-ip1117" role="tabpanel" hidden>
         <div class="app-cols app-cols-ho" aria-hidden="true"><span>Input, with our hands and mesh outlines</span><span>Reconstruction</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1117.jpg" data-src="assets/video/apps/handobj-ip1117.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" data-poster="assets/img/apps/handobj-ip1117.jpg" data-src="assets/video/apps/handobj-ip1117.mp4"></video>
           <figcaption>A pen holder and a dental pick <span>The left hand holds the holder; the right picks up the pick and puts it in, handle first. At frames 143&ndash;165 the right hand floats about 10&nbsp;cm above the table.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1117">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
       <div class="gallery-group" data-group="ho-ip1073" role="tabpanel" hidden>
         <div class="app-cols app-cols-ho" aria-hidden="true"><span>Input, with our hands and mesh outlines</span><span>Reconstruction</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1073.jpg" data-src="assets/video/apps/handobj-ip1073.mp4"></video>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" data-poster="assets/img/apps/handobj-ip1073.jpg" data-src="assets/video/apps/handobj-ip1073.mp4"></video>
           <figcaption>A roll of tape by a peg, frames 0&ndash;144 <span>The clip stops before the roll goes on, where the person lifts the peg&rsquo;s block, which is not tracked. The right hand floats beside the peg.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1073">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
       <div class="gallery-group" data-group="ho-hot3d-milk" role="tabpanel" hidden>
         <div class="app-cols app-cols-ho-milk" aria-hidden="true"><span>Input, with our hands and mesh outline</span><span>Reconstruction</span></div>
-        <figure class="app-clip app-clip-milk"><video muted loop playsinline preload="none" width="1358" height="540" poster="assets/img/apps/handobj-hot3d-milk.jpg" data-src="assets/video/apps/handobj-hot3d-milk.mp4"></video>
+        <figure class="app-clip app-clip-milk"><video muted loop playsinline preload="none" width="1358" height="540" data-poster="assets/img/apps/handobj-hot3d-milk.jpg" data-src="assets/video/apps/handobj-hot3d-milk.mp4"></video>
           <figcaption>Turning a milk carton <span>Seen from a headset. From HOT3D (Meta, CC&nbsp;BY-SA&nbsp;4.0).</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#hot3d-milk">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
@@ -609,7 +611,7 @@
           viewer, drag a door&rsquo;s slider to turn it about its hinge, including combinations of door angles the video
           never showed.</p>
       </div>
-      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1280" height="960" poster="assets/img/apps/fridge-doors.jpg" data-src="assets/video/apps/fridge-doors.mp4"></video>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1280" height="960" data-poster="assets/img/apps/fridge-doors.jpg" data-src="assets/video/apps/fridge-doors.mp4"></video>
         <figcaption>The 3D viewer&rsquo;s demo <span>Each door opens to three quarters of its fitted range and closes again, in turn, seen from the input camera.</span></figcaption>
         <a class="btn btn-small app-open" href="fridge.html">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
     </div>
@@ -629,7 +631,7 @@
           seen only at grazing angles and is left out, which leaves a dark gap in its view. The dishwasher&rsquo;s fit
           opens the wrong way.</p>
       </div>
-      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1440" height="960" poster="assets/img/apps/casa-twin.jpg" data-src="assets/video/apps/casa-twin.mp4"></video>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1440" height="960" data-poster="assets/img/apps/casa-twin.jpg" data-src="assets/video/apps/casa-twin.mp4"></video>
         <figcaption>The 3D viewer&rsquo;s demo <span>Each part opens and closes in turn, from the camera that saw it open furthest.</span></figcaption>
         <a class="btn btn-small app-open" href="kitchen.html">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
     </div>
@@ -641,7 +643,7 @@
           video. The road behind it comes from the frames where it was seen.</p>
       </div>
       <div class="app-cols app-cols-2" aria-hidden="true"><span>Input video</span><span>Without the dynamic Gaussians</span></div>
-      <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video>
+      <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="360" data-poster="assets/img/apps/remove-car-roundabout.jpg" data-src="assets/video/apps/remove-car-roundabout.mp4"></video>
         <figcaption>DAVIS car-roundabout, frames 36&ndash;74</figcaption></figure>
     </div>
   </section>
@@ -694,7 +696,7 @@
 
       <div class="method-stage">
         <div class="stage-sticky">
-          <img id="stage-img" src="assets/img/teaser.jpg?v=2" alt="">
+          <img id="stage-img" src="assets/img/teaser.jpg?v=2" alt="" loading="lazy">
           <div class="stage-hud" aria-hidden="true">
             <span class="hud-task" id="hud-task">Inputs</span>
           </div>
@@ -809,7 +811,7 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<script src="main.js?v=20261109d" defer></script>
+<script src="main.js?v=20261109e" defer></script>
 <script src="viewer.js?v=20261109a" defer></script>
 </body>
 </html>

@@ -35,7 +35,7 @@ assets/
     runs/         posters of the Gallery's clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
-  img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
+  img/promo.jpg   the teaser's poster: frame 0 of the text-free cut (the overlay draws the title over it, so it shows once)
   video/
     promo-1440.mp4, promo-1080.mp4, promo-720.mp4
                        the teaser, full screen above the page (79.2 s, music; v7.2, with its clips re-rendered at 2x; built in xm4d_new/teaser/ on the
@@ -91,8 +91,12 @@ assets/
 
 - **Links:** the Paper buttons (top bar and hero) point to arXiv:2611.07902; Code points to XM4D-release.
 - **Venue, BibTeX:** see the `TODO` comments in `index.html`.
-- **Teaser:** `div#teaser` above the top bar plays `assets/video/promo.mp4` full screen, muted, with Pause and Sound buttons
-  and a scroll cue (as on the GRASP page); main.js fades it as the page scrolls up over it and pauses it off screen.
+- **Teaser:** `div#teaser` above the top bar plays the teaser full screen, muted, with Pause and Sound buttons and a
+  scroll cue (as on the GRASP page); main.js fades it as the page scrolls up over it and pauses it off screen. It holds
+  on the first frame with a loading ring until it can play through (8 s buffered, or 3 s while the download runs at
+  1.5x playback speed), steps down a cut (1440p, 1080p, 720p) when the download is slower than that, and shows the ring
+  again whenever playback waits for data. The clips' posters below it (`data-poster`) load only once it has started,
+  as each nears the screen.
   Upright phones show the whole frame at full width; ultra-wide screens show it whole, its sides fading out.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
 - **Articulated runs** (fridge.html, kitchen.html): a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
