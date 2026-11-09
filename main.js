@@ -297,10 +297,10 @@
         ['seeked', 'timeupdate', 'loadeddata'].forEach(function (ev) { promo.addEventListener(ev, function () { draw(); }); });
         window.addEventListener('resize', fitLayer);
       };
-      fetch('assets/video/promo-text.json?v=10').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      fetch('assets/video/promo-text.json?v=11').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(function (data) { return (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () { build(data); follow(); }); })
         .catch(function () {                      /* no overlay: the cut with its text baked in */
-          var t = promo.currentTime; promo.src = 'assets/video/promo-720-text.mp4?v=10'; promo.currentTime = t; sync();
+          var t = promo.currentTime; promo.src = 'assets/video/promo-720-text.mp4?v=11'; promo.currentTime = t; sync();
         });
     }
     showTime(); sync();

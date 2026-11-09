@@ -38,7 +38,7 @@ assets/
   img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
   video/
     promo-1440.mp4, promo-1080.mp4, promo-720.mp4
-                       the teaser, full screen above the page (79.2 s, music; v7.1, built in xm4d_new/teaser/ on the
+                       the teaser, full screen above the page (79.2 s, music; v7.2, with its clips re-rendered at 2x; built in xm4d_new/teaser/ on the
                        Passport), without its titles, labels and logos: main.js draws those as SVG over it from
     promo-text.json    (per item: text runs, font, box; per frame: x, y, opacity, scale, in the 1920x1080 design
                        space), so the text is as sharp as the page's. The <video> lists the three with media
