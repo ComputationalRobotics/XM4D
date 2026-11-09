@@ -683,7 +683,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .viewer-page-note { max-width: var(--col); margin-top: 14px; color: var(--graphite); font-size: 15px; }
 @media (max-width: 860px) {
   .ho-viewer { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "time" "input" "panel"; }
-  .ho-stage { min-height: 0; aspect-ratio: 4 / 3; }
+  .ho-stage, .ho-page .ho-stage { min-height: 0; aspect-ratio: 4 / 3; }   /* the page's min-height would push the stage past a phone's width */
   .ho-input, .ho-panel { border-left: 0; border-top: 1px solid var(--rule); }
   .ho-input { padding-bottom: 14px; }
   .ho-time { border-top: 1px solid var(--rule); }

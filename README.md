@@ -35,10 +35,12 @@ assets/
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
-  img/promo.jpg   the teaser's poster (its frame 0, the title card)
+  img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
   video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
-    promo.mp4          the teaser, full screen above the page (84 s, 720p, music; the 720p web cut of v6.2, built in
-                       xm4d_new/teaser/ on the Passport)
+    promo-1440.mp4, promo-1080.mp4, promo-720.mp4
+                       the teaser, full screen above the page (81.6 s, music; v7, drawn natively at 2560x1440 and
+                       encoded for crisp text; built in xm4d_new/teaser/ on the Passport). The <video> lists them with
+                       media conditions, so a screen loads only the sharpest one it can use
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
     teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
@@ -84,7 +86,8 @@ assets/
                   (the cameras' extent) had frozen the means and capped every Gaussian near one pixel
     handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
                   objN.jpg textures, contours.json from the SAM 3 masks, frames_NN.jpg input atlases), from export_viewer.py
-                  in the hand-object scratchpad (hoviewer_r6/tools/)
+                  in the hand-object scratchpad (hoviewer_r6/tools/); hot3d-milk via its milk_to_r5.py adapter from the
+                  hand-object study's recipe render (our XM camera, carton node and WiLoR hands; HOT3D's carton mesh), frames 0-90
 ```
 
 ## Filling in the skeleton

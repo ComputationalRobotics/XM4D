@@ -43,6 +43,14 @@
    "objects": [
     "tape roll"
    ]
+  },
+  {
+   "id": "hot3d-milk",
+   "caption": "Turning a milk carton (HOT3D, from a headset)",
+   "frames": 91,
+   "objects": [
+    "milk carton"
+   ]
   }
  ]
 }
