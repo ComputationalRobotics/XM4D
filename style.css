@@ -74,6 +74,13 @@ em { font-style: italic; }
   -webkit-backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--rule-soft);
 }
+.topbar-lab { display: flex; align-items: center; flex: none; padding-right: 20px; border-right: 1px solid var(--rule); }
+.topbar-lab img { height: 22px; width: auto; mix-blend-mode: multiply; }   /* its white ground takes the bar's colour */
+@media (max-width: 520px) {
+  .topbar { gap: 14px; }
+  .topbar-lab { padding-right: 14px; }
+  .topbar-lab img { height: 15px; }
+}
 .topbar-brand {
   color: var(--ink); font-weight: 700; letter-spacing: .04em; font-size: 15px;
   padding-bottom: 2px; border-bottom: 2px solid var(--accent);
@@ -121,8 +128,6 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 
 /* ───────── Hero ───────── */
 .hero { padding-top: 40px; }
-.hero-lab { display: inline-block; margin-bottom: 28px; }
-.hero-lab img { width: 230px; max-width: 60vw; }
 
 /* award of the conference version (XM), shown above the title */
 .award-banner {
