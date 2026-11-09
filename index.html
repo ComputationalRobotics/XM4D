@@ -516,13 +516,8 @@
     <div class="app" id="app-pose">
       <div class="app-text">
         <h3>6D pose estimation</h3>
-        <p>A robot carries a cereal box 1.8&nbsp;m along a kitchen counter and turns it a quarter turn, while the camera
-          moves 2.2&nbsp;m. From the RGB video and the camera&rsquo;s focal length, XM4D solves the camera&rsquo;s path
-          and the box as one rigid node, in the same world frame. The box&rsquo;s mesh is registered to the reconstructed
-          box once; from then on, the node&rsquo;s motion is the box&rsquo;s 6D pose in every frame.</p>
-        <p class="app-note">Against the simulator&rsquo;s ground truth, the camera path is off by 4.9&nbsp;mm (RMSE over
-          2.2&nbsp;m) and the box&rsquo;s pose by 2.2&deg; and 17&nbsp;mm on average, for a box 22&nbsp;cm tall. XM
-          certifies both solves, the cameras and the box&rsquo;s rotations.</p>
+        <p>From the RGB video and the camera&rsquo;s focal length, XM4D solves the camera&rsquo;s path and the box as one
+          rigid node, in the same world frame.</p>
       </div>
       <div class="app-cols app-cols-2" aria-hidden="true"><span>Input, with the box&rsquo;s mesh at our pose</span><span>Reconstruction: the camera&rsquo;s path and the box&rsquo;s</span></div>
       <figure class="app-clip"><video muted loop playsinline preload="none" width="1446" height="480" data-poster="assets/img/apps/casa-pose.jpg" data-src="assets/video/apps/casa-pose.mp4"></video>
