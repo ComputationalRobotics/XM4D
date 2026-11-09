@@ -25,6 +25,8 @@ handobj.html      the hand-object viewer's page, opened from the Applications' "
 handobj.js        that viewer (three.js 0.147 from jsDelivr, loaded when it nears the viewport): per clip, the object
                   meshes at their solved 6D poses, both hand skeletons, the camera and the table; a camera view over the
                   input frame with SAM 3's mask outlines dashed
+fridge.html       the fridge's 3D viewer (viewer.js; a slider per door), opened from its application's "Open in 3D"
+kitchen.html      the RoboCasa kitchen twin's 3D viewer (viewer.js; a slider per part, the view goes to each part)
 assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo
@@ -61,7 +63,10 @@ assets/
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
                   without the dynamic Gaussians, render_removal.py); handobj-<clip> (five iPhone clips: input with our
                   hands and mesh outlines | MuJoCo, Hunyuan3D-2.1 meshes posed by their anchored tracks, round 6 of the
-                  hand-object work, render_user5.py); all 12 fps; posters in img/apps/
+                  hand-object work, render_user5.py); all 12 fps; fridge-doors and casa-twin (30 fps): the
+                  fridge.html and kitchen.html viewers' demos, one seamless loop each at the input camera's aspect,
+                  recorded frame-exact with a virtual clock in a GPU headless Chrome (page_assets/viewer_pages/
+                  record_viewer.py, record_native.sh); posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
@@ -70,7 +75,10 @@ assets/
                   Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
-                  bmx-trees ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10
+                  bmx-trees ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10;
+                  breakdance from its retrain with a floor on gsplat's scene scale (bench_debug/ssfix/, update_run.py
+                  in page_assets/viewer_pages/, which also re-cuts its clip): its camera barely moves, so the scale
+                  (the cameras' extent) had frozen the means and capped every Gaussian near one pixel
     handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
                   objN.jpg textures, contours.json from the SAM 3 masks, frames_NN.jpg input atlases), from export_viewer.py
                   in the hand-object scratchpad (hoviewer_r6/tools/)
@@ -83,7 +91,7 @@ assets/
 - **Hero video:** the `hero-video` block plays `assets/video/promo.mp4` muted (viewers unmute it from the controls);
   main.js pauses it while it is off screen.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
-- **Articulated runs:** a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
+- **Articulated runs** (fridge.html, kitchen.html): a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
   `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge (or, for a
   `prismatic` part, slides along its axis). A part with `"fixed": true` keeps its frame-0 pose and gets no slider.
   With `data-part-views` on the `.viewer` (assets/3d/casa-twin.bin), the input view glides to the camera that saw each part open

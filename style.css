@@ -577,6 +577,10 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .ho-page .ho-viewer { margin-top: 0; }
 .ho-page .ho-stage { min-height: min(70vh, 640px); }
 .app-open { margin-top: 10px; }
+/* the fridge's and the kitchen twin's 3D viewers, each on its own page (fridge.html, kitchen.html) */
+.viewer-page { padding-top: 48px; }
+.viewer-page .viewer { margin-top: 0; }
+.viewer-page-note { max-width: var(--col); margin-top: 14px; color: var(--graphite); font-size: 15px; }
 @media (max-width: 860px) {
   .ho-viewer { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "time" "input" "panel"; }
   .ho-stage { min-height: 0; aspect-ratio: 4 / 3; }

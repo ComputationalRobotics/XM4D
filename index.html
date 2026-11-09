@@ -671,42 +671,13 @@
       <div class="app-text">
         <h3>Open and close each door yourself</h3>
         <p>For the fridge, the graph is one rigid node per door. Each door&rsquo;s hinge, an axis and a point on it, is
-          fitted to its solved poses (within a few millimetres), and the doors&rsquo; Gaussians are its part. Drag a slider
-          to turn that door about its hinge, including combinations of door angles the video never showed.</p>
+          fitted to its solved poses (within a few millimetres), and the doors&rsquo; Gaussians are its part. In the 3D
+          viewer, drag a door&rsquo;s slider to turn it about its hinge, including combinations of door angles the video
+          never showed.</p>
       </div>
-      <div class="viewer viewer-app" data-src="assets/3d/fridge.bin" data-label="fridge" data-part-name="Door" data-orbit-limit="10">
-        <div class="viewer-stage">
-          <canvas class="viewer-canvas" aria-label="3D view of the fridge with its doors posed by the sliders"></canvas>
-          <p class="viewer-status" role="status">Loading…</p>
-          <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
-        </div>
-        <div class="viewer-panel">
-          <div class="viewer-field"><span class="viewer-label">Doors</span><div class="viewer-parts"></div></div>
-          <fieldset class="viewer-layers">
-            <legend class="viewer-label">Show</legend>
-            <label><input type="checkbox" data-layer="static" checked> Static scene</label>
-            <label><input type="checkbox" data-layer="dynamic" checked> Doors</label>
-            <label><input type="checkbox" data-layer="graph"> Hinges <i class="key key-graph" aria-hidden="true"></i></label>
-            <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
-          </fieldset>
-          <fieldset class="viewer-views">
-            <legend class="viewer-label">View</legend>
-            <div class="segmented">
-              <button type="button" data-view="input" aria-pressed="true">Input camera</button>
-              <button type="button" data-view="free" aria-pressed="false">Orbit</button>
-            </div>
-          </fieldset>
-          <div class="viewer-time">
-            <button type="button" class="viewer-play" aria-label="Pause">
-              <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
-              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
-            </button>
-            <span class="viewer-demo-label">Demo: each door in turn</span>
-            <input type="range" class="viewer-slider" min="0" max="1" step="any" value="0" aria-label="Time">
-            <span class="viewer-frame"></span>
-          </div>
-        </div>
-      </div>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1280" height="960" poster="assets/img/apps/fridge-doors.jpg" data-src="assets/video/apps/fridge-doors.mp4"></video>
+        <figcaption>The 3D viewer&rsquo;s demo <span>Each door opens to three quarters of its fitted range and closes again, in turn, seen from the input camera.</span></figcaption>
+        <a class="btn btn-small app-open" href="fridge.html">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
     </div>
 
     <div class="app" id="app-twin">
@@ -715,7 +686,7 @@
         <p>In a RoboCasa kitchen, a mobile robot opens and closes seven parts in turn, while the camera follows it: a
           drawer, two wall cabinets, the dishwasher, both fridge doors and the microwave. Each part is one rigid node.
           From its solved poses, XM4D tells a hinge from a slide and fits its axis; all seven get the right kind of
-          joint. Drag a slider to open that part, and the view goes to it.</p>
+          joint. In the 3D viewer, drag a part&rsquo;s slider to open it, and the view goes to it.</p>
         <p class="app-note">From the RGB video, monocular depth and the camera&rsquo;s focal length; the parts&rsquo; masks
           come from SAM&nbsp;3 with a few clicks each, and the robot is left out. Six of the seven fitted hinges and slides
           lie within 6&deg; and 5&nbsp;cm of the true ones. Five parts have sliders, each stopped where the barely-seen
@@ -724,39 +695,9 @@
           seen only at grazing angles and is left out, which leaves a dark gap in its view. The dishwasher&rsquo;s fit
           opens the wrong way.</p>
       </div>
-      <div class="viewer viewer-app" data-src="assets/3d/casa-twin.bin" data-label="kitchen" data-part-views data-orbit-limit="10">
-        <div class="viewer-stage">
-          <canvas class="viewer-canvas" aria-label="3D view of the kitchen with its parts posed by the sliders"></canvas>
-          <p class="viewer-status" role="status">Loading…</p>
-          <p class="viewer-hint">Drag to orbit · right-drag or shift-drag to pan · scroll to zoom</p>
-        </div>
-        <div class="viewer-panel">
-          <div class="viewer-field"><span class="viewer-label">Parts</span><div class="viewer-parts"></div></div>
-          <fieldset class="viewer-layers">
-            <legend class="viewer-label">Show</legend>
-            <label><input type="checkbox" data-layer="static" checked> Static scene</label>
-            <label><input type="checkbox" data-layer="dynamic" checked> Parts</label>
-            <label><input type="checkbox" data-layer="graph"> Joints <i class="key key-graph" aria-hidden="true"></i></label>
-            <label><input type="checkbox" data-layer="cameras"> Cameras <i class="key key-cameras" aria-hidden="true"></i></label>
-          </fieldset>
-          <fieldset class="viewer-views">
-            <legend class="viewer-label">View</legend>
-            <div class="segmented">
-              <button type="button" data-view="input" aria-pressed="true">Input camera</button>
-              <button type="button" data-view="free" aria-pressed="false">Orbit</button>
-            </div>
-          </fieldset>
-          <div class="viewer-time">
-            <button type="button" class="viewer-play" aria-label="Pause">
-              <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
-              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
-            </button>
-            <span class="viewer-demo-label">Demo: each part in turn</span>
-            <input type="range" class="viewer-slider" min="0" max="1" step="any" value="0" aria-label="Time">
-            <span class="viewer-frame"></span>
-          </div>
-        </div>
-      </div>
+      <figure class="app-clip app-clip-single"><video muted loop playsinline preload="none" width="1440" height="960" poster="assets/img/apps/casa-twin.jpg" data-src="assets/video/apps/casa-twin.mp4"></video>
+        <figcaption>The 3D viewer&rsquo;s demo <span>Each part opens and closes in turn, from the camera that saw it open furthest.</span></figcaption>
+        <a class="btn btn-small app-open" href="kitchen.html">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
     </div>
 
     <div class="app" id="app-remove">
