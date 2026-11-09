@@ -1,7 +1,7 @@
 # XM4D project page
 
-Single-page site for *XM4D: Non-Rigid ConveX Structure from Motion with Embedded
-Deformation Graphs for 4D Reconstruction*. Plain HTML, CSS, and JS; no build step.
+Single-page site for *XM4D: 4D Reconstruction through Certifiable Geometric Optimization*
+([arXiv:2611.07902](https://arxiv.org/abs/2611.07902)). Plain HTML, CSS, and JS; no build step.
 The layout is adapted from the [BEACON](https://github.com/ComputationalRobotics/BEACON)
 page, which is based on the
 [gated-memory-policy template](https://github.com/gated-memory-policy/gated-memory-policy.github.io)
@@ -78,7 +78,7 @@ assets/
 
 ## Filling in the skeleton
 
-- **Links:** the Paper buttons (top bar and hero) point to `#`; Code points to XM4D-release.
+- **Links:** the Paper buttons (top bar and hero) point to arXiv:2611.07902; Code points to XM4D-release.
 - **Venue, BibTeX:** see the `TODO` comments in `index.html`.
 - **Hero video:** the `hero-video` block plays `assets/video/promo.mp4` muted (viewers unmute it from the controls);
   main.js pauses it while it is off screen.

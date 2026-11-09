@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XM4D: Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction</title>
+  <title>XM4D: 4D Reconstruction through Certifiable Geometric Optimization</title>
   <meta name="description" content="XM4D recovers camera motion and non-rigid deformation from monocular videos with certifiably globally optimal geometric optimization, and uses them to initialize dynamic Gaussian splatting.">
 
-  <meta property="og:title" content="XM4D: Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction">
+  <meta property="og:title" content="XM4D: 4D Reconstruction through Certifiable Geometric Optimization">
   <meta property="og:description" content="Certifiably optimal cameras and non-rigid motion from casual videos, solved on the GPU and scaling to thousands of frames.">
   <meta property="og:image" content="assets/img/teaser.jpg">
   <meta property="og:type" content="website">
@@ -31,8 +31,7 @@
     <a href="#citation">Cite</a>
   </div>
   <div class="topbar-actions">
-    <!-- TODO: paper and code links -->
-    <a class="btn btn-small" href="#" target="_blank" rel="noopener">Paper</a>
+    <a class="btn btn-small" href="https://arxiv.org/abs/2611.07902" target="_blank" rel="noopener">Paper</a>
     <a class="btn btn-small btn-primary" href="https://github.com/ComputationalRobotics/XM4D-release" target="_blank" rel="noopener">Code</a>
   </div>
 </nav>
@@ -55,14 +54,14 @@
 
     <h1 class="hero-title">
       <span class="hero-acronym">XM<span class="acronym-4d">4D</span></span>
-      Non-Rigid ConveX Structure from Motion with Embedded Deformation Graphs for 4D Reconstruction
+      4D Reconstruction through Certifiable Geometric Optimization
     </h1>
 
     <div class="hero-meta">
       <p class="authors">
         <span class="author"><a href="https://hyhan0118.github.io" target="_blank" rel="noopener">Haoyu Han</a><sup>1</sup></span>
-        <span class="author">Jiahui Lei<sup>2</sup></span>
         <span class="author">Jack Benarroch Jedlicki<sup>1</sup></span>
+        <span class="author">Jiahui Lei<sup>2</sup></span>
         <span class="author"><a href="https://hankyang.seas.harvard.edu" target="_blank" rel="noopener">Heng Yang</a><sup>1</sup></span>
       </p>
       <p class="affiliations">
@@ -72,7 +71,7 @@
     </div>
 
     <div class="hero-actions">
-      <a class="btn" href="#" target="_blank" rel="noopener">
+      <a class="btn" href="https://arxiv.org/abs/2611.07902" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>
         Paper
       </a>
@@ -878,10 +877,10 @@
       geometry, and non-rigid deformation entails highly nonconvex optimization, making global
       optimality difficult to guarantee. We present <strong>XM4D</strong>, a framework for accurate
       and efficient 4D reconstruction built upon <em>certifiably globally optimal</em> geometric
-      optimization. By separating camera motion estimation from non-rigid deformation, we
+      optimization. By separating the estimation of camera motion from non-rigid deformation, we
       formulate both stages as structured quadratically constrained quadratic programs (QCQP) that
       admit semidefinite programming (SDP) relaxations and verifiable global optimality
-      certificates of the resulting SDPs. For camera motion estimation, we lift static point tracks
+      certificates. For camera motion estimation, we lift static point tracks
       into 3D using foundational depth prediction models and formulate a scaled bundle adjustment
       problem that jointly estimates camera poses, depth scales, and static landmarks. By
       analytically eliminating translations and landmarks, we reduce the problem to a QCQP over
@@ -903,9 +902,10 @@
     <div class="bibtex-wrap">
       <button type="button" class="bibtex-copy" data-copy-target="#bibtex">Copy BibTeX</button>
 <pre id="bibtex" class="bibtex"><code>@article{han2026xm4d,
-  title   = {{XM4D}: Non-Rigid Convex Structure from Motion with Embedded
-             Deformation Graphs for {4D} Reconstruction},
-  author  = {Han, Haoyu and Lei, Jiahui and Benarroch Jedlicki, Jack and Yang, Heng},
+  title   = {{XM4D}: {4D} Reconstruction through Certifiable
+             Geometric Optimization},
+  author  = {Han, Haoyu and Benarroch Jedlicki, Jack and Lei, Jiahui and Yang, Heng},
+  journal = {arXiv preprint arXiv:2611.07902},
   year    = {2026}
 }</code></pre>
     </div>
