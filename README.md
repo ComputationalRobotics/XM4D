@@ -37,7 +37,7 @@ assets/
     apps/         posters of the Applications clips
   img/promo.jpg   the teaser's poster (its frame 0, the title card)
   video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
-    promo.mp4          the teaser, full screen above the page (84 s, 720p, music; the 720p web cut of v6, built in
+    promo.mp4          the teaser, full screen above the page (84 s, 720p, music; the 720p web cut of v6.1, built in
                        xm4d_new/teaser/ on the Passport)
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
