@@ -161,6 +161,8 @@
         <button role="tab" aria-selected="false" data-group="pigs">pigs</button>
         <button role="tab" aria-selected="false" data-group="scooter-black">scooter-black</button>
         <button role="tab" aria-selected="false" data-group="soapbox">soapbox</button>
+        <button role="tab" aria-selected="false" data-group="disc-jockey">disc-jockey</button>
+        <button role="tab" aria-selected="false" data-group="kids-turning">kids-turning</button>
         <span class="seg-label">NVIDIA</span>
         <button role="tab" aria-selected="false" data-group="truck">Truck</button>
         <button role="tab" aria-selected="false" data-group="umbrella">Umbrella</button>
@@ -277,6 +279,14 @@
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/soapbox.jpg" data-src="assets/video/runs/soapbox.mp4"></video>
         <figcaption>DAVIS &middot; soapbox</figcaption></figure>
       </div>
+      <div class="gallery-group" data-group="disc-jockey" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="178" data-poster="assets/img/runs/disc-jockey.jpg" data-src="assets/video/runs/disc-jockey.mp4"></video>
+        <figcaption>DAVIS &middot; disc-jockey <span>For people, the graph is the 17 joints of a COCO body pose, one skeleton per person.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="kids-turning" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/kids-turning.jpg" data-src="assets/video/runs/kids-turning.mp4"></video>
+        <figcaption>DAVIS &middot; kids-turning <span>For people, the graph is the 17 joints of a COCO body pose, one skeleton per person.</span></figcaption></figure>
+      </div>
       <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" data-poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
         <figcaption>NVIDIA Dynamic Scenes &middot; Truck <span>12 time steps, played forward and back.</span></figcaption></figure>
@@ -380,6 +390,8 @@
             <option value="loading" data-src="assets/3d/loading.bin">loading</option>
             <option value="pigs" data-src="assets/3d/pigs.bin">pigs</option>
             <option value="soapbox" data-src="assets/3d/soapbox.bin">soapbox</option>
+            <option value="disc-jockey" data-src="assets/3d/disc-jockey.bin">disc-jockey</option>
+            <option value="kids-turning" data-src="assets/3d/kids-turning.bin">kids-turning</option>
           </optgroup>
           <optgroup label="DyCheck">
             <option value="block" data-src="assets/3d/block.bin">block</option>
@@ -748,7 +760,6 @@
         <h3>XM4D: what is new</h3>
         <ul>
           <li>A static solver carried over from XM that solves bundle adjustment to certified global optimality in a few minutes.</li>
-          <li>A uniform sphere constraint on the depth scales replaces XM's first-frame anchor: it fixes the global scale without privileging any frame, so the solve no longer overfits to the first frame's depth or needs a scale weight tuned per video.</li>
           <li>A dynamic stage: an embedded deformation graph whose tracking, rigidity, and temporal smoothness terms form a rotation-only QCQP, solved by the same certifiable solver.</li>
           <li>The certified cameras and motion initialize dynamic Gaussian splatting. Across seven benchmarks: leading camera accuracy, fast and scalable optimization, and the best average novel-view rendering on DyCheck, NVIDIA, and Syn4D.</li>
         </ul>
