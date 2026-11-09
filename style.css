@@ -630,6 +630,8 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .app-cols-ho { grid-template-columns: 964fr 724fr; column-gap: 8px; }   /* the clip's input and 3D panels are 960 and 720 px wide */
 .app-cols-ho-portrait { grid-template-columns: 544fr 724fr; column-gap: 8px; }
 .app-clip-portrait, .app-cols-ho-portrait { max-width: 760px; }
+.app-cols-ho-milk { grid-template-columns: 544fr 814fr; column-gap: 8px; }   /* the HOT3D clip: a 540 px input panel, an 810 px 3D panel */
+.app-clip-milk, .app-cols-ho-milk { max-width: 1000px; }
 .ho-viewer {
   --ho-stage: #f1efe9; --ho-floor-a: #eceae6; --ho-floor-b: #e2e0dc; --ho-joint: #f7f7f7;
   --ho-left: #e8912d; --ho-right: #2f6fd6; --ho-cam: #455a64;
@@ -685,7 +687,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
   .ho-input, .ho-panel { border-left: 0; border-top: 1px solid var(--rule); }
   .ho-input { padding-bottom: 14px; }
   .ho-time { border-top: 1px solid var(--rule); }
-  .app-cols-ho, .app-cols-ho-portrait { font-size: 12.5px; }
+  .app-cols-ho, .app-cols-ho-portrait, .app-cols-ho-milk { font-size: 12.5px; }
 }
 @media (max-width: 520px) { .ho-viewer .viewer-hint { display: none; } }
 

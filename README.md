@@ -64,7 +64,9 @@ assets/
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
                   without the dynamic Gaussians, render_removal.py); handobj-<clip> (five iPhone clips: input with our
                   hands and mesh outlines | MuJoCo, Hunyuan3D-2.1 meshes posed by their anchored tracks, round 6 of the
-                  hand-object work, render_user5.py); all 12 fps; fridge-doors and casa-twin (30 fps): the
+                  hand-object work, render_user5.py); handobj-hot3d-milk (HOT3D's milk carton from the Aria headset camera: input |
+                  3D, HOT3D's scanned carton mesh at our pose and both WiLoR hands; the hand-object study's "after" recipe,
+                  first 91 frames, cut before a fast spin makes the pose jump); all 12 fps; fridge-doors and casa-twin (30 fps): the
                   fridge.html and kitchen.html viewers' demos, one seamless loop each at the input camera's aspect,
                   recorded frame-exact with a virtual clock in a GPU headless Chrome (page_assets/viewer_pages/
                   record_viewer.py, record_native.sh); posters in img/apps/

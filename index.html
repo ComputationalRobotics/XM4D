@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261108b">
+  <link rel="stylesheet" href="style.css?v=20261108c">
 </head>
 <body>
 
@@ -639,7 +639,7 @@
       <div class="gallery-head">
         <div class="app-text">
           <h3>Hands and objects from a phone video</h3>
-          <p>Five iPhone videos of everyday two-handed tasks. XM4D solves the camera and each object&rsquo;s motion as
+          <p>Five iPhone videos of everyday two-handed tasks, and one from a headset. XM4D solves the camera and each object&rsquo;s motion as
             one rigid node. The object&rsquo;s shape is a mesh that Hunyuan3D-2.1 generates from one frame of the video;
             it is sized where it rests on the table and posed in every frame by the tracks attached to it. Both hands
             come from a per-frame hand model (WiLoR), placed where their fingertips meet the objects, so they hold them
@@ -651,6 +651,7 @@
           <button role="tab" aria-selected="false" data-group="ho-ip1045" data-clip="ip1045">cube and bowl</button>
           <button role="tab" aria-selected="false" data-group="ho-ip1117" data-clip="ip1117">pen holder</button>
           <button role="tab" aria-selected="false" data-group="ho-ip1073" data-clip="ip1073">tape roll</button>
+          <button role="tab" aria-selected="false" data-group="ho-hot3d-milk">milk carton (HOT3D)</button>
         </div>
       </div>
       <div class="gallery-group is-active" data-group="ho-ip1149" role="tabpanel">
@@ -682,6 +683,11 @@
         <figure class="app-clip"><video muted loop playsinline preload="none" width="1688" height="540" poster="assets/img/apps/handobj-ip1073.jpg" data-src="assets/video/apps/handobj-ip1073.mp4"></video>
           <figcaption>A roll of tape by a peg, frames 0&ndash;144 <span>The clip stops before the roll goes on, where the person lifts the peg&rsquo;s block, which is not tracked. The right hand floats beside the peg.</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#ip1073">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
+      </div>
+      <div class="gallery-group" data-group="ho-hot3d-milk" role="tabpanel" hidden>
+        <div class="app-cols app-cols-ho-milk" aria-hidden="true"><span>Input, with our hands and mesh outline</span><span>Reconstruction</span></div>
+        <figure class="app-clip app-clip-milk"><video muted loop playsinline preload="none" width="1358" height="540" poster="assets/img/apps/handobj-hot3d-milk.jpg" data-src="assets/video/apps/handobj-hot3d-milk.mp4"></video>
+          <figcaption>Turning a milk carton, from a headset <span>HOT3D (Meta, CC&nbsp;BY-SA&nbsp;4.0), seen from the Aria headset&rsquo;s camera; the carton is HOT3D&rsquo;s scanned mesh, posed by our solve. The first 7.6&nbsp;s: after them, a fast spin of the carton makes its pose jump, so the clip stops there. No 3D viewer for this clip yet.</span></figcaption></figure>
       </div>
       <p class="app-note">From the RGB video and the phone&rsquo;s focal length. The masks come from SAM&nbsp;3 with one text
         prompt per object, and each object&rsquo;s shape prior (upright on the table, a ring) is set by hand. The thin
