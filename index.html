@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261109c">
+  <link rel="stylesheet" href="style.css?v=20261109d">
 </head>
 <body>
 
@@ -122,217 +122,194 @@
       <em>certifiably globally optimal</em> GPU solver before any photometric training.
     </p>
 
-    <!-- Example runs: each tab plays one run's showcase video (visualize_showcase_grid.py in the research code), cut
-         to the row of one input camera held fixed while time plays, and its render, 3D tracks, and graph cells. A
-         clip loads only when its tab is shown (data-src). -->
-    <div class="gallery runs" id="runs">
-      <div class="gallery-head">
-        <h3>Example runs</h3>
-        <div class="segmented" role="tablist" aria-label="Example run">
-          <span class="seg-label">DAVIS</span>
-          <button role="tab" aria-selected="true" data-group="bear">bear</button>
-          <button role="tab" aria-selected="false" data-group="camel">camel</button>
-          <button role="tab" aria-selected="false" data-group="train">train</button>
-          <button role="tab" aria-selected="false" data-group="blackswan">blackswan</button>
-          <button role="tab" aria-selected="false" data-group="car-roundabout">car-roundabout</button>
-          <button role="tab" aria-selected="false" data-group="breakdance-flare">breakdance-flare</button>
-          <button role="tab" aria-selected="false" data-group="dance-twirl">dance-twirl</button>
-          <button role="tab" aria-selected="false" data-group="hike">hike</button>
-          <button role="tab" aria-selected="false" data-group="bmx-trees">bmx-trees</button>
-          <button role="tab" aria-selected="false" data-group="breakdance">breakdance</button>
-          <button role="tab" aria-selected="false" data-group="car-shadow">car-shadow</button>
-          <button role="tab" aria-selected="false" data-group="cows">cows</button>
-          <button role="tab" aria-selected="false" data-group="dog">dog</button>
-          <button role="tab" aria-selected="false" data-group="gold-fish">gold-fish</button>
-          <button role="tab" aria-selected="false" data-group="horsejump-high">horsejump-high</button>
-          <button role="tab" aria-selected="false" data-group="loading">loading</button>
-          <button role="tab" aria-selected="false" data-group="mbike-trick">mbike-trick</button>
-          <button role="tab" aria-selected="false" data-group="paragliding-launch">paragliding-launch</button>
-          <button role="tab" aria-selected="false" data-group="parkour">parkour</button>
-          <button role="tab" aria-selected="false" data-group="pigs">pigs</button>
-          <button role="tab" aria-selected="false" data-group="scooter-black">scooter-black</button>
-          <button role="tab" aria-selected="false" data-group="soapbox">soapbox</button>
-          <span class="seg-label">NVIDIA</span>
-          <button role="tab" aria-selected="false" data-group="truck">Truck</button>
-          <button role="tab" aria-selected="false" data-group="umbrella">Umbrella</button>
-          <button role="tab" aria-selected="false" data-group="skating">Skating</button>
-          <button role="tab" aria-selected="false" data-group="balloon2">Balloon2</button>
-          <span class="seg-label">DyCheck</span>
-          <button role="tab" aria-selected="false" data-group="paper-windmill">paper-windmill</button>
-          <button role="tab" aria-selected="false" data-group="apple">apple</button>
-          <button role="tab" aria-selected="false" data-group="block">block</button>
-          <button role="tab" aria-selected="false" data-group="space-out">space-out</button>
-          <button role="tab" aria-selected="false" data-group="spin">spin</button>
-          <button role="tab" aria-selected="false" data-group="teddy">teddy</button>
-          <button role="tab" aria-selected="false" data-group="wheel">wheel</button>
-          <span class="seg-label">EgoDexter</span>
-          <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
-          <span class="seg-label">HOI</span>
-          <button role="tab" aria-selected="false" data-group="fridge">fridge</button>
-          <span class="seg-label">Pexels</span>
-          <button role="tab" aria-selected="false" data-group="dancer">dancer</button>
-        </div>
-      </div>
-      <p class="gallery-note">Each run is seen from one of its input cameras, held fixed while time plays: the trained 4D Gaussians rendered from it, the 3D tracks, and the embedded deformation graph that moves the dynamic points.</p>
-      <div class="run-cols" aria-hidden="true"><span>Render</span><span>3D tracks</span><span>Deformation graph</span></div>
-      <div class="gallery-group is-active" data-group="bear" role="tabpanel">
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bear.jpg" data-src="assets/video/runs/bear.mp4"></video>
-          <figcaption>DAVIS &middot; bear</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="camel" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/camel.jpg" data-src="assets/video/runs/camel.mp4"></video>
-          <figcaption>DAVIS &middot; camel</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="train" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/train.jpg" data-src="assets/video/runs/train.mp4"></video>
-          <figcaption>DAVIS &middot; train</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="blackswan" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
-          <figcaption>DAVIS &middot; blackswan</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="car-roundabout" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-roundabout.jpg" data-src="assets/video/runs/car-roundabout.mp4"></video>
-          <figcaption>DAVIS &middot; car-roundabout <span>The camera is held where it is in the first frame, so the clip ends when the car leaves its view.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
-          <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="dance-twirl" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
-          <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 17 joints of a COCO body pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="hike" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
-          <figcaption>DAVIS &middot; hike <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="bmx-trees" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bmx-trees.jpg" data-src="assets/video/runs/bmx-trees.mp4"></video>
-          <figcaption>DAVIS &middot; bmx-trees</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="breakdance" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance.jpg" data-src="assets/video/runs/breakdance.mp4"></video>
-          <figcaption>DAVIS &middot; breakdance</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="car-shadow" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-shadow.jpg" data-src="assets/video/runs/car-shadow.mp4"></video>
-          <figcaption>DAVIS &middot; car-shadow</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="cows" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/cows.jpg" data-src="assets/video/runs/cows.mp4"></video>
-          <figcaption>DAVIS &middot; cows</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="dog" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dog.jpg" data-src="assets/video/runs/dog.mp4"></video>
-          <figcaption>DAVIS &middot; dog</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="gold-fish" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/gold-fish.jpg" data-src="assets/video/runs/gold-fish.mp4"></video>
-          <figcaption>DAVIS &middot; gold-fish</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="horsejump-high" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/horsejump-high.jpg" data-src="assets/video/runs/horsejump-high.mp4"></video>
-          <figcaption>DAVIS &middot; horsejump-high</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="loading" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/loading.jpg" data-src="assets/video/runs/loading.mp4"></video>
-          <figcaption>DAVIS &middot; loading</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="mbike-trick" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/mbike-trick.jpg" data-src="assets/video/runs/mbike-trick.mp4"></video>
-          <figcaption>DAVIS &middot; mbike-trick</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="paragliding-launch" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/paragliding-launch.jpg" data-src="assets/video/runs/paragliding-launch.mp4"></video>
-          <figcaption>DAVIS &middot; paragliding-launch</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="parkour" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/parkour.jpg" data-src="assets/video/runs/parkour.mp4"></video>
-          <figcaption>DAVIS &middot; parkour</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="pigs" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/pigs.jpg" data-src="assets/video/runs/pigs.mp4"></video>
-          <figcaption>DAVIS &middot; pigs</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="scooter-black" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/scooter-black.jpg" data-src="assets/video/runs/scooter-black.mp4"></video>
-          <figcaption>DAVIS &middot; scooter-black</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="soapbox" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/soapbox.jpg" data-src="assets/video/runs/soapbox.mp4"></video>
-          <figcaption>DAVIS &middot; soapbox</figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
-          <figcaption>NVIDIA Dynamic Scenes &middot; Truck <span>12 time steps, played forward and back.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="umbrella" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/umbrella.jpg" data-src="assets/video/runs/umbrella.mp4"></video>
-          <figcaption>NVIDIA Dynamic Scenes &middot; Umbrella <span>12 time steps, played forward and back.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="skating" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
-          <figcaption>NVIDIA Dynamic Scenes &middot; Skating <span>12 time steps, played forward and back.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="balloon2" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/balloon2.jpg" data-src="assets/video/runs/balloon2.mp4"></video>
-          <figcaption>NVIDIA Dynamic Scenes &middot; Balloon2 <span>12 time steps, played forward and back.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="paper-windmill" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
-          <figcaption>DyCheck &middot; paper-windmill <span>Frames 0&ndash;72, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="apple" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/apple.jpg" data-src="assets/video/runs/apple.mp4"></video>
-          <figcaption>DyCheck &middot; apple <span>Frames 0&ndash;59, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="block" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/block.jpg" data-src="assets/video/runs/block.mp4"></video>
-          <figcaption>DyCheck &middot; block <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="space-out" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/space-out.jpg" data-src="assets/video/runs/space-out.mp4"></video>
-          <figcaption>DyCheck &middot; space-out <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="spin" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/spin.jpg" data-src="assets/video/runs/spin.mp4"></video>
-          <figcaption>DyCheck &middot; spin <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="teddy" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/teddy.jpg" data-src="assets/video/runs/teddy.mp4"></video>
-          <figcaption>DyCheck &middot; teddy <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="wheel" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
-          <figcaption>DyCheck &middot; wheel <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
-          <figcaption>EgoDexter &middot; desk <span>The hand's graph is the 21 keypoints of a WiLoR hand pose; the marker, orange, and block it picks up (segmented with SAM2) each move as one rigid part.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="fridge" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
-          <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own.</span></figcaption></figure>
-      </div>
-      <div class="gallery-group" data-group="dancer" role="tabpanel" hidden>
-        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="534" poster="assets/img/runs/dancer.jpg" data-src="assets/video/runs/dancer.mp4"></video>
-          <figcaption>Pexels &middot; dancer <span>A stock video (Polina Tankilevitch, Pexels). The graph is the 17 joints of a COCO body pose plus points on the feet and hands; the cells are cropped to her.</span></figcaption></figure>
-      </div>
-    </div>
   </header>
 
   <!-- ───────────────────────── GALLERY: 3D VIEWER ───────────────────────── -->
-  <!-- viewer.js draws the selected run (assets/3d/<key>.bin, from export_viewer.py in the research code) once the
-       section comes near the screen; picking an example run above picks the same run here. -->
+  <!-- the runs' clips, then the 3D viewer, each with its own run list. A tab plays the run's clip (its showcase video,
+       visualize_showcase_grid.py in the research code, cut to the row of one input camera held fixed while time plays:
+       render, 3D tracks, graph cells; loaded only when its tab is shown, data-src). The viewer (viewer.js) draws the run
+       picked in its panel (assets/3d/<key>.bin, export_viewer.py) once the section nears the screen. -->
   <section class="gallery3d" id="gallery" aria-labelledby="gallery-title">
     <div class="section-head">
       <h2 id="gallery-title">Gallery</h2>
-      <p>
-        Turn each reconstruction around: its 4D Gaussians as trained, the deformation graph that moves the dynamic
-        ones, the input cameras XM4D estimated, and 3D tracks of a few dynamic Gaussians.
-      </p>
     </div>
+    <div class="gallery runs" id="runs">
+      <h3>Videos</h3>
+      <div class="segmented" role="tablist" aria-label="Video">
+        <span class="seg-label">DAVIS</span>
+        <button role="tab" aria-selected="true" data-group="bear">bear</button>
+        <button role="tab" aria-selected="false" data-group="camel">camel</button>
+        <button role="tab" aria-selected="false" data-group="train">train</button>
+        <button role="tab" aria-selected="false" data-group="blackswan">blackswan</button>
+        <button role="tab" aria-selected="false" data-group="car-roundabout">car-roundabout</button>
+        <button role="tab" aria-selected="false" data-group="breakdance-flare">breakdance-flare</button>
+        <button role="tab" aria-selected="false" data-group="dance-twirl">dance-twirl</button>
+        <button role="tab" aria-selected="false" data-group="hike">hike</button>
+        <button role="tab" aria-selected="false" data-group="bmx-trees">bmx-trees</button>
+        <button role="tab" aria-selected="false" data-group="breakdance">breakdance</button>
+        <button role="tab" aria-selected="false" data-group="car-shadow">car-shadow</button>
+        <button role="tab" aria-selected="false" data-group="cows">cows</button>
+        <button role="tab" aria-selected="false" data-group="dog">dog</button>
+        <button role="tab" aria-selected="false" data-group="gold-fish">gold-fish</button>
+        <button role="tab" aria-selected="false" data-group="horsejump-high">horsejump-high</button>
+        <button role="tab" aria-selected="false" data-group="loading">loading</button>
+        <button role="tab" aria-selected="false" data-group="mbike-trick">mbike-trick</button>
+        <button role="tab" aria-selected="false" data-group="paragliding-launch">paragliding-launch</button>
+        <button role="tab" aria-selected="false" data-group="parkour">parkour</button>
+        <button role="tab" aria-selected="false" data-group="pigs">pigs</button>
+        <button role="tab" aria-selected="false" data-group="scooter-black">scooter-black</button>
+        <button role="tab" aria-selected="false" data-group="soapbox">soapbox</button>
+        <span class="seg-label">NVIDIA</span>
+        <button role="tab" aria-selected="false" data-group="truck">Truck</button>
+        <button role="tab" aria-selected="false" data-group="umbrella">Umbrella</button>
+        <button role="tab" aria-selected="false" data-group="skating">Skating</button>
+        <button role="tab" aria-selected="false" data-group="balloon2">Balloon2</button>
+        <span class="seg-label">DyCheck</span>
+        <button role="tab" aria-selected="false" data-group="paper-windmill">paper-windmill</button>
+        <button role="tab" aria-selected="false" data-group="block">block</button>
+        <button role="tab" aria-selected="false" data-group="spin">spin</button>
+        <button role="tab" aria-selected="false" data-group="teddy">teddy</button>
+        <button role="tab" aria-selected="false" data-group="wheel">wheel</button>
+        <span class="seg-label">EgoDexter</span>
+        <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
+        <span class="seg-label">HOI</span>
+        <button role="tab" aria-selected="false" data-group="fridge">fridge</button>
+      </div>
+      <div class="run-cols" aria-hidden="true"><span>Render</span><span>3D tracks</span><span>Deformation graph</span></div>
+      <div class="gallery-group is-active" data-group="bear" role="tabpanel">
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bear.jpg" data-src="assets/video/runs/bear.mp4"></video>
+        <figcaption>DAVIS &middot; bear</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="camel" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/camel.jpg" data-src="assets/video/runs/camel.mp4"></video>
+        <figcaption>DAVIS &middot; camel</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="train" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/train.jpg" data-src="assets/video/runs/train.mp4"></video>
+        <figcaption>DAVIS &middot; train</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="blackswan" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/blackswan.jpg" data-src="assets/video/runs/blackswan.mp4"></video>
+        <figcaption>DAVIS &middot; blackswan</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="car-roundabout" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-roundabout.jpg" data-src="assets/video/runs/car-roundabout.mp4"></video>
+        <figcaption>DAVIS &middot; car-roundabout <span>The camera is held where it is in the first frame, so the clip ends when the car leaves its view.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="breakdance-flare" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance-flare.jpg" data-src="assets/video/runs/breakdance-flare.mp4"></video>
+        <figcaption>DAVIS &middot; breakdance-flare <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="dance-twirl" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dance-twirl.jpg" data-src="assets/video/runs/dance-twirl.mp4"></video>
+        <figcaption>DAVIS &middot; dance-twirl <span>For people, the graph is the 17 joints of a COCO body pose. The camera is held where it is in the first frame, so the clip ends when the dancer leaves its view.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="hike" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/hike.jpg" data-src="assets/video/runs/hike.mp4"></video>
+        <figcaption>DAVIS &middot; hike <span>For people, the graph is the 17 joints of a COCO body pose.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="bmx-trees" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/bmx-trees.jpg" data-src="assets/video/runs/bmx-trees.mp4"></video>
+        <figcaption>DAVIS &middot; bmx-trees</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="breakdance" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/breakdance.jpg" data-src="assets/video/runs/breakdance.mp4"></video>
+        <figcaption>DAVIS &middot; breakdance</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="car-shadow" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/car-shadow.jpg" data-src="assets/video/runs/car-shadow.mp4"></video>
+        <figcaption>DAVIS &middot; car-shadow</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="cows" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/cows.jpg" data-src="assets/video/runs/cows.mp4"></video>
+        <figcaption>DAVIS &middot; cows</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="dog" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/dog.jpg" data-src="assets/video/runs/dog.mp4"></video>
+        <figcaption>DAVIS &middot; dog</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="gold-fish" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/gold-fish.jpg" data-src="assets/video/runs/gold-fish.mp4"></video>
+        <figcaption>DAVIS &middot; gold-fish</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="horsejump-high" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/horsejump-high.jpg" data-src="assets/video/runs/horsejump-high.mp4"></video>
+        <figcaption>DAVIS &middot; horsejump-high</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="loading" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/loading.jpg" data-src="assets/video/runs/loading.mp4"></video>
+        <figcaption>DAVIS &middot; loading</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="mbike-trick" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/mbike-trick.jpg" data-src="assets/video/runs/mbike-trick.mp4"></video>
+        <figcaption>DAVIS &middot; mbike-trick</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="paragliding-launch" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/paragliding-launch.jpg" data-src="assets/video/runs/paragliding-launch.mp4"></video>
+        <figcaption>DAVIS &middot; paragliding-launch</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="parkour" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/parkour.jpg" data-src="assets/video/runs/parkour.mp4"></video>
+        <figcaption>DAVIS &middot; parkour</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="pigs" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/pigs.jpg" data-src="assets/video/runs/pigs.mp4"></video>
+        <figcaption>DAVIS &middot; pigs</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="scooter-black" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/scooter-black.jpg" data-src="assets/video/runs/scooter-black.mp4"></video>
+        <figcaption>DAVIS &middot; scooter-black</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="soapbox" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/soapbox.jpg" data-src="assets/video/runs/soapbox.mp4"></video>
+        <figcaption>DAVIS &middot; soapbox</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="truck" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/truck.jpg" data-src="assets/video/runs/truck.mp4"></video>
+        <figcaption>NVIDIA Dynamic Scenes &middot; Truck <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="umbrella" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/umbrella.jpg" data-src="assets/video/runs/umbrella.mp4"></video>
+        <figcaption>NVIDIA Dynamic Scenes &middot; Umbrella <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="skating" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/skating.jpg" data-src="assets/video/runs/skating.mp4"></video>
+        <figcaption>NVIDIA Dynamic Scenes &middot; Skating <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="balloon2" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="246" poster="assets/img/runs/balloon2.jpg" data-src="assets/video/runs/balloon2.mp4"></video>
+        <figcaption>NVIDIA Dynamic Scenes &middot; Balloon2 <span>12 time steps, played forward and back.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="paper-windmill" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/paper-windmill.jpg" data-src="assets/video/runs/paper-windmill.mp4"></video>
+        <figcaption>DyCheck &middot; paper-windmill <span>Frames 0&ndash;72, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="block" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/block.jpg" data-src="assets/video/runs/block.mp4"></video>
+        <figcaption>DyCheck &middot; block <span>Frames 0&ndash;109, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="spin" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/spin.jpg" data-src="assets/video/runs/spin.mp4"></video>
+        <figcaption>DyCheck &middot; spin <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="teddy" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/teddy.jpg" data-src="assets/video/runs/teddy.mp4"></video>
+        <figcaption>DyCheck &middot; teddy <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="wheel" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
+        <figcaption>DyCheck &middot; wheel <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
+        <figcaption>EgoDexter &middot; desk <span>The hand's graph is the 21 keypoints of a WiLoR hand pose; the marker, orange, and block it picks up (segmented with SAM2) each move as one rigid part.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="fridge" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" poster="assets/img/runs/fridge.jpg" data-src="assets/video/runs/fridge.mp4"></video>
+        <figcaption>HOI &middot; fridge <span>Each door is one rigid part turning about its estimated hinge axis (thick line); the dot is the node that moves the door's Gaussians. The person is not modelled, so the doors open on their own. <a href="fridge.html">Open it in 3D</a>, with a slider per door.</span></figcaption></figure>
+      </div>
+    </div>
+    <h3 class="viewer-title">3D viewer</h3>
     <div class="viewer" id="viewer">
       <div class="viewer-stage">
         <canvas class="viewer-canvas" aria-label="3D view of the selected reconstruction"></canvas>
@@ -376,10 +353,8 @@
               <option value="umbrella" data-src="assets/3d/umbrella.bin">Umbrella</option>
             </optgroup>
             <optgroup label="DyCheck">
-              <option value="apple" data-src="assets/3d/apple.bin">apple</option>
               <option value="block" data-src="assets/3d/block.bin">block</option>
               <option value="paper-windmill" data-src="assets/3d/paper-windmill.bin">paper-windmill</option>
-              <option value="space-out" data-src="assets/3d/space-out.bin">space-out</option>
               <option value="spin" data-src="assets/3d/spin.bin">spin</option>
               <option value="teddy" data-src="assets/3d/teddy.bin">teddy</option>
               <option value="wheel" data-src="assets/3d/wheel.bin">wheel</option>
@@ -399,9 +374,6 @@
             </optgroup>
             <optgroup label="EgoDexter">
               <option value="egodexter" data-src="assets/3d/egodexter.bin">desk</option>
-            </optgroup>
-            <optgroup label="Pexels">
-              <option value="dancer" data-src="assets/3d/dancer.bin">dancer</option>
             </optgroup>
           </select>
         </label>
@@ -837,7 +809,7 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<script src="main.js?v=20261109c" defer></script>
-<script src="viewer.js?v=20261108" defer></script>
+<script src="main.js?v=20261109d" defer></script>
+<script src="viewer.js?v=20261109a" defer></script>
 </body>
 </html>

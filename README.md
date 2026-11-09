@@ -32,7 +32,7 @@ assets/
   group-logo.png  Computational Robotics Group logo (group-logo-alpha.png: its white made transparent, for the teaser's overlay)
   harvard-shield.svg  Harvard shield (from the group's GRASP page), for the teaser's overlay
   img/            teaser.jpg, view-graph.jpg (the arXiv paper's overview and view-graph figures, from 2026-pami-xm4d/arxiv-crg/figures/)
-    runs/         posters of the Example runs clips
+    runs/         posters of the Gallery's clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
   img/promo.jpg   the teaser's poster (its frame 0, the title card, from the 1440p master)
@@ -44,12 +44,13 @@ assets/
                        space), so the text is as sharp as the page's. The <video> lists the three with media
                        conditions, so a screen loads only the sharpest one it can use
     promo-720-text.mp4 the 720p cut with its text baked in: the fallback if promo-text.json cannot be read
-    runs/         the Example runs gallery below the teaser: per run, one input camera's render, 3D tracks, and
+    runs/         the Gallery's clips (Videos, above the 3D viewer): per run, one input camera's render, 3D tracks, and
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
                   4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 14 DAVIS runs after hike (bmx-trees to
                   soapbox) are the extended DAVIS 2017 batch, every 8th frame held out, cut the same way from its
-                  showcase_holdout.mp4 (build_ext.py in the session scratchpad);
-                  posters in img/runs/
+                  showcase_holdout.mp4 (build_ext.py in the session scratchpad); the 3D-tracks cell then redrawn by
+                  page_assets/runs/tracks_from_bin.py from the run's 3d/<key>.bin (its stored tracks, as the viewer draws
+                  them; the render and graph cells cut again from the grid); posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
                   static-<run>.mp4, the static solve's iterates,
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
@@ -69,8 +70,9 @@ assets/
                   record_viewer.py, record_native.sh); posters in img/apps/
   3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
-                  the trained node tables, the input cameras, and the graph's edges; dancer.bin from page_assets/human/scripts/
-                  export_viewer_fix.py (background thinned per voxel, so the white walls stay clean); casa-twin.bin
+                  the trained node tables, the input cameras, and the graph's edges, and in the header "tracks": the
+                  dynamic Gaussians that get a 3D track (page_assets/viewer/pick_tracks.py, run on each file after
+                  export); casa-twin.bin
                   (the RoboCasa kitchen twin, monocular) from page_assets/robocasa/mono_v4/ (export_viewer_parts_v4.py: static
                   Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
@@ -98,9 +100,12 @@ assets/
   `prismatic` part, slides along its axis). A part with `"fixed": true` keeps its frame-0 pose and gets no slider.
   With `data-part-views` on the `.viewer` (assets/3d/casa-twin.bin), the input view glides to the camera that saw each part open
   furthest, in the demo and when its slider is moved.
-- **Gallery runs:** add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's run picker; a
-  value that matches an Example runs tab (`data-group`) is picked when that tab is.
-- **3D tracks:** the viewer draws up to 110 dynamic Gaussians, spread out at frame 0, chosen only among opaque, not tiny
-  ones in a dense part of the dynamic cloud whose paths are no more jagged than twice the run's median; faint floaters
-  far from the body would otherwise zigzag through empty space (skating, playground). `data-tracks="off"` on an option
-  shows none (truck: every node of its graph jitters in depth, so no track is clean).
+- **Gallery:** the clips (a `button[role=tab]` and a `.gallery-group` panel per run in `#runs`) and the 3D viewer below
+  them have separate run lists; add an `<option value="<key>" data-src="assets/3d/<key>.bin">` to the viewer's.
+- **3D tracks:** the viewer draws the file's stored tracks (pick_tracks.py): up to 110 dynamic Gaussians, spread out at
+  frame 0, only ones on the surface the input video shows (within 5 % of the rendered depth, from each frame's own
+  input camera, in 80 % of the frames they are in view) that are opaque, not tiny, in a dense part of the dynamic cloud,
+  and no more jagged than 1.5 times the run's median. A hidden Gaussian, skinned to far nodes, otherwise sweeps through
+  space several times farther than the body. Trails are drawn through a moving average over 2 frames either side (runs
+  over 24 frames); the clips' tracks cell draws the first 60 the same way. A file without stored tracks falls back to
+  the old in-browser choice. `data-tracks="off"` on an option shows none (truck).

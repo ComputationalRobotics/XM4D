@@ -302,7 +302,10 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .hero-lede em { color: var(--accent); font-style: italic; }
 
 /* example runs below the teaser: a picker grouped by dataset; the run's three columns are labelled above its clip */
-.runs { margin-top: 44px; }
+.runs { margin-top: 0; }
+.runs > h3, .viewer-title { margin-bottom: 12px; }
+.runs .segmented { margin-bottom: 16px; }
+.viewer-title { margin-top: 44px; }
 .runs .segmented { border-radius: 18px; align-items: center; }
 .seg-label {
   padding: 0 4px 0 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em;

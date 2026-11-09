@@ -386,7 +386,7 @@
     });
   }
 
-  var TRAIL = 12;  // frames of track behind the current one
+  var TRAIL = 12, SMOOTH = 2;  // frames of track behind the current one; half-width of the trails' moving average
   function buildTracks() {  // a spread of dynamic Gaussians (farthest-point sampling at frame 0), posed at every frame
     var sc = scene, h = sc.hdr, K = h.k, nD = h.n_dyn, T = sc.T, nTr = Math.min(110, nD);
     var frames = [];
@@ -401,8 +401,28 @@
       }
       return [x, y, z];
     }
-    // only Gaussians the images pinned down get a track: opaque, not tiny, in a dense part of the dynamic cloud at
-    // frame 0, and no more jagged than twice the run's median (a faint floater far from the body zigzags through space)
+    function pathOf(i) {
+      var pts = new Float32Array(T * 3);
+      for (var f = 0; f < T; f++) { var p = posAt(i, frames[f]); pts[f * 3] = p[0]; pts[f * 3 + 1] = p[1]; pts[f * 3 + 2] = p[2]; }
+      return pts;
+    }
+    function smooth(P) {  // a moving average over SMOOTH frames either side: the graph's per-frame depth jitter otherwise zigzags every trail
+      var S = new Float32Array(P.length), r = T > 24 ? SMOOTH : 1;
+      for (var f = 0; f < T; f++) {
+        var a = Math.max(0, f - r), b = Math.min(T - 1, f + r);
+        for (var c = 0; c < 3; c++) { var s = 0; for (var g = a; g <= b; g++) s += P[g * 3 + c]; S[f * 3 + c] = s / (b - a + 1); }
+      }
+      return S;
+    }
+    var color = function (n) { return hsl((n * 137.508) % 360, 0.8, 0.5); };
+    // the export's choice (pick_tracks.py) when the file has one: only Gaussians on the surface the input video shows
+    var stored = (h.tracks || []).filter(function (i) { return i < nD; }).slice(0, nTr);
+    if (stored.length) {
+      sc.tracks = stored.map(function (i, n) { return { pts: smooth(pathOf(i)), color: color(n) }; });
+      sc.posAt = posAt; return;
+    }
+    // otherwise only Gaussians the images pinned down get a track: opaque, not tiny, in a dense part of the dynamic cloud
+    // at frame 0, and no more jagged than twice the run's median (a faint floater far from the body zigzags through space)
     var i, all0 = [];
     for (i = 0; i < nD; i++) all0.push(posAt(i, frames[0]));
     var med = [0, 1, 2].map(function (a) { return median(all0.map(function (p) { return p[a]; })); });
@@ -419,11 +439,7 @@
     for (i = 0; i < nD; i += step) cand.push(i);
     var qMin = median(cand.map(qBig)) + 255 * Math.log(0.5) / (h.log_scale[1] - h.log_scale[0]), dMin = 0.25 * median(cand.map(function (i) { return dens(all0[i]); }));
     cand = cand.filter(function (i) { return qa[i * 4 + 3] >= 128 && qBig(i) >= qMin && dens(all0[i]) >= dMin; });
-    var paths = cand.map(function (i) {
-      var pts = new Float32Array(T * 3);
-      for (var f = 0; f < T; f++) { var p = posAt(i, frames[f]); pts[f * 3] = p[0]; pts[f * 3 + 1] = p[1]; pts[f * 3 + 2] = p[2]; }
-      return pts;
-    });
+    var paths = cand.map(pathOf);
     var jag = paths.map(function (P) {
       var s = 0;
       for (var f = 1; f < T - 1; f++) s += Math.hypot(P[f * 3 - 3] - 2 * P[f * 3] + P[f * 3 + 3], P[f * 3 - 2] - 2 * P[f * 3 + 1] + P[f * 3 + 4], P[f * 3 - 1] - 2 * P[f * 3 + 2] + P[f * 3 + 5]);
@@ -442,7 +458,7 @@
       }
       pick.push(best);
     }
-    sc.tracks = pick.map(function (j, n) { return { pts: paths[j], color: hsl((n * 137.508) % 360, 0.8, 0.5) }; });
+    sc.tracks = pick.map(function (j, n) { return { pts: smooth(paths[j]), color: color(n) }; });
     sc.posAt = posAt;
   }
   function median(v) {
@@ -752,18 +768,10 @@
   playBtn.addEventListener('click', function () { if (scene && scene.parts) demo = !playing; setPlaying(!playing); });
   slider.addEventListener('input', function () { setPlaying(false); t = +slider.value; requestSort(); });
 
-  /* ── scene picking; the example runs above pick the same run here ── */
+  /* ── scene picking (the panel's own run list) ── */
   var started = false;
   function source() { return select ? select.selectedOptions[0] : { dataset: { src: root.dataset.src }, textContent: root.dataset.label || '' }; }
   if (select) select.addEventListener('change', function () { if (started) load(source()); });
-  if (select && root.id === 'viewer') document.querySelectorAll('#runs [role="tab"]').forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      var opt = select.querySelector('option[value="' + tab.dataset.group + '"]');
-      if (!opt || opt.selected) return;
-      opt.selected = true;
-      if (started) load(opt);
-    });
-  });
 
   new ResizeObserver(function () { dirty = true; }).observe(canvas);
   new IntersectionObserver(function (entries) {
