@@ -112,7 +112,7 @@ em { font-style: italic; }
     mask-image: linear-gradient(90deg, transparent calc(50% - 88.9vh), #000 calc(50% - 84vh), #000 calc(50% + 84vh), transparent calc(50% + 88.9vh));
   }
 }
-@media (max-aspect-ratio: 4/3) {                     /* portrait: the whole frame, full width; the page follows right below */
+@media (max-aspect-ratio: 7/5) {                     /* portrait to 1.4:1: the whole frame, full width (cover would crop the title) */
   .intro { height: auto; min-height: 0; }
   .intro-video { position: relative; height: auto; aspect-ratio: 16 / 9; }
   .intro-cue { display: none; }
