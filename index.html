@@ -22,6 +22,26 @@
 
 <a class="skip-link" href="#method">Skip to content</a>
 
+<!-- Teaser, full screen above the page (as on the GRASP page): plays muted, fades as the page scrolls up over it,
+     pauses off screen (main.js). The top bar sits below it and sticks once it scrolls away. -->
+<div class="intro" id="teaser" role="region" aria-label="Teaser video">
+  <video id="promo" class="intro-video" autoplay muted loop playsinline preload="auto" width="1280" height="720" poster="assets/img/promo.jpg" aria-label="XM4D teaser: results, the pipeline, and this page">
+    <source src="assets/video/promo.mp4" type="video/mp4">
+  </video>
+  <div class="intro-controls">
+    <button type="button" class="intro-btn intro-btn-round" id="promo-play" aria-label="Pause the teaser">
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5.5v13M15 5.5v13"/></svg>
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+    </button>
+    <button type="button" class="intro-btn" id="promo-sound" aria-pressed="false">
+      <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+      <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg>
+      Sound
+    </button>
+  </div>
+  <a class="intro-cue" href="#top">Scroll to explore <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></a>
+</div>
+
 <nav class="topbar" aria-label="Page">
   <a class="topbar-lab" href="https://computationalrobotics.seas.harvard.edu/" target="_blank" rel="noopener"><img src="assets/group-logo.png" alt="Computational Robotics Group, Harvard" width="2286" height="299"></a>
   <a class="topbar-brand" href="#top">XM4D</a>
@@ -82,12 +102,6 @@
       </a>
     </div>
 
-    <!-- Teaser (70 s, with music): results, then the pipeline, then this page -->
-    <figure class="hero-video" id="video">
-      <video id="promo" autoplay muted loop controls playsinline preload="auto" width="1280" height="720" poster="assets/img/promo.jpg" aria-label="XM4D teaser: results, the pipeline, and this page">
-        <source src="assets/video/promo.mp4" type="video/mp4">
-      </video>
-    </figure>
     <!-- Pipeline walkthrough. The figure is cut into pieces (data-crop: x y w h in the 2400x808 figure).
          Each .pipe-panel is one stop of the slider: data-camera = "scale dx dy" maps the figure into the
          window, data-show lists the pieces shown ("name" sits where the camera puts it, "name@x,y[,scale]"

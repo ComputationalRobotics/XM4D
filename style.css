@@ -63,6 +63,67 @@ em { font-style: italic; }
 }
 .skip-link:focus { top: 10px; }
 
+/* ───────── Teaser: full screen above the page ───────── */
+.intro {
+  --intro-bg: #e9e8e4;                 /* the teaser's own background, so any letterbox blends into it */
+  position: relative; overflow: hidden;
+  height: 100vh; height: 100svh; min-height: 420px;
+  background: var(--intro-bg);
+}
+.intro-video {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; background: var(--intro-bg);
+  transform-origin: 50% 0; will-change: opacity, transform;
+}
+.intro-controls {
+  position: absolute; z-index: 2; display: flex; gap: 8px;
+  right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+.intro-btn, .intro-cue {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 40px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid rgba(28, 28, 32, .14);
+  background: rgba(250, 249, 245, .8);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(28, 28, 32, .1);
+  color: var(--ink); font: inherit; font-size: 14px; font-weight: 500; line-height: 1;
+  cursor: pointer; transition: background .15s ease;
+}
+.intro-btn:hover, .intro-cue:hover { background: var(--paper-raise); text-decoration: none; }
+.intro-btn svg, .intro-cue svg {
+  width: 18px; height: 18px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.intro-btn-round { width: 40px; padding: 0; }
+.intro-btn .i-play, .intro-btn .i-sound,
+.intro.is-paused .intro-btn .i-pause, .intro.is-sound .intro-btn .i-muted { display: none; }
+.intro.is-paused .intro-btn .i-play, .intro.is-sound .intro-btn .i-sound { display: block; }
+.intro-cue {
+  position: absolute; z-index: 2; left: 50%; transform: translateX(-50%);
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+.intro-cue svg { animation: intro-nudge 1.8s ease-in-out infinite; }
+@keyframes intro-nudge { 50% { transform: translateY(3px); } }
+@media (min-aspect-ratio: 2/1) {                     /* ultra-wide: the whole frame, its sides fading into the bars */
+  .intro-video {
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(50% - 88.9vh), #000 calc(50% - 84vh), #000 calc(50% + 84vh), transparent calc(50% + 88.9vh));
+    mask-image: linear-gradient(90deg, transparent calc(50% - 88.9vh), #000 calc(50% - 84vh), #000 calc(50% + 84vh), transparent calc(50% + 88.9vh));
+  }
+}
+@media (max-aspect-ratio: 4/3) {                     /* portrait: the whole frame, full width; the page follows right below */
+  .intro { height: auto; min-height: 0; }
+  .intro-video { position: relative; height: auto; aspect-ratio: 16 / 9; }
+  .intro-cue { display: none; }
+}
+@media (max-width: 520px) {
+  .intro-controls { bottom: 10px; gap: 6px; }
+  .intro-btn { height: 34px; padding: 0 11px; font-size: 13px; }
+  .intro-btn-round { width: 34px; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .intro-cue svg { animation: none; } }
+
 /* ───────── Top bar ───────── */
 .topbar {
   position: sticky; top: 0; z-index: 30;
@@ -183,13 +244,6 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 .affiliations sup { color: var(--mist); margin-right: 2px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 
-.hero-video { margin-top: 36px; max-width: 880px; }
-.hero-video video {
-  width: 100%; aspect-ratio: 16 / 9;
-  background: #0f0f12;
-  border-radius: 8px;
-  box-shadow: 0 20px 44px -28px rgba(28, 28, 32, .4), 0 1px 4px rgba(28, 28, 32, .08);
-}
 .figure.hero-figure { margin-top: 36px; max-width: 960px; }
 
 /* pipeline walkthrough: a window onto the figure; each piece is one crop of it */
@@ -648,7 +702,7 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
   .hero { padding-top: 36px; }
   section { padding-top: 64px; }
   .authors { font-size: 16px; gap: 2px 16px; }
-  .hero-video, .figure.hero-figure { margin-top: 28px; }
+  .figure.hero-figure { margin-top: 28px; }
   .hero-lede { margin-top: 28px; }
   .gallery-head h3 { font-size: 19px; }
 }

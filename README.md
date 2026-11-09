@@ -35,9 +35,10 @@ assets/
     runs/         posters of the Example runs clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
-  img/promo.jpg   the teaser's poster (its frame at 3.9 s)
+  img/promo.jpg   the teaser's poster (its frame 0, the title card)
   video/          the walkthrough's clips (horsejump-high); each plays over its panel at its stop (data-stop)
-    promo.mp4          the hero's teaser (70 s, 720p, music; the 720p web cut, built in xm4d_new/teaser/ on the Passport)
+    promo.mp4          the teaser, full screen above the page (84 s, 720p, music; the 720p web cut of v6, built in
+                       xm4d_new/teaser/ on the Passport)
     teaser-tracks.mp4  Input: every input frame with its tracks, over the front frame of the 2D-tracks stack
     teaser-depth.mp4   Input: every frame's monocular depth, over the front frame of the depth stack
     teaser-lift.mp4    Lift: frame 33 lifted along its camera rays to its depth, over the Preprocess schematic
@@ -88,8 +89,9 @@ assets/
 
 - **Links:** the Paper buttons (top bar and hero) point to arXiv:2611.07902; Code points to XM4D-release.
 - **Venue, BibTeX:** see the `TODO` comments in `index.html`.
-- **Hero video:** the `hero-video` block plays `assets/video/promo.mp4` muted (viewers unmute it from the controls);
-  main.js pauses it while it is off screen.
+- **Teaser:** `div#teaser` above the top bar plays `assets/video/promo.mp4` full screen, muted, with Pause and Sound buttons
+  and a scroll cue (as on the GRASP page); main.js fades it as the page scrolls up over it and pauses it off screen.
+  Upright phones show the whole frame at full width; ultra-wide screens show it whole, its sides fading out.
 - **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
 - **Articulated runs** (fridge.html, kitchen.html): a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
   `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge (or, for a

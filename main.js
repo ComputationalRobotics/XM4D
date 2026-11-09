@@ -293,14 +293,64 @@
     }
   }
 
-  /* ── Hero video: autoplays muted; pause off-screen, resume when back ── */
+  /* ── Teaser: full screen above the page. Autoplays muted (not with reduced motion), pauses off screen,
+       fades and recedes as the page scrolls up over it ── */
+  var intro = document.getElementById('teaser');
   var promo = document.getElementById('promo');
-  if (promo && io) {
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { var p = promo.play(); if (p && p.catch) p.catch(function () {}); }
-        else if (!promo.paused) promo.pause();
+  if (intro && promo) {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var playBtn = document.getElementById('promo-play');
+    var soundBtn = document.getElementById('promo-sound');
+    var cue = intro.querySelector('.intro-cue');
+    var userPaused = !!reduce, onScreen = true;
+
+    var paint = function () {
+      intro.classList.toggle('is-paused', userPaused);
+      intro.classList.toggle('is-sound', !promo.muted);
+      playBtn.setAttribute('aria-label', userPaused ? 'Play the teaser' : 'Pause the teaser');
+      soundBtn.setAttribute('aria-pressed', String(!promo.muted));
+    };
+    var sync = function () {
+      if (userPaused || !onScreen) { if (!promo.paused) promo.pause(); }
+      else {
+        var p = promo.play();
+        if (p && p.catch) p.catch(function () { userPaused = true; paint(); });   /* autoplay blocked: show Play */
+      }
+      paint();
+    };
+    playBtn.addEventListener('click', function () { userPaused = !userPaused; sync(); });
+    soundBtn.addEventListener('click', function () {
+      promo.muted = !promo.muted;
+      if (!promo.muted) userPaused = false;     /* turning the sound on means "play it" */
+      sync();
+    });
+    if (io) {
+      new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; sync(); },
+        { threshold: 0.15 }).observe(intro);
+    }
+
+    var queued = false, last = -1;
+    var fade = function () {
+      queued = false;
+      var k = Math.min(1, Math.max(0, window.scrollY / (intro.offsetHeight * 0.8)));
+      if (k === last) return;
+      last = k;
+      promo.style.opacity = String(1 - 0.85 * k);
+      promo.style.transform = k ? 'translateY(' + (30 * k).toFixed(2) + '%) scale(' + (1 - 0.05 * k).toFixed(4) + ')' : '';
+      if (cue) cue.style.opacity = String(Math.max(0, 1 - 4 * k));
+    };
+    if (!reduce) {
+      window.addEventListener('scroll', function () {
+        if (!queued) { queued = true; requestAnimationFrame(fade); }
+      }, { passive: true });
+      fade();
+    }
+    if (cue) {
+      cue.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.scrollTo({ top: intro.offsetTop + intro.offsetHeight, behavior: reduce ? 'auto' : 'smooth' });
       });
-    }, { threshold: 0.25 }).observe(promo);
+    }
+    sync();
   }
 })();
