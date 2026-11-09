@@ -74,7 +74,14 @@ assets/
                   fridge.html and kitchen.html viewers' demos, one seamless loop each at the input camera's aspect,
                   recorded frame-exact with a virtual clock in a GPU headless Chrome (page_assets/viewer_pages/
                   record_viewer.py, record_native.sh); posters in img/apps/
-  3d/             one file per Gallery run (4DReconstruction/scratchpad/page_assets/viewer/export_viewer.py): ~130k static
+  3d/             one file per Gallery run. Full quality (format v2, page_assets/viewer/export_viewer_v2.py, export_all_v2.sh)
+                  for the 13 whose light file fell furthest from the paper's eval render (ranked in /dev/shm/viewer_fix/rank):
+                  horsejump-high (the teaser's gsplat_v3), dance-twirl, car-roundabout, teddy, hike, blackswan, casa2, cows,
+                  block, bear, breakdance, wheel, bear4. Every Gaussian, the trained skinning (6 nodes), each node's observed
+                  frames (n_obs), and the appearance model (per-Gaussian features, the colour MLP, the frame embeddings),
+                  which viewer.js evaluates per frame and view; at the input cameras the browser matches the eval render to
+                  ~43-50 dB. 22-60 MB each, so the rest (GitHub Pages' 1 GB site limit) keep the light format:
+                  v1, page_assets/viewer/export_viewer.py: ~130k static
                   Gaussians fitted to the full model's renders, ~25k dynamic ones with their top-4 graph skinning,
                   the trained node tables, the input cameras, and the graph's edges, and in the header "tracks": the
                   dynamic Gaussians that get a 3D track (page_assets/viewer/pick_tracks.py, run on each file after
