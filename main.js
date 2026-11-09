@@ -293,21 +293,36 @@
     }
   }
 
-  /* ── Teaser: full screen above the page. Autoplays muted, pauses off screen,
-       fades and recedes as the page scrolls up over it ── */
+  /* ── Teaser: full screen above the page, as a player. Autoplays muted and pauses off screen; a click on the video
+       plays or pauses it (a large icon in the middle); the bar seeks, shows the time and turns the sound on; while it
+       plays, the bar and the cue hide when the pointer rests. It fades and recedes as the page scrolls up over it ── */
   var intro = document.getElementById('teaser');
   var promo = document.getElementById('promo');
   if (intro && promo) {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var stage = intro.querySelector('.intro-stage');
+    var hit = document.getElementById('promo-hit');
+    var big = intro.querySelector('.intro-big');
     var playBtn = document.getElementById('promo-play');
     var soundBtn = document.getElementById('promo-sound');
+    var seek = document.getElementById('promo-seek');
+    var timeEl = document.getElementById('promo-time');
+    var bar = intro.querySelector('.intro-bar');
     var cue = intro.querySelector('.intro-cue');
-    var userPaused = false, onScreen = true;     /* autoplays even with reduced motion (Pause is right there); that only skips the fade */
+    var userPaused = false, onScreen = true, seeking = false;     /* autoplays even with reduced motion: Pause is right there */
 
+    var clock = function (s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); };
+    var showTime = function () {
+      var d = promo.duration || +seek.max, t = seeking ? +seek.value : promo.currentTime;
+      if (!seeking) seek.value = t;
+      seek.max = d; seek.style.setProperty('--p', (100 * t / d).toFixed(2) + '%');
+      timeEl.textContent = clock(t) + ' / ' + clock(d);
+    };
     var paint = function () {
       intro.classList.toggle('is-paused', userPaused);
       intro.classList.toggle('is-sound', !promo.muted);
-      playBtn.setAttribute('aria-label', userPaused ? 'Play the teaser' : 'Pause the teaser');
+      var label = userPaused ? 'Play the teaser' : 'Pause the teaser';
+      playBtn.setAttribute('aria-label', label); hit.setAttribute('aria-label', label);
       soundBtn.setAttribute('aria-pressed', String(!promo.muted));
     };
     var sync = function () {
@@ -318,12 +333,38 @@
       }
       paint();
     };
-    playBtn.addEventListener('click', function () { userPaused = !userPaused; sync(); });
+    var flashTimer = null;
+    var toggle = function (flash) {
+      userPaused = !userPaused; sync();
+      if (flash && !userPaused) {                     /* the large icon: Play stays while paused; on play, Pause flashes */
+        big.classList.add('is-flash', 'show-pause'); clearTimeout(flashTimer);
+        flashTimer = setTimeout(function () { big.classList.remove('is-flash', 'show-pause'); }, 500);
+      }
+    };
+    hit.addEventListener('click', function () { toggle(true); wake(); });
+    playBtn.addEventListener('click', function () { toggle(false); });
     soundBtn.addEventListener('click', function () {
       promo.muted = !promo.muted;
       if (!promo.muted) userPaused = false;     /* turning the sound on means "play it" */
       sync();
     });
+    seek.addEventListener('input', function () { seeking = true; promo.currentTime = +seek.value; showTime(); });
+    seek.addEventListener('change', function () { seeking = false; showTime(); });
+    promo.addEventListener('timeupdate', showTime);
+    promo.addEventListener('loadedmetadata', showTime);
+    var tick = function () { if (!promo.paused && onScreen) showTime(); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+
+    var idleTimer = null;
+    var wake = function () {
+      intro.classList.remove('is-idle'); clearTimeout(idleTimer);
+      idleTimer = setTimeout(function () {         /* stays while a key user is on the bar; a mouse drag leaves focus, not that */
+        var a = document.activeElement; if (!(bar.contains(a) && a.matches(':focus-visible'))) intro.classList.add('is-idle');
+      }, 2500);
+    };
+    ['pointermove', 'pointerdown', 'keydown', 'focusin'].forEach(function (ev) { intro.addEventListener(ev, wake, { passive: true }); });
+    wake();
+
     if (io) {
       new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; sync(); },
         { threshold: 0.15 }).observe(intro);
@@ -335,9 +376,10 @@
       var k = Math.min(1, Math.max(0, window.scrollY / (intro.offsetHeight * 0.8)));
       if (k === last) return;
       last = k;
-      promo.style.opacity = String(1 - 0.85 * k);
-      promo.style.transform = k ? 'translateY(' + (30 * k).toFixed(2) + '%) scale(' + (1 - 0.05 * k).toFixed(4) + ')' : '';
-      if (cue) cue.style.opacity = String(Math.max(0, 1 - 4 * k));
+      stage.style.opacity = String(1 - 0.85 * k);
+      stage.style.transform = k ? 'translateY(' + (30 * k).toFixed(2) + '%) scale(' + (1 - 0.05 * k).toFixed(4) + ')' : '';
+      bar.style.opacity = k ? String(Math.max(0, 1 - 3 * k)) : '';
+      if (cue) cue.style.opacity = k ? String(Math.max(0, 1 - 4 * k)) : '';
     };
     if (!reduce) {
       window.addEventListener('scroll', function () {
@@ -351,6 +393,6 @@
         window.scrollTo({ top: intro.offsetTop + intro.offsetHeight, behavior: reduce ? 'auto' : 'smooth' });
       });
     }
-    sync();
+    showTime(); sync();
   }
 })();
