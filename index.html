@@ -799,9 +799,10 @@
         <p class="lineage-venue">This work &middot; journal extension</p>
         <h3>XM4D: what is new</h3>
         <ul>
-          <li>A uniform sphere constraint on the depth scales replaces XM's first-frame anchor.</li>
-          <li>A dynamic stage: an embedded deformation graph whose tracking, rigidity, and smoothness terms reduce to a rotation-only QCQP, handled by the same certified solver.</li>
-          <li>The certified cameras and motion initialize 4D Gaussian splatting for novel-view rendering.</li>
+          <li>A static solver carried over from XM that solves bundle adjustment to certified global optimality in a few minutes.</li>
+          <li>A uniform sphere constraint on the depth scales replaces XM's first-frame anchor: it fixes the global scale without privileging any frame, so the solve no longer overfits to the first frame's depth or needs a scale weight tuned per video.</li>
+          <li>A dynamic stage: an embedded deformation graph whose tracking, rigidity, and temporal smoothness terms form a rotation-only QCQP, solved by the same certifiable solver.</li>
+          <li>The certified cameras and motion initialize dynamic Gaussian splatting. Across seven benchmarks: leading camera accuracy, fast and scalable optimization, and the best average novel-view rendering on DyCheck, NVIDIA, and Syn4D.</li>
         </ul>
       </article>
     </div>
