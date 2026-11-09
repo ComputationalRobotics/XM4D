@@ -172,6 +172,17 @@
         <button role="tab" aria-selected="false" data-group="spin">spin</button>
         <button role="tab" aria-selected="false" data-group="teddy">teddy</button>
         <button role="tab" aria-selected="false" data-group="wheel">wheel</button>
+        <span class="seg-label">Syn4D</span>
+        <button role="tab" aria-selected="false" data-group="bear1">bear1</button>
+        <button role="tab" aria-selected="false" data-group="bear2">bear2</button>
+        <button role="tab" aria-selected="false" data-group="bear3">bear3</button>
+        <button role="tab" aria-selected="false" data-group="bear4">bear4</button>
+        <button role="tab" aria-selected="false" data-group="casa1">casa1</button>
+        <button role="tab" aria-selected="false" data-group="casa2">casa2</button>
+        <button role="tab" aria-selected="false" data-group="casa3">casa3</button>
+        <button role="tab" aria-selected="false" data-group="casa4">casa4</button>
+        <span class="seg-label">RoboCasa</span>
+        <button role="tab" aria-selected="false" data-group="casa-pose">cereal box</button>
         <span class="seg-label">EgoDexter</span>
         <button role="tab" aria-selected="false" data-group="egodexter">desk</button>
         <span class="seg-label">HOI</span>
@@ -301,6 +312,42 @@
       <div class="gallery-group" data-group="wheel" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="616" data-poster="assets/img/runs/wheel.jpg" data-src="assets/video/runs/wheel.mp4"></video>
         <figcaption>DyCheck &middot; wheel <span>Frames 0&ndash;149, the stretch that renders well.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="bear1" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/bear1.jpg" data-src="assets/video/runs/bear1.mp4"></video>
+        <figcaption>Syn4D &middot; bear1</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="bear2" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/bear2.jpg" data-src="assets/video/runs/bear2.mp4"></video>
+        <figcaption>Syn4D &middot; bear2</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="bear3" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/bear3.jpg" data-src="assets/video/runs/bear3.mp4"></video>
+        <figcaption>Syn4D &middot; bear3</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="bear4" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/bear4.jpg" data-src="assets/video/runs/bear4.mp4"></video>
+        <figcaption>Syn4D &middot; bear4</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="casa1" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="296" data-poster="assets/img/runs/casa1.jpg" data-src="assets/video/runs/casa1.mp4"></video>
+        <figcaption>Syn4D &middot; casa1</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="casa2" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="296" data-poster="assets/img/runs/casa2.jpg" data-src="assets/video/runs/casa2.mp4"></video>
+        <figcaption>Syn4D &middot; casa2</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="casa3" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="296" data-poster="assets/img/runs/casa3.jpg" data-src="assets/video/runs/casa3.mp4"></video>
+        <figcaption>Syn4D &middot; casa3</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="casa4" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="296" data-poster="assets/img/runs/casa4.jpg" data-src="assets/video/runs/casa4.mp4"></video>
+        <figcaption>Syn4D &middot; casa4</figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="casa-pose" role="tabpanel" hidden>
+        <figure class="run"><video muted loop playsinline preload="none" width="1440" height="296" data-poster="assets/img/runs/casa-pose.jpg" data-src="assets/video/runs/casa-pose.mp4"></video>
+        <figcaption>RoboCasa &middot; cereal box <span>The robot is left out of the reconstruction, so the box moves on its own.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="egodexter" role="tabpanel" hidden>
         <figure class="run"><video muted loop playsinline preload="none" width="1440" height="336" data-poster="assets/img/runs/egodexter.jpg" data-src="assets/video/runs/egodexter.mp4"></video>
@@ -528,11 +575,9 @@
       <div class="gallery-head">
         <div class="app-text">
           <h3>Hands and objects from a phone video</h3>
-          <p>Five iPhone videos of everyday two-handed tasks, and one from a headset. XM4D solves the camera and each object&rsquo;s motion as
-            one rigid node. The object&rsquo;s shape is a mesh that Hunyuan3D-2.1 generates from one frame of the video;
-            it is sized where it rests on the table and posed in every frame by the tracks attached to it. Both hands
-            come from a per-frame hand model (WiLoR), placed where their fingertips meet the objects, so they hold them
-            without passing through.</p>
+          <p>XM4D solves the camera and each object&rsquo;s motion as one rigid node. The object&rsquo;s shape is a mesh
+            that Hunyuan3D-2.1 generates from one frame of the video. Both hands come from a per-frame hand model
+            (WiLoR).</p>
         </div>
         <div class="segmented" role="tablist" aria-label="Clip">
           <button role="tab" aria-selected="true" data-group="ho-ip1149" data-clip="ip1149">can and cup</button>
@@ -579,11 +624,6 @@
           <figcaption>Turning a milk carton <span>Seen from a headset. From HOT3D (Meta, CC&nbsp;BY-SA&nbsp;4.0).</span></figcaption>
           <a class="btn btn-small app-open" href="handobj.html#hot3d-milk">Open in 3D <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></a></figure>
       </div>
-      <p class="app-note">From the RGB video and the phone&rsquo;s focal length. The masks come from SAM&nbsp;3 with one text
-        prompt per object, and each object&rsquo;s shape prior (upright on the table, a ring) is set by hand. The thin
-        dental pick gives too few tracks, so it is posed from its mask&rsquo;s axis, with its length from where it lies
-        on the table. <a href="handobj.html">Open the 3D viewer</a> to turn any clip around, frame by frame, or to see
-        the meshes over the input with SAM&nbsp;3&rsquo;s mask outlines.</p>
     </div>
 
     <div class="app" id="app-articulate">

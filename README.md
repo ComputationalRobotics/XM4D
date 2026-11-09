@@ -52,7 +52,8 @@ assets/
                   soapbox) are the extended DAVIS 2017 batch, every 8th frame held out, cut the same way from its
                   showcase_holdout.mp4 (build_ext.py in the session scratchpad); the 3D-tracks cell then redrawn by
                   page_assets/runs/tracks_from_bin.py from the run's 3d/<key>.bin (its stored tracks, as the viewer draws
-                  them; the render and graph cells cut again from the grid); posters in img/runs/
+                  them; the render and graph cells cut again from the grid); Syn4D bear1-4 / casa1-4 and the cereal box
+                  from grids rendered by page_assets/runs/grids/render_grids.sh; posters in img/runs/
     solver/       Inside the solver, per run (horsejump-high, bear, car-roundabout, paper-windmill):
                   static-<run>.mp4, the static solve's iterates,
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
