@@ -66,7 +66,9 @@ assets/
                   saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
     apps/         Applications clips (scripts: 4DReconstruction/scratchpad/page_assets/apps/ unless noted):
                   robot-dance-twirl (DAVIS: render | a Unitree G1 in her place, robot_clips.py, top row trimmed); robot-skater (Pexels
-                  skater, the G1's standing foot planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); casa-pose (a RoboCasa robot carries a cereal box while
+                  skater, the G1's standing foot planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); both
+                  robots rendered in Blender Cycles (unitree_ros g1_29dof_rev_1_0, lit by the static scene, contact shadows on the
+                  fitted ground, the ice reflection: page_assets/robot_render/ run_all.sh, settings in clips.py); casa-pose (a RoboCasa robot carries a cereal box while
                   the camera moves: input with the box's mesh at our pose | the static kitchen with our camera path
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
                   without the dynamic Gaussians, render_removal.py); handobj-<clip> (five iPhone clips: input with our
