@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261109f">
+  <link rel="stylesheet" href="style.css?v=20261109g">
 </head>
 <body>
 
@@ -582,19 +582,25 @@
             animation. A Unitree G1 humanoid follows it through inverse kinematics on its own joints.</p>
         </div>
         <div class="segmented" role="tablist" aria-label="Robot">
-          <button role="tab" aria-selected="true" data-group="rb-twirl">dance-twirl</button>
+          <button role="tab" aria-selected="true" data-group="rb-breakdance">breakdance-flare</button>
           <button role="tab" aria-selected="false" data-group="rb-skater">skater</button>
+          <button role="tab" aria-selected="false" data-group="rb-hike">hike</button>
         </div>
       </div>
-      <div class="gallery-group is-active" data-group="rb-twirl" role="tabpanel">
-        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
-        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-dance-twirl.jpg" data-src="assets/video/apps/robot-dance-twirl.mp4"></video>
-          <figcaption>DAVIS dance-twirl <span>A moving camera, with a crowd behind her.</span></figcaption></figure>
+      <div class="gallery-group is-active" data-group="rb-breakdance" role="tabpanel">
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in their place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-breakdance-flare.jpg" data-src="assets/video/apps/robot-breakdance-flare.mp4"></video>
+          <figcaption>DAVIS breakdance-flare <span>Floor moves on the hands. The robot keeps each supporting hand, and at the end a foot, on the ground fitted from the reconstruction.</span></figcaption></figure>
       </div>
       <div class="gallery-group" data-group="rb-skater" role="tabpanel" hidden>
-        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in her place</span></div>
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in their place</span></div>
         <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-skater.jpg" data-src="assets/video/apps/robot-skater.mp4"></video>
           <figcaption>Pexels skater <span>A spin on one foot, with the camera following her. The robot keeps its standing foot on the ice, fitted from the reconstruction. Stock video by Tima Miroshnichenko, Pexels.</span></figcaption></figure>
+      </div>
+      <div class="gallery-group" data-group="rb-hike" role="tabpanel" hidden>
+        <div class="app-cols app-cols-2" aria-hidden="true"><span>Reconstruction</span><span>The person left out, the robot in their place</span></div>
+        <figure class="app-clip"><video muted loop playsinline preload="none" width="1286" height="336" data-poster="assets/img/apps/robot-hike.jpg" data-src="assets/video/apps/robot-hike.mp4"></video>
+          <figcaption>DAVIS hike <span>A walk across a scree slope. The robot plants each foot on the ground fitted from the reconstruction.</span></figcaption></figure>
       </div>
     </div>
 
@@ -707,8 +713,8 @@
     <div class="method-body">
       <div class="method-steps">
 
-        <!-- data-img: figure shown in the sticky stage while this step is active -->
-        <article class="step" data-img="assets/img/teaser.jpg?v=2" data-title="Inputs">
+        <!-- each step plays its clip in the sticky stage (the stage's videos, in step order) while it is active -->
+        <article class="step" data-title="Lift to 3D">
           <h3>Lift tracks with predicted depth</h3>
           <p>
             Point trackers and a monocular depth model give 2D tracks and per-frame depth. Every
@@ -716,7 +722,7 @@
           </p>
         </article>
 
-        <article class="step" data-img="assets/img/view-graph.jpg?v=2" data-title="Static stage">
+        <article class="step" data-title="Static stage">
           <h3>Certified cameras</h3>
           <p>
             A scaled bundle adjustment over camera poses, per-frame depth scales, and static
@@ -725,7 +731,7 @@
           </p>
         </article>
 
-        <article class="step" data-img="assets/img/view-graph.jpg?v=2" data-title="Dynamic stage">
+        <article class="step" data-title="Dynamic stage">
           <h3>Certified non-rigid motion</h3>
           <p>
             Dynamic motion is an embedded deformation graph whose node transformations are
@@ -734,7 +740,7 @@
           </p>
         </article>
 
-        <article class="step step-last" data-img="assets/img/teaser.jpg?v=2" data-title="Rendering">
+        <article class="step step-last" data-title="Rendering">
           <h3>4D Gaussian splatting</h3>
           <p>
             The certified cameras and graph motion initialize dynamic Gaussian splatting, which
@@ -746,9 +752,15 @@
 
       <div class="method-stage">
         <div class="stage-sticky">
-          <img id="stage-img" src="assets/img/teaser.jpg?v=2" alt="" loading="lazy">
+          <!-- the teaser's Lift, the horsejump-high solves from Inside the solver, the teaser's 4D render (main.js) -->
+          <div class="stage-media" aria-hidden="true">
+            <video muted loop playsinline preload="none" width="1280" height="720" data-stage-poster="assets/img/method/lift.jpg" data-stage-src="assets/video/method/lift.mp4"></video>
+            <video muted loop playsinline preload="none" width="1188" height="772" data-stage-poster="assets/img/method/static-horsejump-high.jpg" data-stage-src="assets/video/solver/static-horsejump-high.mp4"></video>
+            <video muted loop playsinline preload="none" width="1280" height="720" data-stage-poster="assets/img/method/edg-horsejump-high.jpg" data-stage-src="assets/video/solver/edg-horsejump-high.mp4"></video>
+            <video muted loop playsinline preload="none" width="1280" height="684" data-stage-poster="assets/img/method/render.jpg" data-stage-src="assets/video/method/render.mp4"></video>
+          </div>
           <div class="stage-hud" aria-hidden="true">
-            <span class="hud-task" id="hud-task">Inputs</span>
+            <span class="hud-task" id="hud-task">Lift to 3D</span>
           </div>
         </div>
       </div>
@@ -860,7 +872,7 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<script src="main.js?v=20261109e" defer></script>
+<script src="main.js?v=20261109f" defer></script>
 <script src="viewer.js?v=20261109b" defer></script>
 </body>
 </html>

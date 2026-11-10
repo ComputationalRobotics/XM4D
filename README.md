@@ -18,7 +18,7 @@ python3 -m http.server 8080   # then open http://localhost:8080
 ```text
 index.html        all page content
 style.css         all styling; colors are tokens under :root (--accent = xmblue, --accent-2 = xmorange)
-main.js           BibTeX copy, gallery tabs, lazy video playback, method-step figure swap
+main.js           BibTeX copy, gallery tabs, lazy video playback, How it works' step clips
 viewer.js         the 3D viewers (WebGL 2; Gallery, fridge, kitchen twin): Gaussian splats, deformation graph, cameras, 3D tracks
 viewer-worker.js  its worker: poses the dynamic Gaussians through the graph at time t and depth-sorts all of them
 handobj.html      the hand-object viewer's page, opened from the Applications' "Open in 3D" links (#<clip> picks the clip)
@@ -33,7 +33,8 @@ assets/
   favicon.svg
   group-logo.png  Computational Robotics Group logo (group-logo-alpha.png: its white made transparent, for the teaser's overlay)
   harvard-shield.svg  Harvard shield (from the group's GRASP page), for the teaser's overlay
-  img/            teaser.jpg, view-graph.jpg (the arXiv paper's overview and view-graph figures, from 2026-pami-xm4d/arxiv-crg/figures/)
+  img/            teaser.jpg (the arXiv paper's overview figure, from 2026-pami-xm4d/arxiv-crg/figures/; the link preview)
+    method/       posters of How it works' clips (frame 0)
     runs/         posters of the Gallery's clips
     solver/       posters of the solver clips
     apps/         posters of the Applications clips
@@ -64,11 +65,14 @@ assets/
                   static-<run>.mp4, the static solve's iterates,
                   and edg-<run>.mp4, one segment's EDG solve from zero translation; both from a copy of the solver that
                   saved every iterate (scripts and the patched solver headers: 4DReconstruction/scratchpad/page_assets/solver/)
+    method/       How it works: lift.mp4, render.mp4 (the teaser's Lift and 4D render; see below)
     apps/         Applications clips (scripts: 4DReconstruction/scratchpad/page_assets/apps/ unless noted):
-                  robot-dance-twirl (DAVIS: render | a Unitree G1 in her place, robot_clips.py, top row trimmed); robot-skater (Pexels
-                  skater, the G1's standing foot planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); both
-                  robots rendered in Blender Cycles (unitree_ros g1_29dof_rev_1_0, lit by the static scene, contact shadows on the
-                  fitted ground, the ice reflection: page_assets/robot_render/ run_all.sh, settings in clips.py); casa-pose (a RoboCasa robot carries a cereal box while
+                  robot-breakdance-flare, robot-hike (DAVIS, from their gsplat_human runs: render | a Unitree G1 in the person's
+                  place, retargeted with its supports, hands or feet, held on the ground fitted from the static scene:
+                  page_assets/robot_render/ run_new.sh, retarget_ground.py); robot-skater (Pexels skater, the G1's standing foot
+                  planted on the fitted ice, page_assets/skating/ deliver.sh, from frame 2); all three rendered in Blender Cycles
+                  (unitree_ros g1_29dof_rev_1_0, lit by the static scene, contact shadows on the fitted ground, the ice
+                  reflection: page_assets/robot_render/, settings in clips.py); casa-pose (a RoboCasa robot carries a cereal box while
                   the camera moves: input with the box's mesh at our pose | the static kitchen with our camera path
                   and the box's, page_assets/robocasa_pose/ render_pose_clip.py); remove-car-roundabout (input |
                   without the dynamic Gaussians, render_removal.py); handobj-<clip> (five iPhone clips: input with our
@@ -119,7 +123,11 @@ assets/
   again whenever playback waits for data. The clips' posters below it (`data-poster`) load only once it has started,
   as each nears the screen.
   Upright phones show the whole frame at full width; ultra-wide screens show it whole, its sides fading out.
-- **Method figures:** each `.step` has a `data-img` that the sticky stage shows while the step is active.
+- **How it works:** each `.step` plays its clip in the sticky stage while it is active: the stage's four videos, in
+  step order (video/method/lift.mp4 and render.mp4, the teaser's Lift and 4D render, from
+  4DReconstruction/scratchpad/page_assets/method/build_method_clips.py; the static and deformation-graph solves are
+  solver/static-horsejump-high.mp4 and edg-horsejump-high.mp4). Their white backgrounds take the page color
+  (mix-blend-mode: multiply; lift and render are divided by the paper color in the build, so their content keeps its colors).
 - **Articulated runs** (fridge.html, kitchen.html): a `.viewer` with `data-src` (and no run picker) shows one run; a run exported with
   `--hinges` (assets/3d/fridge.bin) is posed by one slider per part, which turns about its fitted hinge (or, for a
   `prismatic` part, slides along its axis). A part with `"fixed": true` keeps its frame-0 pose and gets no slider.

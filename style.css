@@ -377,13 +377,18 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
   justify-content: center;
   display: flex; flex-direction: column;
 }
-#stage-img {
-  width: 100%; height: auto; max-height: 100%; flex: 0 1 auto; min-height: 0;
-  object-fit: contain;
-  mix-blend-mode: multiply;   /* white figure background takes the page color */
-  transition: opacity .25s ease;
+.stage-media {
+  position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 100%; flex: 0 1 auto; min-height: 0;
+  background: var(--paper); isolation: isolate;   /* what the clips multiply onto (the sticky stage is its own layer) */
 }
-#stage-img.is-swapping { opacity: 0; }
+.stage-media video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;   /* the clips' white background takes the page color */
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.stage-media video.is-on { opacity: 1; }
 .stage-hud {
   display: flex; align-items: center; gap: 14px;
   padding: 10px 6px;
@@ -393,8 +398,11 @@ section h3 { font-size: 19px; font-weight: 600; letter-spacing: -.012em; line-he
 
 @media (max-width: 900px) {
   .method-body { display: flex; flex-direction: column; }
-  .method-stage { order: -1; position: sticky; top: var(--topbar-h); z-index: 5; background: var(--paper); height: auto; }
+  .method-stage { order: -1; position: sticky; top: var(--topbar-h); z-index: 5; background: var(--paper); height: auto; align-self: stretch; }
   .stage-sticky { position: static; height: auto; min-height: 0; padding-top: 8px; }
+  /* the stage sits on top: at most 30 % of the screen's height, so the text stays in view (landscape phones) */
+  .stage-media, .stage-hud { width: min(100%, calc(30vh * 16 / 9)); align-self: center; }
+  .stage-media { max-height: none; }
   .stage-hud { position: static; padding: 6px 0 10px; }
   .method-steps { max-width: none; padding-top: 12px; }
   .step { min-height: 0; padding: 36px 0; opacity: 1; }
@@ -703,5 +711,5 @@ html.is-embed { overflow: hidden; }                 /* the frame takes the page'
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .step, .btn, .segmented button, #stage-img, #toast, .award-banner { transition: none; }
+  .step, .btn, .segmented button, .stage-media video, #toast, .award-banner { transition: none; }
 }

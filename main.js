@@ -98,20 +98,47 @@
     });
   });
 
-  /* ── Method steps: highlight the one in the middle of the viewport and
-        show its figure (data-img) in the sticky stage ── */
+  /* ── Method steps: highlight the one in the middle of the viewport and play its clip in the sticky stage (the
+        stage's videos, one per step in step order, cross-fade). The posters and the active clip load as the stage nears
+        the screen; the clip plays only while the stage is in view, from its beginning each time the stage comes into
+        view or its step comes up ── */
   var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
-  var stageImg = document.getElementById('stage-img');
+  var stageVids = Array.prototype.slice.call(document.querySelectorAll('.stage-media video'));
   var hudTask = document.getElementById('hud-task');
+  var stageNear = !('IntersectionObserver' in window), stageSeen = stageNear, stageStep = -1;
+  function syncStage() {
+    stageVids.forEach(function (v, i) {
+      var on = i === stageStep;
+      v.classList.toggle('is-on', on);
+      if (on && stageNear && !v.getAttribute('src')) { v.preload = 'auto'; v.src = v.dataset.stageSrc; }
+      if (on && stageSeen) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function () { /* autoplay blocked — poster stays */ });
+      } else if (!v.paused) v.pause();
+    });
+  }
+  if (stageVids.length && !stageNear) {
+    var stageBox = stageVids[0].parentNode;
+    new IntersectionObserver(function (entries) {
+      stageNear = entries[entries.length - 1].isIntersecting;
+      if (stageNear) stageVids.forEach(function (v) {
+        if (v.dataset.stagePoster) { v.poster = v.dataset.stagePoster; delete v.dataset.stagePoster; }
+      });
+      syncStage();
+    }, { rootMargin: '400px 0px' }).observe(stageBox);
+    new IntersectionObserver(function (entries) {
+      var seen = entries[entries.length - 1].isIntersecting, v = stageVids[stageStep];
+      if (seen && !stageSeen && v && v.getAttribute('src')) v.currentTime = 0;
+      stageSeen = seen;
+      syncStage();
+    }, { threshold: 0.5 }).observe(stageBox);
+  }
   function showStep(step) {
     if (hudTask && step.dataset.title) hudTask.textContent = step.dataset.title;
-    var src = step.dataset.img;
-    if (!stageImg || !src || stageImg.getAttribute('src') === src) return;
-    stageImg.classList.add('is-swapping');
-    setTimeout(function () {
-      stageImg.src = src;
-      stageImg.classList.remove('is-swapping');
-    }, 200);
+    var k = steps.indexOf(step);
+    if (k !== stageStep && stageVids[k] && stageVids[k].getAttribute('src')) stageVids[k].currentTime = 0;
+    stageStep = k;
+    syncStage();
   }
   if (steps.length) {
     // The active step is the last one whose top has passed the anchor line
