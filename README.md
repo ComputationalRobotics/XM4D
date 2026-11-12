@@ -49,7 +49,7 @@ assets/
     promo-720-text.mp4 the 720p cut with its text baked in: the fallback if promo-text.json cannot be read
     runs/         the Gallery's clips (Videos, above the 3D viewer): per run, one input camera's render, 3D tracks, and
                   graph cells, cut from its showcase video (visualize_showcase_grid.py in the research code) by
-                  4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 14 DAVIS runs after hike (bmx-trees to
+                  4DReconstruction/scratchpad/page_assets/runs/build_runs.py; the 13 DAVIS runs after hike (breakdance to
                   soapbox) are the extended DAVIS 2017 batch, every 8th frame held out, cut the same way from its
                   showcase_holdout.mp4 (build_ext.py in the session scratchpad); the 3D-tracks cell then redrawn by
                   page_assets/runs/tracks_from_bin.py from the run's 3d/<key>.bin (its stored tracks, as the viewer draws
@@ -102,7 +102,7 @@ assets/
                   Gaussians within 1.4 m of the camera path dropped; then rename_parts.py for the part names, the caps
                   after review (drawer 75 %, cabinets 30/41, fridge doors 17/19 degrees), microwave and dishwasher fixed); casa-pose.bin
                   (the cereal box, Gallery) from page_assets/robocasa_pose/ (export_viewer.py)
-                  bmx-trees ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10;
+                  breakdance ... soapbox: the extended DAVIS runs (bench/scenes/DAVIS/d17h_<key>, gsplat_holdout), --fps 10;
                   breakdance, pigs and paragliding-launch from their retrains with a floor on gsplat's scene scale (bench_debug/ssfix/, update_run.py
                   in page_assets/viewer_pages/, which also re-cuts its clip): its camera barely moves, so the scale
                   (the cameras' extent) had frozen the means and capped every Gaussian near one pixel
