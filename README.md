@@ -85,7 +85,7 @@ assets/
                   record_viewer.py, record_native.sh); posters in img/apps/
   3d/             one file per Gallery run. Full quality (format v2, page_assets/viewer/export_viewer_v2.py, export_all_v2.sh)
                   for the 11 whose light file fell furthest from the paper's eval render (ranked in /dev/shm/viewer_fix/rank):
-                  horsejump-high (the teaser's gsplat_v3), dance-twirl, car-roundabout, teddy, hike, blackswan, casa2, cows,
+                  horsejump-high (gsplat_v3_sky), dance-twirl, car-roundabout, teddy, hike (gsplat_human_floor), blackswan, casa2, cows,
                   block, bear, breakdance; and the five hand-object runs (egodexter, egodexter-fruits, egodexter-rotunda,
                   hoi-jar, hoi-pour), whose light files break up the hand and the object although the whole-frame score
                   (24-32 dB) hides it, the hand being a small part of the frame; bear4 and wheel, the two of the 13 that lost
@@ -106,6 +106,14 @@ assets/
                   breakdance, pigs and paragliding-launch from their retrains with a floor on gsplat's scene scale (bench_debug/ssfix/, update_run.py
                   in page_assets/viewer_pages/, which also re-cuts its clip): its camera barely moves, so the scale
                   (the cameras' extent) had frozen the means and capped every Gaussian near one pixel
+                  horsejump-high and hike: retrained for their sky, which rendered black (page_assets/sky_fix/: train.sh,
+                  post.sh, the trainer with a scene-scale floor of 0.1). horsejump-high's gsplat_v3_sky is the teaser's
+                  gsplat_v3 without its no-sky loss mask (the sky had no loss, so it was left a few transparent Gaussians), and
+                  with the floor; hike's gsplat_human_floor is gsplat_human with the floor (its still camera capped the sky
+                  Gaussians below a pixel). The teaser and How it works keep the old horsejump-high render. Both grids are drawn
+                  by sky_fix/'s copy of visualize_showcase_grid.py, which leaves out graph edges longer than 6x the median edge
+                  at frame 0, as viewer.js does: nodes off the body (hike's node 0, ~1.2 scene units away; horsejump-high's
+                  drifted nodes at its first and last frames) had drawn edges across or out of the frame
     handobj/      the hand-object viewer's clips (clips.json, then per clip meta.json, poses/cams/joints/points/objN .bin,
                   objN.jpg textures, contours.json from the SAM 3 masks, frames_NN.jpg input atlases), from export_viewer.py
                   in the hand-object scratchpad (hoviewer_r6/tools/); hot3d-milk via its milk_to_r5.py adapter from the
